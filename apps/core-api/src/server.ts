@@ -22,6 +22,7 @@ const app: Express = express();
 const corsOrigin = getCorsOrigin();
 
 // Middlewares
+app.use(express.json());
 app.use(cors({ origin: [corsOrigin], credentials: true }));
 app.use(helmet());
 app.use(rateLimiter);

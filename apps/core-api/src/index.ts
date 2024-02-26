@@ -1,7 +1,11 @@
 import { getPort } from '@common/utils/envConfig';
 import { app, logger } from '@src/server';
+import knex from 'knex';
 
 const port = getPort();
+const config = require('./knexfile.ts');
+
+export default knex(config.development);
 
 const server = app.listen(port, () => {
   logger.info(`Server listening on port ${port}`);

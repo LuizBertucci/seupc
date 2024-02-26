@@ -32,12 +32,32 @@ export const notebookRouter: Router = (() => {
     path: '/notebooks/{id}',
     tags: ['Notebook'],
     request: { params: GetNotebookByIdRequest.shape.params },
-    responses: createApiResponse(GetNotebookByIdResponse, 'Success'),
+    responses: createApiResponse(z.string(), 'Success'),
   });
 
   router.get('/:id', validateRequest(GetNotebookByIdRequest), async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id as string, 10);
-    const serviceResponse = await notebookService.findById(id);
+    const serviceResponse = await notebookService.findById(req.params.id as string);
+    handleServiceResponse(serviceResponse, res);
+  });
+
+  notebookRegistry.registerPath({
+    method: 'post',
+    path: '/notebooks',
+    tags: ['Notebook'],
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: z.object({ title: z.string() }),
+          },
+        },
+      },
+    },
+    responses: createApiResponse(z.string(), 'Success'),
+  });
+
+  router.post('/', async (req: Request, res: Response) => {
+    const serviceResponse = await notebookService.createNotebook(req.body);
     handleServiceResponse(serviceResponse, res);
   });
 
