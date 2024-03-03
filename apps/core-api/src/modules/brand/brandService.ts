@@ -25,7 +25,7 @@ export const brandService = {
         StatusCodes.OK
       );
     } catch (ex) {
-      const errorMessage = `Erro ao encontrar as brands: $${(ex as Error).message}`;
+      const errorMessage = `Erro ao encontrar as brands: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
