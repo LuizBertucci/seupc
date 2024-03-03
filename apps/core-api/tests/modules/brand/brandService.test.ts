@@ -39,8 +39,39 @@ describe('brandService', () => {
     it('return all brands', async () => {
       jest.spyOn(brandRepository, 'findAllAsync').mockResolvedValue([brand]);
 
-      expect(await brandService.findAll()).toBeDefined();
+      expect(await brandService.findAll()).toEqual({
+        message: 'Brands encontradas',
+        responseObject: [brand],
+        statusCode: StatusCodes.OK,
+        success: true,
+      });
       expect(brandRepository.findAllAsync).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findById', () => {
+    it('handles errors for findById', async () => {
+      jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(null);
+
+      expect(await brandService.findById(randomUUID())).toEqual({
+        message: 'Nenhuma brand encontrada',
+        responseObject: null,
+        statusCode: StatusCodes.NOT_FOUND,
+        success: false,
+      });
+    });
+
+    it('return a brand', async () => {
+      jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(brand);
+
+      expect(await brandService.findById(brand.id)).toEqual({
+        message: 'Brand encontrada',
+        responseObject: brand,
+        statusCode: StatusCodes.OK,
+        success: true,
+      });
+      expect(brandRepository.findByIdAsync).toHaveBeenCalledTimes(1);
+      expect(brandRepository.findByIdAsync).toHaveBeenCalledWith(brand.id);
     });
   });
 });
