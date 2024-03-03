@@ -5,6 +5,8 @@ import { notebookRepository } from '@modules/notebook/notebookRepository';
 import { notebookService } from '@modules/notebook/notebookService';
 
 jest.mock('@modules/notebook/notebookRepository');
+jest.mock('@src/index');
+jest.mock('@src/server');
 
 describe('notebookService', () => {
   const mockNotebooks: Notebook[] = [

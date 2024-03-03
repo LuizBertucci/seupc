@@ -102,14 +102,10 @@ export const brandRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.delete(
-    '/:id',
-    validateRequest(GetBrandByIdRequest),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await brandService.deleteBrand(req.params.id as string);
-      handleServiceResponse(serviceResponse, res);
-    }
-  );
+  router.delete('/:id', validateRequest(GetBrandByIdRequest), async (req: Request, res: Response) => {
+    const serviceResponse = await brandService.deleteBrand(req.params.id as string);
+    handleServiceResponse(serviceResponse, res);
+  });
 
   return router;
 })();

@@ -41,9 +41,6 @@ export const brandRepository = {
     return toModel(rows);
   },
   deleteBrand: async (id: string): Promise<void> => {
-    await knex.raw(
-      'DELETE FROM brands WHERE id = ?',
-      [id]
-    );
-  }
+    await knex.raw('DELETE FROM brands WHERE id = ?', [id]);
+  },
 };

@@ -29,7 +29,7 @@ export const notebookService = {
         StatusCodes.OK
       );
     } catch (ex) {
-      const errorMessage = `Erro ao encontrar os notebooks: $${(ex as Error).message}`;
+      const errorMessage = `Erro ao encontrar os notebooks: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
