@@ -5,7 +5,12 @@ import { z } from 'zod';
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
 import { handleServiceResponse, validateRequest } from '@common/utils/httpHandlers';
 import { brandService } from '@modules/brand/brandService';
-import { CreateBrandRequest, GetBrandByIdRequest, GetBrandByIdResponse } from '@modules/brand/brandModel';
+import {
+  CreateBrandRequest,
+  GetBrandByIdRequest,
+  GetBrandByIdResponse,
+  UpdateBrandRequest,
+} from '@modules/brand/brandModel';
 
 export const brandRegistry = new OpenAPIRegistry();
 
@@ -47,7 +52,7 @@ export const brandRouter: Router = (() => {
       body: {
         content: {
           'application/json': {
-            schema: z.object({ name: z.string(), status: z.string() }),
+            schema: CreateBrandRequest,
           },
         },
       },
@@ -55,10 +60,56 @@ export const brandRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.post('/', validateRequest(z.object({body: CreateBrandRequest})), async (req: Request, res: Response) => {
+  router.post('/', validateRequest(z.object({ body: CreateBrandRequest })), async (req: Request, res: Response) => {
     const serviceResponse = await brandService.createBrand(req.body);
     handleServiceResponse(serviceResponse, res);
   });
+
+  brandRegistry.registerPath({
+    method: 'put',
+    path: '/brands/{id}',
+    tags: ['Brand'],
+    request: {
+      params: GetBrandByIdRequest.shape.params,
+      body: {
+        content: {
+          'application/json': {
+            schema: UpdateBrandRequest,
+          },
+        },
+      },
+    },
+    responses: createApiResponse(z.string(), 'Success'),
+  });
+
+  router.put(
+    '/:id',
+    validateRequest(GetBrandByIdRequest),
+    validateRequest(z.object({ body: UpdateBrandRequest })),
+    async (req: Request, res: Response) => {
+      const serviceResponse = await brandService.updateBrand(req.params.id as string, req.body);
+      handleServiceResponse(serviceResponse, res);
+    }
+  );
+
+  brandRegistry.registerPath({
+    method: 'delete',
+    path: '/brands/{id}',
+    tags: ['Brand'],
+    request: {
+      params: GetBrandByIdRequest.shape.params,
+    },
+    responses: createApiResponse(z.string(), 'Success'),
+  });
+
+  router.delete(
+    '/:id',
+    validateRequest(GetBrandByIdRequest),
+    async (req: Request, res: Response) => {
+      const serviceResponse = await brandService.deleteBrand(req.params.id as string);
+      handleServiceResponse(serviceResponse, res);
+    }
+  );
 
   return router;
 })();
