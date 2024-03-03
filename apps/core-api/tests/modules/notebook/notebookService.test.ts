@@ -8,8 +8,8 @@ jest.mock('@modules/notebook/notebookRepository');
 
 describe('notebookService', () => {
   const mockNotebooks: Notebook[] = [
-    { id: 1, title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date() },
+    { id: '1', title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date() },
+    { id: '2', title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date() },
   ];
 
   beforeEach(() => {
