@@ -3,9 +3,9 @@ import request from 'supertest';
 
 import { ServiceResponse } from '@common/models/serviceResponse';
 import { Notebook } from '@modules/notebook/notebookModel';
-import { notebooks } from '@modules/notebook/notebookRepository';
 import { app } from '@src/server';
 
+const notebooks: Notebook[] = [];
 describe('Notebook API Endpoints', () => {
   describe('GET /notebooks', () => {
     it('should return a list of notebooks', async () => {
@@ -18,10 +18,11 @@ describe('Notebook API Endpoints', () => {
       expect(responseBody.success).toBeTruthy();
       expect(responseBody.message).toContain('Notebooks encontrados');
       expect(responseBody.responseObject.length).toEqual(notebooks.length);
-      responseBody.responseObject.forEach((notebook, index) => compareNotebooks(notebooks[index] as Notebook, notebook));
+      responseBody.responseObject.forEach((notebook, index) =>
+        compareNotebooks(notebooks[index] as Notebook, notebook)
+      );
     });
   });
-
 });
 
 function compareNotebooks(mockNotebook: Notebook, responseNotebook: Notebook) {
