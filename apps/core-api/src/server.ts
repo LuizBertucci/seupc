@@ -12,6 +12,9 @@ import requestLogger from '@common/middleware/requestLogger';
 import { getCorsOrigin } from '@common/utils/envConfig';
 import { healthCheckRouter } from '@modules/healthCheck/healthCheckRouter';
 import { notebookRouter } from '@modules/notebook/notebookRouter';
+import { brandRouter } from '@modules/brand/brandRouter';
+import compression from 'compression';
+import { compressionMiddleware } from '@common/middleware/compression';
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -26,11 +29,13 @@ app.use(express.json());
 app.use(cors({ origin: [corsOrigin], credentials: true }));
 app.use(helmet());
 app.use(rateLimiter);
+app.use(compression({ filter: compressionMiddleware }));
 
 // Request logging
 app.use(requestLogger());
 
 // Routes
+app.use('/brands', brandRouter);
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
 
