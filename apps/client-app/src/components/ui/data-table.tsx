@@ -1,11 +1,17 @@
 "use client"
 
+
+
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import {
   Table,
@@ -15,33 +21,70 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useState } from "react"
+
+const selectionColumn: ColumnDef<[]> = {
+  id: "select",
+  cell: ({ row }) => (
+    <Checkbox
+      checked={row.getIsSelected()}
+      onCheckedChange={(value) => row.toggleSelected(!!value)}
+      aria-label="Select row"
+    />
+  )};
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
   data: TData[],
   className: string,
+  setRowSelection: any,
+  rowSelection: any,
+  title: string,
+  rightMenu: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
     data,
   columns,
-  className
+  className,
+  rowSelection,
+  setRowSelection,
+  title,
+  rightMenu
 }: DataTableProps<TData, TValue>) {
+  const [pageSize, setPageSize] = useState(5)
+  const [pageIndex, setPageIndex] = useState(0)
+  
+
   const table = useReactTable({
     data,
-    columns,
-    getCoreRowModel: getCoreRowModel()
+    columns: [selectionColumn, ...columns],
+    state: {
+      pagination: {
+        pageSize,
+        pageIndex
+      },
+      rowSelection,
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onRowSelectionChange: setRowSelection,
   })
 
   return (
-    <div className={`rounded-md border bg-white ${className} `}>
-      <Table>
+    <div className="w-full p-4 bg-white rounded-md hover:translate-y-[-2px] min-h-[460px] transition-all duration-150 hover:shadow-md " >
+      <div className="flex flex-row w-full justify-between items-center " >
+      <h1 className=" font-bold hover:translate-y-[-1px] text-gray-500 " >{title.toUpperCase()}</h1>
+      {rightMenu}
+      </div>
+    <div className={`rounded-md border bg-white mt-[10px] ${className} `}>
+      <Table >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead className=" font-bold " key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -77,6 +120,26 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-end space-x-2 py-4 px-4 ">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPageIndex(old => Math.max(old - 1, 0))}
+          disabled={!table.getCanPreviousPage() || pageIndex === 0}
+        >
+          Anterior
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-primary text-white"
+          onClick={() => setPageIndex(old => old + 1)} disabled={!table.getCanNextPage()}
+        >
+          Próximo
+        </Button>
+      </div>
+    </div>
     </div>
   )
 }
+
