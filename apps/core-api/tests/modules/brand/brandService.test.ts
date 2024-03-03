@@ -1,12 +1,13 @@
 import { brandRepository } from '@modules/brand/brandRepository';
 import { brandService } from '@modules/brand/brandService';
-import { Brand, UpdateBrandRequest } from '@modules/brand/brandModel';
-import { randomUUID } from 'crypto';
+import { Brand, CreateBrandRequest, UpdateBrandRequest } from '@modules/brand/brandModel';
 import { StatusCodes } from 'http-status-codes';
+import { randomUUID } from 'crypto';
 
 jest.mock('@modules/brand/brandRepository');
 jest.mock('@src/index');
 jest.mock('@src/server');
+jest.mock('uuid', () => ({ v4: () => '9c2195df-db50-401b-acea-66b702cb3d92' }));
 
 describe('brandService', () => {
   let brand: Brand;
@@ -117,8 +118,8 @@ describe('brandService', () => {
     });
 
     it('update a brand', async () => {
-      const newValues = {name: 'Name 2', status: 'STATUS 2'}
-      const updateBrand = {...brand, ...newValues, updatedAt: new Date()};
+      const newValues = { name: 'Name 2', status: 'STATUS 2' };
+      const updateBrand = { ...brand, ...newValues, updatedAt: new Date() };
       jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(brand);
       jest.spyOn(brandRepository, 'updateBrand').mockResolvedValue(brand);
 
@@ -132,6 +133,38 @@ describe('brandService', () => {
       expect(brandRepository.findByIdAsync).toHaveBeenCalledWith(brand.id);
       expect(brandRepository.updateBrand).toHaveBeenCalledTimes(1);
       expect(brandRepository.updateBrand).toHaveBeenCalledWith(updateBrand);
+    });
+  });
+
+  describe('createBrand', () => {
+    it('handles errors for createBrand', async () => {
+      jest.spyOn(brandRepository, 'createBrand').mockRejectedValue(new Error('Database error'));
+
+      expect(await brandService.createBrand({} as CreateBrandRequest)).toEqual({
+        message: 'Erro ao criar a brand: Database error',
+        responseObject: null,
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        success: false,
+      });
+    });
+
+    it('create a brand', async () => {
+      const createValues = { name: brand.name, status: brand.status };
+      jest.spyOn(brandRepository, 'createBrand').mockResolvedValue(brand);
+
+      expect(await brandService.createBrand(createValues)).toEqual({
+        message: 'Brand criada',
+        responseObject: brand.id,
+        statusCode: StatusCodes.CREATED,
+        success: true,
+      });
+      expect(brandRepository.createBrand).toHaveBeenCalledTimes(1);
+      expect(brandRepository.createBrand).toHaveBeenCalledWith({
+        ...createValues,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        id: '9c2195df-db50-401b-acea-66b702cb3d92',
+      });
     });
   });
 });
