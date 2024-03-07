@@ -48,8 +48,19 @@ export const GetPartByIdResponse = z.object({
 
 export type CreatePartRequest = z.infer<typeof CreatePartRequest>;
 
-export const CreatePartRequest = z.object({ name: z.string() });
+export const CreatePartRequest = z.object({
+  name: z.string(),
+  partType: z.string(),
+  point: z.number(),
+  multiplier: z.number(),
+  active: z.boolean(),
+});
 
 export type UpdatePartRequest = z.infer<typeof UpdatePartRequest>;
 
-export const UpdatePartRequest = CreatePartRequest;
+export const UpdatePartRequest = z.object({
+  name: z.string(),
+  point: z.number(),
+  multiplier: z.number(),
+  active: z.boolean(),
+});

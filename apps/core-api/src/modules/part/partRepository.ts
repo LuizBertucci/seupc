@@ -45,7 +45,7 @@ export const partRepository = {
   },
   updatePart: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw(
-      'UPDATE parts SET name = ?, updated_at =?, point =?, multiplier =?, active =? WHERE id = ? RETURNING *',
+      'UPDATE parts SET name = ?, updated_at =?, point =?, multiplier =?, active =? WHERE id =? RETURNING *',
       [part.name, part.updatedAt, part.point, part.multiplier, part.active, part.id]
     );
 
