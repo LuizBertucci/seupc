@@ -18,6 +18,17 @@ interface PartSchema {
   updatedAt: Date;
 }
 
+export interface PartRowSchema {
+  id: string;
+  part_type: string;
+  point: number;
+  name: string;
+  multiplier: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export const GetPartByIdRequest = z.object({
   params: z.object({ id: commonValidations.id }),
 });
