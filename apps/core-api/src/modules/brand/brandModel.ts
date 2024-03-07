@@ -29,7 +29,7 @@ export const GetBrandByIdResponse = z.object({
 
 export type CreateBrandRequest = z.infer<typeof CreateBrandRequest>;
 
-export const CreateBrandRequest = z.object({ name: z.string(), status: z.string() });
+export const CreateBrandRequest = z.object({ name: z.string() });
 
 export type UpdateBrandRequest = z.infer<typeof CreateBrandRequest>;
 

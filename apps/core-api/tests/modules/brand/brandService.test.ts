@@ -19,7 +19,6 @@ describe('brandService', () => {
     brand = {
       id: randomUUID(),
       name: 'Name',
-      status: 'STATUS',
       createdAt: new Date('2019-12-31'),
       updatedAt: new Date(),
     };
@@ -118,7 +117,7 @@ describe('brandService', () => {
     });
 
     it('update a brand', async () => {
-      const newValues = { name: 'Name 2', status: 'STATUS 2' };
+      const newValues = { name: 'Name 2' };
       const updateBrand = { ...brand, ...newValues, updatedAt: new Date() };
       jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(brand);
       jest.spyOn(brandRepository, 'updateBrand').mockResolvedValue(brand);
@@ -149,7 +148,7 @@ describe('brandService', () => {
     });
 
     it('create a brand', async () => {
-      const createValues = { name: brand.name, status: brand.status };
+      const createValues = { name: brand.name };
       jest.spyOn(brandRepository, 'createBrand').mockResolvedValue(brand);
 
       expect(await brandService.createBrand(createValues)).toEqual({
