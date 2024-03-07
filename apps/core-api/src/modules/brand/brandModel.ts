@@ -23,7 +23,6 @@ export type GetBrandByIdResponse = z.infer<typeof GetBrandByIdResponse>;
 export const GetBrandByIdResponse = z.object({
   id: z.string().uuid(),
   name: z.string(),
-  status: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

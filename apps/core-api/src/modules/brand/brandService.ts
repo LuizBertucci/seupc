@@ -9,7 +9,6 @@ import { Brand, CreateBrandRequest, GetBrandByIdResponse, UpdateBrandRequest } f
 const toDTO = (brand: Brand): GetBrandByIdResponse => ({
   id: brand.id,
   name: brand.name,
-  status: brand.status,
   createdAt: brand.createdAt,
   updatedAt: brand.updatedAt,
 });
@@ -54,7 +53,6 @@ export const brandService = {
       const brand = await brandRepository.createBrand({
         id: uuidv4(),
         name: request.name,
-        status: request.status,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -74,7 +72,6 @@ export const brandService = {
       }
 
       brand.name = request.name;
-      brand.status = request.status;
       brand.updatedAt = new Date();
 
       await brandRepository.updateBrand(brand);
