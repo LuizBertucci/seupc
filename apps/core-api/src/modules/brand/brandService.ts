@@ -80,6 +80,16 @@ export const brandService = {
         return new ServiceResponse(ResponseStatus.Failed, 'Nenhuma brand encontrada', null, StatusCodes.NOT_FOUND);
       }
 
+      const brandByName = await brandRepository.findByNameAsync(request.name);
+      if (brandByName && brandByName.id !== brand.id) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          `Nome ${request.name} já é utilizado por outra brand`,
+          null,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
       brand.name = request.name;
       brand.updatedAt = new Date();
 

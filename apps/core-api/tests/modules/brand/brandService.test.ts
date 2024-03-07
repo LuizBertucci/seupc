@@ -3,6 +3,7 @@ import { brandService } from '@modules/brand/brandService';
 import { Brand, CreateBrandRequest, UpdateBrandRequest } from '@modules/brand/brandModel';
 import { StatusCodes } from 'http-status-codes';
 import { randomUUID } from 'crypto';
+import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 
 jest.mock('@modules/brand/brandRepository');
 jest.mock('@src/index');
@@ -18,7 +19,7 @@ describe('brandService', () => {
 
     brand = {
       id: randomUUID(),
-      name: 'Name',
+      name: 'Lenova',
       createdAt: new Date('2019-12-31'),
       updatedAt: new Date(),
     };
@@ -105,6 +106,22 @@ describe('brandService', () => {
   });
 
   describe('updateBrand', () => {
+    it('handles errors for duplicate name', async () => {
+      const request: UpdateBrandRequest = { name: 'Lenova & Cmp' };
+
+      jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(brand);
+      jest.spyOn(brandRepository, 'findByNameAsync').mockResolvedValue({ id: randomUUID() } as Brand);
+
+      expect(await brandService.updateBrand(brand.id, request)).toEqual(
+        new ServiceResponse(
+          ResponseStatus.Failed,
+          `Nome ${request.name} já é utilizado por outra brand`,
+          null,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+    });
+
     it('handles errors for updateBrand', async () => {
       jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(null);
 
@@ -116,11 +133,12 @@ describe('brandService', () => {
       });
     });
 
-    it('update a brand', async () => {
-      const newValues = { name: 'Name 2' };
+    it.each([{ findByNameAsync: null }, { findByNameAsync: brand }])('update a brand', async ({ findByNameAsync }) => {
+      const newValues = { name: 'Lenova & Co.' };
       const updateBrand = { ...brand, ...newValues, updatedAt: new Date() };
       jest.spyOn(brandRepository, 'findByIdAsync').mockResolvedValue(brand);
       jest.spyOn(brandRepository, 'updateBrand').mockResolvedValue(brand);
+      jest.spyOn(brandRepository, 'findByNameAsync').mockResolvedValue(findByNameAsync);
 
       expect(await brandService.updateBrand(brand.id, newValues)).toEqual({
         message: 'Brand alterada',
@@ -128,6 +146,7 @@ describe('brandService', () => {
         statusCode: StatusCodes.OK,
         success: true,
       });
+      expect(brandRepository.findByNameAsync).toHaveBeenCalledWith(newValues.name);
       expect(brandRepository.findByIdAsync).toHaveBeenCalledTimes(1);
       expect(brandRepository.findByIdAsync).toHaveBeenCalledWith(brand.id);
       expect(brandRepository.updateBrand).toHaveBeenCalledTimes(1);
@@ -138,6 +157,7 @@ describe('brandService', () => {
   describe('createBrand', () => {
     it('handles errors for createBrand', async () => {
       jest.spyOn(brandRepository, 'createBrand').mockRejectedValue(new Error('Database error'));
+      jest.spyOn(brandRepository, 'findByNameAsync').mockResolvedValue(null);
 
       expect(await brandService.createBrand({} as CreateBrandRequest)).toEqual({
         message: 'Erro ao criar a brand: Database error',
@@ -147,9 +167,23 @@ describe('brandService', () => {
       });
     });
 
+    it('handles errors for duplicate name', async () => {
+      const request: CreateBrandRequest = { name: 'Lenova' };
+      jest.spyOn(brandRepository, 'findByNameAsync').mockResolvedValue({} as Brand);
+      expect(await brandService.createBrand(request)).toEqual(
+        new ServiceResponse(
+          ResponseStatus.Failed,
+          `Nome ${request.name} já é utilizado por outra brand`,
+          null,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+    });
+
     it('create a brand', async () => {
       const createValues = { name: brand.name };
       jest.spyOn(brandRepository, 'createBrand').mockResolvedValue(brand);
+      jest.spyOn(brandRepository, 'findByNameAsync').mockResolvedValue(null);
 
       expect(await brandService.createBrand(createValues)).toEqual({
         message: 'Brand criada',
@@ -157,6 +191,7 @@ describe('brandService', () => {
         statusCode: StatusCodes.CREATED,
         success: true,
       });
+      expect(brandRepository.findByNameAsync).toHaveBeenCalledWith(brand.name);
       expect(brandRepository.createBrand).toHaveBeenCalledTimes(1);
       expect(brandRepository.createBrand).toHaveBeenCalledWith({
         ...createValues,

@@ -5,14 +5,14 @@ import { commonValidations } from '@common/utils/commonValidation';
 
 extendZodWithOpenApi(z);
 
-export type Brand = z.infer<typeof BrandSchema>;
+export type Brand = BrandSchema;
 
-export const BrandSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+interface BrandSchema {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export const GetBrandByIdRequest = z.object({
   params: z.object({ id: commonValidations.id }),

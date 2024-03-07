@@ -5,14 +5,14 @@ import { commonValidations } from '@common/utils/commonValidation';
 
 extendZodWithOpenApi(z);
 
-export type Notebook = z.infer<typeof NotebookSchema>;
+export type Notebook = NotebookSchema;
 
-export const NotebookSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+interface NotebookSchema {
+  id: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 // Input Validation for 'GET notebook/:id' endpoint
 export const GetNotebookByIdRequest = z.object({
