@@ -6,8 +6,6 @@ export async function up(knex: Knex): Promise<void> {
     table.string('part_type', 255).notNullable();
     table.float('point').defaultTo(1.0).notNullable();
     table.string('name', 255).notNullable();
-    table.float('multiplier').notNullable().defaultTo(1.0);
-    table.boolean('active').notNullable().defaultTo(true);
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });

@@ -21,8 +21,6 @@ describe('partService', () => {
       id: randomUUID(),
       name: 'SSD 1GB',
       partType: 'SSD',
-      active: true,
-      multiplier: 1,
       point: 1,
       createdAt: new Date('2019-12-31'),
       updatedAt: new Date(),
@@ -111,7 +109,7 @@ describe('partService', () => {
 
   describe('updatePart', () => {
     it('handles errors for duplicate name', async () => {
-      const request: UpdatePartRequest = { name: 'HD 1GB', active: false, point: 0.5, multiplier: 0.5 };
+      const request: UpdatePartRequest = { name: 'HD 1GB', point: 0.5 };
 
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({ id: randomUUID() } as Part);
@@ -138,7 +136,7 @@ describe('partService', () => {
     });
 
     it.each([{ findByNameAsync: null }, { findByNameAsync: part }])('update a Part', async ({ findByNameAsync }) => {
-      const newValues: UpdatePartRequest = { name: 'HD 1GB', active: false, point: 0.5, multiplier: 0.5 };
+      const newValues: UpdatePartRequest = { name: 'HD 1GB',point: 0.5 };
       const updatePart = { ...part, ...newValues, updatedAt: new Date() };
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'updatePart').mockResolvedValue(part);
@@ -172,7 +170,7 @@ describe('partService', () => {
     });
 
     it('handles errors for duplicate name', async () => {
-      const request: CreatePartRequest = { name: 'HD 1GB', active: false, point: 0.5, multiplier: 0.5, partType: 'HD' };
+      const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: 'HD' };
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({} as Part);
       expect(await partService.createPart(request)).toEqual(
         new ServiceResponse(
@@ -187,9 +185,7 @@ describe('partService', () => {
     it('create a Part', async () => {
       const createValues: CreatePartRequest = {
         name: part.name,
-        active: part.active,
         point: part.point,
-        multiplier: part.multiplier,
         partType: part.partType,
       };
       jest.spyOn(partRepository, 'createPart').mockResolvedValue(part);

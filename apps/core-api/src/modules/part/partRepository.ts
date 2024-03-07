@@ -8,8 +8,6 @@ const toModel = (row: PartRowSchema): Part => ({
   updatedAt: new Date(row.updated_at),
   partType: row.part_type,
   point: row.point,
-  multiplier: row.multiplier,
-  active: row.active,
 });
 
 export const partRepository = {
@@ -37,16 +35,16 @@ export const partRepository = {
   },
   createPart: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw(
-      'INSERT INTO parts (id, name, created_at, updated_at, part_type, point, multiplier, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *',
-      [part.id, part.name, part.createdAt, part.updatedAt, part.partType, part.point, part.multiplier, part.active]
+      'INSERT INTO parts (id, name, created_at, updated_at, part_type, point, multiplier, active) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
+      [part.id, part.name, part.createdAt, part.updatedAt, part.partType, part.point]
     );
 
     return toModel(rows);
   },
   updatePart: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw(
-      'UPDATE parts SET name = ?, updated_at =?, point =?, multiplier =?, active =? WHERE id =? RETURNING *',
-      [part.name, part.updatedAt, part.point, part.multiplier, part.active, part.id]
+      'UPDATE parts SET name = ?, updated_at =?, point =? WHERE id =? RETURNING *',
+      [part.name, part.updatedAt, part.point, part.id]
     );
 
     return toModel(rows);

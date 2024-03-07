@@ -12,8 +12,6 @@ const toDTO = (part: Part): GetPartByIdResponse => ({
   partType: part.partType,
   point: part.point,
   name: part.name,
-  multiplier: part.multiplier,
-  active: part.active,
   createdAt: part.createdAt,
   updatedAt: part.updatedAt,
 });
@@ -65,8 +63,6 @@ export const partService = {
       }
 
       const part = await partRepository.createPart({
-        active: request.active,
-        multiplier: request.multiplier,
         point: request.point,
         id: uuidv4(),
         name: request.name,
@@ -100,8 +96,6 @@ export const partService = {
       }
 
       part.name = request.name;
-      part.active = request.active;
-      part.multiplier = request.multiplier;
       part.point = request.point;
       part.updatedAt = new Date();
 
