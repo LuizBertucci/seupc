@@ -4,7 +4,6 @@ import { Brand } from '@modules/brand/brandModel';
 const toModel = (row: { id: string; name: string; status: string; created_at: string; updated_at: string }): Brand => ({
   id: row.id,
   name: row.name,
-  status: row.status,
   createdAt: new Date(row.created_at),
   updatedAt: new Date(row.updated_at),
 });
@@ -26,16 +25,16 @@ export const brandRepository = {
   },
   createBrand: async (brand: Brand): Promise<Brand> => {
     const { rows } = await knex.raw(
-      'INSERT INTO brands (id, name, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING *',
-      [brand.id, brand.name, brand.status.toUpperCase(), brand.createdAt, brand.updatedAt]
+      'INSERT INTO brands (id, name, created_at, updated_at) VALUES (?,  ?, ?, ?) RETURNING *',
+      [brand.id, brand.name, brand.createdAt, brand.updatedAt]
     );
 
     return toModel(rows);
   },
   updateBrand: async (brand: Brand): Promise<Brand> => {
     const { rows } = await knex.raw(
-      'UPDATE brands SET id = ?, name = ?, status = ?, created_at = ?, updated_at =? WHERE id = ? RETURNING *',
-      [brand.id, brand.name, brand.status.toUpperCase(), brand.createdAt, brand.updatedAt, brand.id]
+      'UPDATE brands SET name = ?, updated_at =? WHERE id = ? RETURNING *',
+      [brand.name, brand.updatedAt, brand.id]
     );
 
     return toModel(rows);

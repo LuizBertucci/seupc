@@ -10,7 +10,6 @@ export type Brand = z.infer<typeof BrandSchema>;
 export const BrandSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
-  status: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
