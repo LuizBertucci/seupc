@@ -15,6 +15,7 @@ import { notebookRouter } from '@modules/notebook/notebookRouter';
 import { brandRouter } from '@modules/brand/brandRouter';
 import compression from 'compression';
 import { compressionMiddleware } from '@common/middleware/compression';
+import { partRouter } from '@modules/part/partRouter';
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -38,6 +39,7 @@ app.use(requestLogger());
 app.use('/brands', brandRouter);
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
+app.use('/parts', partRouter);
 
 // Swagger UI
 app.use(openAPIRouter);
