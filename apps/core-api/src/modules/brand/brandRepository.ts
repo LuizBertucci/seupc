@@ -9,6 +9,14 @@ const toModel = (row: { id: string; name: string; status: string; created_at: st
 });
 
 export const brandRepository = {
+  findByNameAsync: async (name: string): Promise<Brand | null> => {
+    const { rows } = await knex.raw('SELECT b.* FROM brands b WHERE b.name ILIKE ?', [name]);
+
+    if (rows.length === 0) {
+      return null;
+    }
+    return toModel(rows[0]);
+  },
   findAllAsync: async (): Promise<Brand[]> => {
     const { rows } = await knex.raw('SELECT b.* FROM brands b');
 
@@ -32,10 +40,11 @@ export const brandRepository = {
     return toModel(rows);
   },
   updateBrand: async (brand: Brand): Promise<Brand> => {
-    const { rows } = await knex.raw(
-      'UPDATE brands SET name = ?, updated_at =? WHERE id = ? RETURNING *',
-      [brand.name, brand.updatedAt, brand.id]
-    );
+    const { rows } = await knex.raw('UPDATE brands SET name = ?, updated_at =? WHERE id = ? RETURNING *', [
+      brand.name,
+      brand.updatedAt,
+      brand.id,
+    ]);
 
     return toModel(rows);
   },
