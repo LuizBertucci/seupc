@@ -50,6 +50,15 @@ export const brandService = {
   },
   createBrand: async (request: CreateBrandRequest): Promise<ServiceResponse<string | null>> => {
     try {
+      if (await brandRepository.findByNameAsync(request.name)) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          `Nome ${request.name} já é utilizado por outra brand`,
+          null,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
       const brand = await brandRepository.createBrand({
         id: uuidv4(),
         name: request.name,
