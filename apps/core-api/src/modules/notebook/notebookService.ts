@@ -18,11 +18,6 @@ export const notebookService = {
   findAll: async (): Promise<ServiceResponse<GetNotebookByIdResponse[] | null>> => {
     try {
       const notebooks = await notebookRepository.findAllAsync();
-
-      if (!notebooks) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nenhum notebook encontrado', null, StatusCodes.NOT_FOUND);
-      }
-
       return new ServiceResponse<GetNotebookByIdResponse[]>(
         ResponseStatus.Success,
         'Notebooks encontrados',
