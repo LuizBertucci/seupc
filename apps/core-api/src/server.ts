@@ -9,7 +9,7 @@ import { openAPIRouter } from '@api-docs/openAPIRouter';
 import errorHandler from '@common/middleware/errorHandler';
 import rateLimiter from '@common/middleware/rateLimiter';
 import requestLogger from '@common/middleware/requestLogger';
-import { getCorsOrigin } from '@common/utils/envConfig';
+import { getCorsOrigin, getNodeEnv } from '@common/utils/envConfig';
 import { healthCheckRouter } from '@modules/healthCheck/healthCheckRouter';
 import { notebookRouter } from '@modules/notebook/notebookRouter';
 import compression from 'compression';
@@ -32,7 +32,9 @@ app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
 
 // Request logging
-app.use(requestLogger());
+if (getNodeEnv() !== 'test') {
+  app.use(requestLogger());
+}
 
 // Routes
 app.use('/health-check', healthCheckRouter);

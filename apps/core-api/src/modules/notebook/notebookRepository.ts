@@ -1,5 +1,5 @@
 import { Notebook, NotebookRowSchema } from '@modules/notebook/notebookModel';
-import knex from '../../index';
+import knex from '@src/index';
 
 const toModel = (row: NotebookRowSchema): Notebook => ({
   id: row.id,

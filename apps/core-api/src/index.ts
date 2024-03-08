@@ -7,7 +7,7 @@ const config = require('./knexfile.ts');
 
 export default knex(config.development);
 
-const server = app.listen(port, () => {
+const server = app?.listen(port, () => {
   logger.info(`Server listening on port ${port}`);
 });
 

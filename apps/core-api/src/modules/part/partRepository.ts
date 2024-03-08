@@ -1,4 +1,4 @@
-import knex from '../../index';
+import knex from '@src/index';
 import { Part, PartRowSchema } from '@modules/part/partModel';
 
 const toModel = (row: PartRowSchema): Part => ({
