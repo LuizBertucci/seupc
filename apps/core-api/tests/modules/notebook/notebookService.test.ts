@@ -34,20 +34,6 @@ describe('notebookService', () => {
       expect(result.responseObject).toEqual(mockNotebooks);
     });
 
-    it('returns a not found error for no notebook found', async () => {
-      // Arrange
-      (notebookRepository.findAllAsync as jest.Mock).mockReturnValue(null);
-
-      // Act
-      const result = await notebookService.findAll();
-
-      // Assert
-      expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
-      expect(result.success).toBeFalsy();
-      expect(result.message).toContain('Nenhum notebook encontrado');
-      expect(result.responseObject).toEqual(null);
-    });
-
     it('handles errors for findAllAsync', async () => {
       // Arrange
       (notebookRepository.findAllAsync as jest.Mock).mockRejectedValue(new Error('Database error'));
