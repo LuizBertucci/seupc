@@ -53,12 +53,12 @@ export type CreatePartRequest = z.infer<typeof CreatePartRequest>;
 export const CreatePartRequest = z.object({
   name: z.string(),
   partType: z.nativeEnum(PartType),
-  point: z.number().min(0),
+  point: z.number().gt(0),
 });
 
 export type UpdatePartRequest = z.infer<typeof UpdatePartRequest>;
 
 export const UpdatePartRequest = z.object({
   name: z.string(),
-  point: z.number().min(0),
+  point: z.number().gt(0),
 });
