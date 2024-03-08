@@ -12,7 +12,6 @@ import requestLogger from '@common/middleware/requestLogger';
 import { getCorsOrigin } from '@common/utils/envConfig';
 import { healthCheckRouter } from '@modules/healthCheck/healthCheckRouter';
 import { notebookRouter } from '@modules/notebook/notebookRouter';
-import { brandRouter } from '@modules/brand/brandRouter';
 import compression from 'compression';
 import { compressionMiddleware } from '@common/middleware/compression';
 import { partRouter } from '@modules/part/partRouter';
@@ -36,7 +35,6 @@ app.use(compression({ filter: compressionMiddleware }));
 app.use(requestLogger());
 
 // Routes
-app.use('/brands', brandRouter);
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
 app.use('/parts', partRouter);

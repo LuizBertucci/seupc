@@ -1,8 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { Notebook } from '@modules/notebook/notebookModel';
+import { Brand, Notebook } from '@modules/notebook/notebookModel';
 import { notebookRepository } from '@modules/notebook/notebookRepository';
 import { notebookService } from '@modules/notebook/notebookService';
+import { randomUUID } from 'crypto';
 
 jest.mock('@modules/notebook/notebookRepository');
 jest.mock('@src/index');
@@ -10,8 +11,8 @@ jest.mock('@src/server');
 
 describe('notebookService', () => {
   const mockNotebooks: Notebook[] = [
-    { id: '1', title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date() },
-    { id: '2', title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date() },
+    { id: randomUUID(), title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ACER },
+    { id: randomUUID(), title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ALIENWARE },
   ];
 
   beforeEach(() => {
