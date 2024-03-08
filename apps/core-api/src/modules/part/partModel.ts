@@ -12,7 +12,7 @@ export enum PartType {
   MEMORY = 'MEMORY',
   HD = 'HD',
   SSD = 'SSD',
-  GPU = 'GPU'
+  GPU = 'GPU',
 }
 
 interface PartSchema {
@@ -32,8 +32,6 @@ export interface PartRowSchema {
   created_at: string;
   updated_at: string;
 }
-
-
 
 export const GetPartByIdRequest = z.object({
   params: z.object({ id: commonValidations.id }),

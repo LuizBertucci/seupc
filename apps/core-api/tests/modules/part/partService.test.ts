@@ -3,7 +3,7 @@ import { partService } from '@modules/part/partService';
 import { StatusCodes } from 'http-status-codes';
 import { randomUUID } from 'crypto';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
-import { CreatePartRequest, Part, UpdatePartRequest } from '@modules/part/partModel';
+import { CreatePartRequest, Part, PartType, UpdatePartRequest } from '@modules/part/partModel';
 
 jest.mock('@modules/part/partRepository');
 jest.mock('@src/index');
@@ -20,7 +20,7 @@ describe('partService', () => {
     part = {
       id: randomUUID(),
       name: 'SSD 1GB',
-      partType: 'SSD',
+      partType: PartType.SSD,
       point: 1,
       createdAt: new Date('2019-12-31'),
       updatedAt: new Date(),
@@ -136,7 +136,7 @@ describe('partService', () => {
     });
 
     it.each([{ findByNameAsync: null }, { findByNameAsync: part }])('update a Part', async ({ findByNameAsync }) => {
-      const newValues: UpdatePartRequest = { name: 'HD 1GB',point: 0.5 };
+      const newValues: UpdatePartRequest = { name: 'HD 1GB', point: 0.5 };
       const updatePart = { ...part, ...newValues, updatedAt: new Date() };
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'updatePart').mockResolvedValue(part);
@@ -170,7 +170,7 @@ describe('partService', () => {
     });
 
     it('handles errors for duplicate name', async () => {
-      const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: 'HD' };
+      const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: PartType.HD };
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({} as Part);
       expect(await partService.createPart(request)).toEqual(
         new ServiceResponse(

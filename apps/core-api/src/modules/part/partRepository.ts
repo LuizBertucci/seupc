@@ -42,10 +42,12 @@ export const partRepository = {
     return toModel(rows);
   },
   updatePart: async (part: Part): Promise<Part> => {
-    const { rows } = await knex.raw(
-      'UPDATE parts SET name = ?, updated_at =?, point =? WHERE id =? RETURNING *',
-      [part.name, part.updatedAt, part.point, part.id]
-    );
+    const { rows } = await knex.raw('UPDATE parts SET name = ?, updated_at =?, point =? WHERE id =? RETURNING *', [
+      part.name,
+      part.updatedAt,
+      part.point,
+      part.id,
+    ]);
 
     return toModel(rows);
   },
