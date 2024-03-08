@@ -11,13 +11,13 @@ const toModel = (row: NotebookRowSchema): Notebook => ({
 
 export const notebookRepository = {
   findAllAsync: async (): Promise<Notebook[]> => {
-    const { rows } = await knex.raw('SELECT id, title, created_at, updated_at FROM notebooks');
+    const { rows } = await knex.raw('SELECT n.* FROM notebooks n');
 
     return rows.map(toModel);
   },
 
   findByIdAsync: async (id: string): Promise<Notebook | null> => {
-    const { rows } = await knex.raw('SELECT id, title, created_at, updated_at FROM notebooks WHERE id = ?', [id]);
+    const { rows } = await knex.raw('SELECT n.* FROM notebooks n WHERE n.id = ?', [id]);
 
     if (rows.length === 0) {
       return null;
