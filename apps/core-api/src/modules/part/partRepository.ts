@@ -12,7 +12,7 @@ const toModel = (row: PartRowSchema): Part => ({
 
 export const partRepository = {
   findByNameAsync: async (name: string): Promise<Part | null> => {
-    const { rows } = await knex.raw('SELECT b.* FROM parts p WHERE LOWER(p.name) = LOWER(?)', [name]);
+    const { rows } = await knex.raw('SELECT p.* FROM parts p WHERE LOWER(p.name) = LOWER(?)', [name]);
 
     if (rows.length === 0) {
       return null;
@@ -35,7 +35,7 @@ export const partRepository = {
   },
   createPart: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw(
-      'INSERT INTO parts (id, name, created_at, updated_at, part_type, point, multiplier, active) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
+      'INSERT INTO parts (id, name, created_at, updated_at, part_type, point) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
       [part.id, part.name, part.createdAt, part.updatedAt, part.partType, part.point]
     );
 
