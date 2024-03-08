@@ -8,11 +8,11 @@ extendZodWithOpenApi(z);
 export type Part = PartSchema;
 
 export enum PartType {
-  CPU = 'CPU',
-  MEMORY = 'MEMORY',
+  PROCESSOR = 'Processor',
+  RAM_MEMORY = 'Ram Memory',
   HD = 'HD',
   SSD = 'SSD',
-  GPU = 'GPU',
+  VIDEO_CARD = 'Video Card',
 }
 
 interface PartSchema {
