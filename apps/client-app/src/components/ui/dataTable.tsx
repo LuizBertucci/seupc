@@ -75,7 +75,9 @@ export function DataTable<TData, TValue>({
     <div className="w-full p-4 bg-white rounded-md hover:translate-y-[-2px] min-h-[460px] transition-all duration-150 hover:shadow-md " >
       <div className="flex flex-row w-full justify-between items-center " >
       <h1 className=" font-bold hover:translate-y-[-1px] text-gray-500 " >{title.toUpperCase()}</h1>
+      <div className="flex flex-row justify-center items-center space-x-2" >
       {rightMenu}
+      </div>
       </div>
     <div className={`rounded-md border bg-white mt-[10px] ${className} `}>
       <Table >

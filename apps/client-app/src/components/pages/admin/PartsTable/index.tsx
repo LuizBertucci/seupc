@@ -1,15 +1,12 @@
 "use client"
-import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui/dataTable";
 import { Parts } from "@/types/parts";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import OptionsTable from "./Options";
 
 
 export default function PartsTable() {
-
     const [rowSelection, setRowSelection ] = useState({})
        
     const parts: Parts[] = [
@@ -94,10 +91,7 @@ export default function PartsTable() {
   return (
     <>
 <div className="w-1/2" >
-<DataTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={parts || []} className="w-full" rightMenu={(<Button className="gap-2" size="sm" >
-  ADICIONAR
-  <FontAwesomeIcon icon={faAdd} />
-  </Button>)} />
+<DataTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={parts || []} className="w-full" rightMenu={ <OptionsTable /> } />
       </div>
     </>
   )
