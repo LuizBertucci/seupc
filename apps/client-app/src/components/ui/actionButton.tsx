@@ -1,8 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 interface ActionButtonProps {
-  icon: any;
+  icon: FontAwesomeIconProps['icon'];
   background?: string;
   iconSize?: number;
   width?: string;
@@ -19,7 +19,7 @@ export default function ActionButton({
   disabled = false, 
   ...props 
 }: ActionButtonProps) {
-  const disabledClass = disabled ? 'bg-gray-400 cursor-not-allowed' : `bg-${background}`;
+  const disabledClass = disabled ? `bg-${background} disabled:opacity-50 cursor-not-allowed` : `bg-${background}`;
 
   return (
     <button

@@ -91,7 +91,7 @@ export default function PartsTable() {
   return (
     <>
 <div className="w-1/2" >
-<DataTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={parts || []} className="w-full" rightMenu={ <OptionsTable /> } />
+<DataTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={parts || []} className="w-full" rightMenu={ <OptionsTable rowSelection={rowSelection} /> } />
       </div>
     </>
   )
