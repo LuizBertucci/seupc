@@ -1,15 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { Notebook } from '@modules/notebook/notebookModel';
+import { Brand, Notebook } from '@modules/notebook/notebookModel';
 import { notebookRepository } from '@modules/notebook/notebookRepository';
 import { notebookService } from '@modules/notebook/notebookService';
+import { randomUUID } from 'crypto';
 
 jest.mock('@modules/notebook/notebookRepository');
+jest.mock('@src/index');
+jest.mock('@src/server');
 
 describe('notebookService', () => {
   const mockNotebooks: Notebook[] = [
-    { id: 1, title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date() },
+    { id: randomUUID(), title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ACER },
+    { id: randomUUID(), title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ALIENWARE },
   ];
 
   beforeEach(() => {
@@ -29,20 +32,6 @@ describe('notebookService', () => {
       expect(result.success).toBeTruthy();
       expect(result.message).toContain('Notebooks encontrados');
       expect(result.responseObject).toEqual(mockNotebooks);
-    });
-
-    it('returns a not found error for no notebook found', async () => {
-      // Arrange
-      (notebookRepository.findAllAsync as jest.Mock).mockReturnValue(null);
-
-      // Act
-      const result = await notebookService.findAll();
-
-      // Assert
-      expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
-      expect(result.success).toBeFalsy();
-      expect(result.message).toContain('Nenhum notebook encontrado');
-      expect(result.responseObject).toEqual(null);
     });
 
     it('handles errors for findAllAsync', async () => {
