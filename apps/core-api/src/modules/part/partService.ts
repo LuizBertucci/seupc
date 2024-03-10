@@ -51,7 +51,7 @@ export const partService = {
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   },
-  createPart: async (request: CreatePartRequest): Promise<ServiceResponse<string | null>> => {
+  create: async (request: CreatePartRequest): Promise<ServiceResponse<string | null>> => {
     try {
       if (await partRepository.findByNameAsync(request.name)) {
         return new ServiceResponse(
@@ -62,7 +62,7 @@ export const partService = {
         );
       }
 
-      const part = await partRepository.createPart({
+      const part = await partRepository.create({
         point: request.point,
         id: uuidv4(),
         name: request.name,
@@ -78,7 +78,7 @@ export const partService = {
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   },
-  updatePart: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string | null>> => {
+  update: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string | null>> => {
     try {
       const part = await partRepository.findByIdAsync(id);
       if (!part) {
@@ -99,7 +99,7 @@ export const partService = {
       part.point = request.point;
       part.updatedAt = new Date();
 
-      await partRepository.updatePart(part);
+      await partRepository.update(part);
 
       return new ServiceResponse<string>(ResponseStatus.Success, 'Part alterada', part.id, StatusCodes.OK);
     } catch (ex) {
@@ -108,14 +108,14 @@ export const partService = {
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   },
-  deletePart: async (id: string): Promise<ServiceResponse<string | null>> => {
+  delete: async (id: string): Promise<ServiceResponse<string | null>> => {
     try {
       const part = await partRepository.findByIdAsync(id);
       if (!part) {
         return new ServiceResponse(ResponseStatus.Failed, 'Nenhuma part encontrada', null, StatusCodes.NOT_FOUND);
       }
 
-      await partRepository.deletePart(id);
+      await partRepository.delete(id);
 
       return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK);
     } catch (ex) {

@@ -26,7 +26,7 @@ export const notebookRepository = {
     return toModel(rows[0]);
   },
 
-  createNotebook: async (notebook: Notebook): Promise<Notebook> => {
+  create: async (notebook: Notebook): Promise<Notebook> => {
     const { rows } = await knex.raw(
       'INSERT INTO notebooks (id, title, created_at, updated_at, brand) VALUES (?, ?, ?, ?, ?) RETURNING *',
       [notebook.id, notebook.title, notebook.createdAt, notebook.updatedAt, notebook.brand]

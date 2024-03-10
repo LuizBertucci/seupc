@@ -15,6 +15,7 @@ import { notebookRouter } from '@modules/notebook/notebookRouter';
 import compression from 'compression';
 import { compressionMiddleware } from '@common/middleware/compression';
 import { partRouter } from '@modules/part/partRouter';
+import { tagRouter } from '@modules/tag/tagRouter';
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -40,6 +41,7 @@ if (getNodeEnv() !== 'test') {
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
 app.use('/parts', partRouter);
+app.use('/tags', tagRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

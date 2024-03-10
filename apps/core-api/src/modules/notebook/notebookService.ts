@@ -51,9 +51,9 @@ export const notebookService = {
     }
   },
 
-  createNotebook: async (request: CreateNotebookRequest): Promise<ServiceResponse<string | null>> => {
+  create: async (request: CreateNotebookRequest): Promise<ServiceResponse<string | null>> => {
     try {
-      const notebook = await notebookRepository.createNotebook({
+      const notebook = await notebookRepository.create({
         id: uuidv4(),
         title: request.title,
         brand: request.brand,

@@ -57,7 +57,7 @@ export const partRouter: Router = (() => {
   });
 
   router.post('/', validateRequest(z.object({ body: CreatePartRequest })), async (req: Request, res: Response) => {
-    const serviceResponse = await partService.createPart(req.body);
+    const serviceResponse = await partService.create(req.body);
     handleServiceResponse(serviceResponse, res);
   });
 
@@ -83,7 +83,7 @@ export const partRouter: Router = (() => {
     validateRequest(GetPartByIdRequest),
     validateRequest(z.object({ body: UpdatePartRequest })),
     async (req: Request, res: Response) => {
-      const serviceResponse = await partService.updatePart(req.params.id as string, req.body);
+      const serviceResponse = await partService.update(req.params.id as string, req.body);
       handleServiceResponse(serviceResponse, res);
     }
   );
@@ -99,7 +99,7 @@ export const partRouter: Router = (() => {
   });
 
   router.delete('/:id', validateRequest(GetPartByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await partService.deletePart(req.params.id as string);
+    const serviceResponse = await partService.delete(req.params.id as string);
     handleServiceResponse(serviceResponse, res);
   });
 
