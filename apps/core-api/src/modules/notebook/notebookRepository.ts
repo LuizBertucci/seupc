@@ -15,7 +15,6 @@ export const notebookRepository = {
 
     return rows.map(toModel);
   },
-
   findByIdAsync: async (id: string): Promise<Notebook | null> => {
     const { rows } = await knex.raw('SELECT n.* FROM notebooks n WHERE n.id = ?', [id]);
 
@@ -25,7 +24,6 @@ export const notebookRepository = {
 
     return toModel(rows[0]);
   },
-
   create: async (notebook: Notebook): Promise<Notebook> => {
     const { rows } = await knex.raw(
       'INSERT INTO notebooks (id, title, created_at, updated_at, brand) VALUES (?, ?, ?, ?, ?) RETURNING *',

@@ -54,4 +54,11 @@ export const partRepository = {
   delete: async (id: string): Promise<void> => {
     await knex.raw('DELETE FROM parts p WHERE p.id = ?', [id]);
   },
+  findByIdsAsync: async (ids: string[]): Promise<Part[]> => {
+    if (!ids.length) {
+      return [];
+    }
+    const { rows } = await knex.raw('SELECT p.* FROM parts p WHERE p.id in ?', [ids]);
+    return rows.map(toModel);
+  },
 };

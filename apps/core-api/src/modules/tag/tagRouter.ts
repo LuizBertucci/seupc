@@ -7,7 +7,6 @@ import { handleServiceResponse, validateRequest } from '@common/utils/httpHandle
 import { CreateTagRequest, GetTagByIdRequest, GetTagByIdResponse, UpdateTagRequest } from '@modules/tag/tagModel';
 import { tagService } from '@modules/tag/tagService';
 
-
 export const tagRegistry = new OpenAPIRegistry();
 
 tagRegistry.register('GetTagByIdRequest', GetTagByIdRequest);
@@ -100,6 +99,27 @@ export const tagRouter: Router = (() => {
 
   router.delete('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response) => {
     const serviceResponse = await tagService.delete(req.params.id as string);
+    handleServiceResponse(serviceResponse, res);
+  });
+
+  tagRegistry.registerPath({
+    method: 'post',
+    path: '/tags/add-parts',
+    tags: ['Tag', 'Part'],
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: UpdateTagRequest,
+          },
+        },
+      },
+    },
+    responses: createApiResponse(z.string(), 'Success'),
+  });
+
+  router.delete('/add-parts', validateRequest(GetTagByIdRequest), async (req: Request, res: Response) => {
+    const serviceResponse = await tagService.addParts(req.body);
     handleServiceResponse(serviceResponse, res);
   });
 

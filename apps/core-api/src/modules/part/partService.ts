@@ -124,4 +124,19 @@ export const partService = {
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   },
+  findByIds: async (ids: string[]): Promise<ServiceResponse<GetPartByIdResponse[] | null>> => {
+    try {
+      const parts = await partRepository.findByIdsAsync(ids);
+      return new ServiceResponse<GetPartByIdResponse[]>(
+        ResponseStatus.Success,
+        'Parts encontradas',
+        parts.map(toDTO),
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Erro ao encontrar as parts: $${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  },
 };

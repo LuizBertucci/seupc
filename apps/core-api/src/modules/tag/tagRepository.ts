@@ -1,7 +1,6 @@
 import knex from '@src/index';
 import { Tag, TagRowSchema } from '@modules/tag/tagModel';
 
-
 const toModel = (row: TagRowSchema): Tag => ({
   id: row.id,
   name: row.name,
@@ -44,5 +43,19 @@ export const tagRepository = {
   },
   delete: async (id: string): Promise<void> => {
     await knex.raw('DELETE FROM tags t WHERE t.id = ?', [id]);
+  },
+  addParts: async (data: { tagId: string; partId: string }[]): Promise<void> => {
+    if (!data.length) {
+      return;
+    }
+    const values = data.map(() => `(:tagId, :partId)`).join(', ');
+    await knex.raw(`INSERT INTO tag_parts (tagId, partId) VALUES ${values}`, data);
+  },
+  findByIdsAsync: async (ids: string[]): Promise<Tag[]> => {
+    if (!ids.length) {
+      return [];
+    }
+    const { rows } = await knex.raw('SELECT t.* FROM tags t WHERE t.id in ?', [ids]);
+    return rows.map(toModel);
   },
 };

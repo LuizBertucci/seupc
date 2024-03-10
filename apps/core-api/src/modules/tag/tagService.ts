@@ -5,7 +5,7 @@ import { logger } from '@src/server';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTagRequest, GetTagByIdResponse, Tag, UpdateTagRequest } from '@modules/tag/tagModel';
 import { tagRepository } from '@modules/tag/tagRepository';
-
+import { partService } from '@modules/part/partService';
 
 const toDTO = (tag: Tag): GetTagByIdResponse => ({
   id: tag.id,
@@ -52,7 +52,6 @@ export const tagService = {
   },
   create: async (request: CreateTagRequest): Promise<ServiceResponse<string | null>> => {
     try {
-
       const tag = await tagRepository.create({
         id: uuidv4(),
         name: request.name,
@@ -99,6 +98,31 @@ export const tagService = {
       return new ServiceResponse<string>(ResponseStatus.Success, 'Tag deletada', tag.id, StatusCodes.OK);
     } catch (ex) {
       const errorMessage = `Erro ao alterar a tag: ${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  },
+  addParts: async (data: { tagId: string; partId: string }[]): Promise<ServiceResponse<string | null>> => {
+    try {
+      const tags = await tagRepository.findByIdsAsync(data.map(({ tagId }) => tagId));
+      if (tags.length !== data.length) {
+        return new ServiceResponse(ResponseStatus.Failed, 'Nem todas as tag existem', null, StatusCodes.NOT_FOUND);
+      }
+      const parts = await partService.findByIds(data.map(({ partId }) => partId));
+      if (parts.responseObject?.length !== data.length) {
+        return new ServiceResponse(ResponseStatus.Failed, 'Nem todas as parts existem', null, StatusCodes.NOT_FOUND);
+      }
+
+      await tagRepository.addParts(data);
+
+      return new ServiceResponse<string>(
+        ResponseStatus.Success,
+        'Tags associadas a parts',
+        data.toString(),
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Erro ao associar tags: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
