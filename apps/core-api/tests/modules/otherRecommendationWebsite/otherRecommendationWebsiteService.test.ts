@@ -2,11 +2,16 @@ import { StatusCodes } from 'http-status-codes';
 import { randomUUID } from 'crypto';
 import {
   CreateOtherRecommendationWebsiteRequest,
+  ORWName,
   OtherRecommendationWebsite,
   UpdateOtherRecommendationWebsiteRequest,
 } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
-import { otherRecommendationWebsiteRepository as repository } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
-import { otherRecommendationWebsiteService as service } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
+import {
+  otherRecommendationWebsiteRepository as repository,
+} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
+import {
+  otherRecommendationWebsiteService as service,
+} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
 import { notebookService } from '@modules/notebook/notebookService';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 
@@ -25,7 +30,7 @@ describe('otherRecommendationWebsiteService', () => {
 
     website = {
       id: randomUUID(),
-      name: 'Zoom',
+      name: ORWName.ZOOM,
       link: 'https://zoom.com.br',
       notebookId: randomUUID(),
       createdAt: new Date('2019-12-31'),
@@ -126,7 +131,7 @@ describe('otherRecommendationWebsiteService', () => {
     });
 
     it('update an ORW', async () => {
-      const newValues: UpdateOtherRecommendationWebsiteRequest = { name: 'Zoom V2', link: 'https://zoomv2.com.br' };
+      const newValues: UpdateOtherRecommendationWebsiteRequest = { name: ORWName.BUSCAPE, link: 'https://buscape.com.br' };
       const update = { ...website, ...newValues, updatedAt: new Date() };
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(website);
       jest.spyOn(repository, 'update').mockResolvedValue(website);
@@ -159,7 +164,7 @@ describe('otherRecommendationWebsiteService', () => {
 
     it('create an ORW', async () => {
       const createValues: CreateOtherRecommendationWebsiteRequest = {
-        name: 'Buscapé',
+        name: ORWName.BUSCAPE,
         link: 'https://buscape.com.br',
         notebookId: randomUUID(),
       };

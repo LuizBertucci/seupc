@@ -5,12 +5,23 @@ import { commonValidations } from '@common/utils/commonValidation';
 
 extendZodWithOpenApi(z);
 
+export enum ORWName {
+  ZOOM = 'Zoom',
+  BUSCAPE = 'BuscaPé',
+  TEC_MUNDO = 'TecMundo',
+  JA_COTEI = 'JáCotei',
+  BONDFARO = 'Bondfaro',
+  CLIQUE_E_CONOMIZE = 'Clique Economize',
+  PROMOBIT = 'Promobit',
+  GOOGLE_SHOPPING = 'Google Shopping',
+}
+
 export type OtherRecommendationWebsite = OtherRecommendationWebsiteSchema;
 
 interface OtherRecommendationWebsiteSchema {
   id: string;
   notebookId: string;
-  name: string;
+  name: ORWName;
   link: string;
   createdAt: Date;
   updatedAt: Date;
@@ -19,7 +30,7 @@ interface OtherRecommendationWebsiteSchema {
 export interface OtherRecommendationWebsiteRowSchema {
   id: string;
   notebook_id: string;
-  name: string;
+  name: ORWName;
   link: string;
   created_at: string;
   updated_at: string;
@@ -34,7 +45,7 @@ export type GetOtherRecommendationWebsiteByIdResponse = z.infer<typeof GetOtherR
 export const GetOtherRecommendationWebsiteByIdResponse = z.object({
   id: z.string().uuid(),
   link: z.string(),
-  name: z.string(),
+  name: z.nativeEnum(ORWName),
   notebookId: z.string().uuid(),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -43,7 +54,7 @@ export const GetOtherRecommendationWebsiteByIdResponse = z.object({
 export type CreateOtherRecommendationWebsiteRequest = z.infer<typeof CreateOtherRecommendationWebsiteRequest>;
 
 export const CreateOtherRecommendationWebsiteRequest = z.object({
-  name: z.string(),
+  name: z.nativeEnum(ORWName),
   link: z.string(),
   notebookId: z.string().uuid(),
 });
@@ -51,6 +62,6 @@ export const CreateOtherRecommendationWebsiteRequest = z.object({
 export type UpdateOtherRecommendationWebsiteRequest = z.infer<typeof UpdateOtherRecommendationWebsiteRequest>;
 
 export const UpdateOtherRecommendationWebsiteRequest = z.object({
-  name: z.string(),
+  name: z.nativeEnum(ORWName),
   link: z.string(),
 });
