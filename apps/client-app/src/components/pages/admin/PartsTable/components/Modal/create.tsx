@@ -4,27 +4,28 @@ import { Input } from '@/components/ui/input'
 import { SelectSingle } from '@/components/ui/select'
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useForm, SubmitHandler } from "react-hook-form"
-import { SelectOption } from "@/types/parts"
+import { Parts, SelectOption } from "@/types/parts"
+import { addParts, editParts } from '../../hooks/request'
+import { useToast } from '@/components/ui/use-toast'
 
-type FormParts = {
-    nome: string,
-    tipo: string,
-    pontos: number
-  }
+export default function CreatePart({ edit, editValues, editIndex }: { edit?: boolean, editValues?: Parts, editIndex?: number }) {
+  const { toast } = useToast()
 
-export default function CreatePart({ edit }: { edit?: boolean }) {
     const {
         register,
         handleSubmit,
         control,
         formState: { errors },
-      } = useForm<FormParts>()
+      } = useForm<Parts>({ defaultValues: edit ? editValues : {}})
 
-      const onSubmit: SubmitHandler<FormParts> = (data) => {
-        console.log(data)
+      const onSubmit: SubmitHandler<Parts> = async (data) => {
+        console.log(errors)
+      //  edit ? await editParts(data, editIndex) : await addParts(data)
+      
+      //   toast({ title: `Parte ${edit ? "editada" : "criada"} com sucesso!`})
       } 
 
-      const options: Array<SelectOption> = [{ label: "RAM", value: "ram" }, { label: "GPU", value: "gpu" }]
+      const options: Array<SelectOption> = [{ label: "HD", value: "HD" }, { label: "SSD", value: "SSD" }, { label: "Processador", value: "PROCESSADOR" }, { label: "Placa Gráfica", value: "PLACA GRÁFICA" }]
 
   return (
     <>
@@ -32,13 +33,14 @@ export default function CreatePart({ edit }: { edit?: boolean }) {
         <h2>{edit ? "Editar" : "Criar"} Parte</h2>
     </DialogHeader>
     <form className='flex flex-col space-y-4 justify-center items-center w-full ' onSubmit={handleSubmit(onSubmit)} >
-    <Input {...register("nome")} placeholder='Nome da parte' />
-    
+
+    <Input formError={errors?.nome?.message} {...register("nome", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da parte' />
+
     <SelectSingle options={options} formControl={control} formName="tipo" placeholder={"Tipo da Parte"}  />  
 
-    <Input {...register("pontos", { pattern: /^[0-9]+$/ })} placeholder='Pontos' />
+    <Input type='number' formError={errors?.pontos?.message} {...register("pontos", { pattern: /^[0-9]+$/, required: "Pontos são obrigatórios", maxLength: { value: 6, message: "pontuação máxima ultrapassada" }  })} placeholder='Pontos' />
 
-    <Button type='submit' className='self-end' closeModal={true} icon={edit ? faSave : faAdd} >{edit ? "Salvar" : "Criar"}</Button>
+    <Button type='submit' className='self-end' closeModal={true} errors={errors} icon={edit ? faSave : faAdd} >{edit ? "Salvar" : "Criar"}</Button>
     </form>
     </>
   )

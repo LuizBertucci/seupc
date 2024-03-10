@@ -1,30 +1,8 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
 
-type Part = {
-    tipo: string;
-    nome: string;
-    pontos: number;
-  };
-  
-  type Column = {
-    accessorKey: string;
-    header: string;
-  };
-  
-interface PartStoreState {
-    dados: {
-      dataTable: Part[];
-      columns: Column[];
-    };
-    loaders: object
-    dispatch: {
-        setDataTable: (payload: Part[]) => void;
-    }
-  }
-
   //@ts-ignore
-export const usePartStore = create<PartStoreState>(immer(set => ({
+export const usePartStore = create(immer(set => ({
 dados: {
     dataTable: [],
     columns: [
@@ -44,7 +22,13 @@ dados: {
 },
 loaders: {},
 dispatch: {
-    setDataTable: (payload: Part[]) => set(state => {
+    setDataTable: (payload) => set(state => {
+        state.dados.dataTable = payload
+    }),
+    addDataTable: (payload) => set(state => {
+        state.dados.dataTable = [...state.dados.dataTable, payload]
+    }),
+    editDataTable: (payload) => set(state => {
         state.dados.dataTable = payload
     }),
 }

@@ -41,17 +41,18 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean,
   icon?: FontAwesomeIconProps['icon'],
-  closeModal?: boolean
+  closeModal?: boolean, 
+  errors?: object
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, icon, children, closeModal, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, icon, children, closeModal, errors, ...props }, ref) => {
     const { setIsOpen } = React.useContext(ModalContext);
 
     const Comp = asChild ? Slot : "button";
     
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (closeModal) {
+      if (closeModal && !errors) {
         setIsOpen(false);
       }
       props.onClick?.(e);
