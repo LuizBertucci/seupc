@@ -1,14 +1,26 @@
 "use client"
 import { DataTable } from "@/components/ui/dataTable";
-import { Parts } from "@/types/parts";
-import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
-import OptionsTable from "./Options";
+import { useEffect, useState } from "react";
+import OptionsTable from "./components/Options";
 import { usePartStore } from "./storage";
+import { getParts } from "./hooks/request";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function PartsTable() {
   const { dataTable, columns } = usePartStore((state) => state.dados)
-    const [rowSelection, setRowSelection ] = useState({})
+  const [rowSelection, setRowSelection ] = useState({})
+  const { toast } = useToast()
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+useEffect(() => {
+
+    const getData = async () => {
+     await getParts()
+     toast({ title: "Dados encontrados com sucesso!"  })
+    }
+
+    getData()
+    }, [])
 
   return (
     <>
