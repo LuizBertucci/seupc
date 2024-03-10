@@ -6,14 +6,15 @@ import CreatePart from '../Modal/create'
 import DeletePart from '../Modal/delete'
 import { usePartStore } from '../../storage'
 
-export default function OptionsTable({rowSelection}: { rowSelection: object }) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export  default function OptionsTable({rowSelection, setRowSelection}: { rowSelection: object, setRowSelection: any }) {
   const { dataTable } = usePartStore((state) => state.dados)
 
   
   return (
 <>
 
-<Modal content={<DeletePart />} >
+<Modal content={<DeletePart selected={Object.keys(rowSelection)} setRowSelection={setRowSelection} />} >
 <ActionButton icon={faTrash} disabled={Object.keys(rowSelection).length === 0} />
 </Modal>
 

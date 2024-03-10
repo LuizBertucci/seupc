@@ -106,3 +106,17 @@ export const editParts = async (value: Parts | undefined, index: number | undefi
 await editDataTable(editData)
 return true
 }
+
+
+export const deleteParts = async (values: string[]) => {
+  const { setDataTable } = usePartStore.getState().dispatch;
+  const { dataTable } = usePartStore.getState().dados;
+
+  const filterData = dataTable.filter((part: Parts, index: number) => !values.includes(index.toString()) )
+
+  // payload quando tiver endpoints
+  const payload = {}
+
+await setDataTable(filterData)
+return true
+}
