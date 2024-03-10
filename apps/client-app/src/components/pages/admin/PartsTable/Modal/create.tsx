@@ -32,11 +32,11 @@ export default function CreatePart({ edit }: { edit?: boolean }) {
         <h2>{edit ? "Editar" : "Criar"} Parte</h2>
     </DialogHeader>
     <form className='flex flex-col space-y-4 justify-center items-center w-full ' onSubmit={handleSubmit(onSubmit)} >
-    <Input {...register("nome")} />
+    <Input {...register("nome")} placeholder='Nome da parte' />
     
-    <SelectSingle options={options} formControl={control} formName="tipo" placeholder={"Tipo da Parte"} width='100%' />  
+    <SelectSingle options={options} formControl={control} formName="tipo" placeholder={"Tipo da Parte"}  />  
 
-    <Input {...register("pontos", { pattern: /^[0-9]+$/ })} />
+    <Input {...register("pontos", { pattern: /^[0-9]+$/ })} placeholder='Pontos' />
 
     <Button type='submit' className='self-end' closeModal={true} icon={edit ? faSave : faAdd} >{edit ? "Salvar" : "Criar"}</Button>
     </form>

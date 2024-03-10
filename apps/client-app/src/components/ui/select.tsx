@@ -152,27 +152,28 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const  SelectSingle = ({options, placeholder = "Selecione um valor", width, formControl, formName}: { options: Array<SelectOption>, placeholder: string, width?: string, formControl: Control<any>, formName: string  }) => {
+const  SelectSingle = ({options, placeholder = "Selecione um valor", width = "100%", formControl, formName}: { options: Array<SelectOption>, placeholder: string, width?: string, formControl: Control<any>, formName: string  }) => {
   return (
     <Controller
     name={formName}
     control={formControl}
     render={({ field }) => 
-    <FormItem className={` ${width ? `w-[${width}]` : "w-[180px]"}`}>
 <Select 
+//@ts-ignore
+className={` w-[${width}]  `}
 onValueChange={field.onChange} defaultValue={field.value} >
   <SelectTrigger >
     <SelectValue placeholder={placeholder} />
   </SelectTrigger>
-  <SelectContent>
+  <SelectContent >
     { options?.map(option => {
       return (
-        <SelectItem value={option.value}>{option.label}</SelectItem>
+        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
       )
     }) }
   </SelectContent>
 </Select>
-</FormItem>}
+}
 />
   )
 }
