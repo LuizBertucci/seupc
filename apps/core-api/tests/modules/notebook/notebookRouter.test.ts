@@ -1,10 +1,3 @@
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({
-  path: path.resolve(__dirname, '../../../.env'),
-});
-
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 

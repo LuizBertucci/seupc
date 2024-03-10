@@ -1,7 +1,6 @@
 FROM node:current-slim
 
-ENV NODE_ENV=development
-ENV DATABASE_URL="postgres://postgres:PgAdmin2024!@host.docker.internal:5432/postgresdb-seupc-dev"
+ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
