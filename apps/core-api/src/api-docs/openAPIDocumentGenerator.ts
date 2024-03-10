@@ -3,12 +3,15 @@ import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-open
 import { healthCheckRegistry } from '@modules/healthCheck/healthCheckRouter';
 import { notebookRegistry } from '@modules/notebook/notebookRouter';
 import { partRegistry } from '@modules/part/partRouter';
-import {
-  otherRecommendationWebsiteRegistry
-} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
+import { otherRecommendationWebsiteRegistry } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
 
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([healthCheckRegistry, notebookRegistry, partRegistry, otherRecommendationWebsiteRegistry]);
+  const registry = new OpenAPIRegistry([
+    healthCheckRegistry,
+    notebookRegistry,
+    partRegistry,
+    otherRecommendationWebsiteRegistry,
+  ]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({
