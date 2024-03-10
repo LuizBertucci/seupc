@@ -26,17 +26,15 @@ services:
     image: core-api:v1
     ports:
       - '8080:8080'
-    tty: true
     volumes:
-      - './apps/core-api:/app'
+      - './apps/core-api:/apps/core-api/'
     networks:
       - application
     container_name: core-api
     depends_on:
       - postgres
-    entrypoint: ['/bin/sh', '-c']
-    #environment:
-    #  - INTEGRATION_TEST_HOST_URL= http://localhost:3002
+    environment:
+      - DATABASE_URL="postgres://postgres:PgAdmin2024!@localhost:5432/postgresdb-seupc-dev"
 
   client-app:
     build:
@@ -45,13 +43,11 @@ services:
     image: client-app
     ports:
       - '3000:3000'
-    tty: true
     volumes:
-      - ./apps/client-app/:/app
+      - './apps/client-app/:/apps/client-app/'
     networks:
       - application
     container_name: client-app
-    entrypoint: ['/bin/sh', '-c']
     depends_on:
       - core-api
 
