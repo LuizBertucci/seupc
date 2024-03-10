@@ -33,8 +33,9 @@ export type GetOtherRecommendationWebsiteByIdResponse = z.infer<typeof GetOtherR
 
 export const GetOtherRecommendationWebsiteByIdResponse = z.object({
   id: z.string().uuid(),
-  link: z.number(),
+  link: z.string(),
   name: z.string(),
+  notebookId: z.string().uuid(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
