@@ -1,14 +1,16 @@
-import { getPort } from '@common/utils/envConfig';
+import { env } from '@common/utils/envConfig';
 import { app, logger } from '@src/server';
 import knex from 'knex';
 
-const port = getPort();
+const port = env.PORT;
+
 const config = require('./knexfile.ts');
 
 export default knex(config.development);
 
 const server = app?.listen(port, () => {
-  logger.info(`Server listening on port ${port}`);
+  const { NODE_ENV, HOST } = env;
+  logger.info(`Server (${NODE_ENV}) running on port http://${HOST}:${port}`);
 });
 
 const onCloseSignal = () => {
