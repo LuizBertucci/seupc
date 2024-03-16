@@ -6,12 +6,8 @@ import {
   OtherRecommendationWebsite,
   UpdateOtherRecommendationWebsiteRequest,
 } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
-import {
-  otherRecommendationWebsiteRepository as repository,
-} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
-import {
-  otherRecommendationWebsiteService as service,
-} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
+import { otherRecommendationWebsiteRepository as repository } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
+import { otherRecommendationWebsiteService as service } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
 import { notebookService } from '@modules/notebook/notebookService';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 
@@ -131,7 +127,10 @@ describe('otherRecommendationWebsiteService', () => {
     });
 
     it('update an ORW', async () => {
-      const newValues: UpdateOtherRecommendationWebsiteRequest = { name: ORWName.BUSCAPE, link: 'https://buscape.com.br' };
+      const newValues: UpdateOtherRecommendationWebsiteRequest = {
+        name: ORWName.BUSCAPE,
+        link: 'https://buscape.com.br',
+      };
       const update = { ...website, ...newValues, updatedAt: new Date() };
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(website);
       jest.spyOn(repository, 'update').mockResolvedValue(website);
