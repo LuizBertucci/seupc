@@ -4,7 +4,13 @@ import { z } from 'zod';
 
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
 import { handleServiceResponse, validateRequest } from '@common/utils/httpHandlers';
-import { CreateTagRequest, GetTagByIdRequest, GetTagByIdResponse, UpdateTagRequest } from '@modules/tag/tagModel';
+import {
+  AddPartsOnTagsRequest,
+  CreateTagRequest,
+  GetTagByIdRequest,
+  GetTagByIdResponse,
+  UpdateTagRequest,
+} from '@modules/tag/tagModel';
 import { tagService } from '@modules/tag/tagService';
 
 export const tagRegistry = new OpenAPIRegistry();
@@ -118,10 +124,14 @@ export const tagRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.delete('/add-parts', validateRequest(GetTagByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await tagService.addParts(req.body);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.post(
+    '/add-parts',
+    validateRequest(z.object({ body: AddPartsOnTagsRequest })),
+    async (req: Request, res: Response) => {
+      const serviceResponse = await tagService.addParts(req.body);
+      handleServiceResponse(serviceResponse, res);
+    }
+  );
 
   return router;
 })();

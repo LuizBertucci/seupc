@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 import { logger } from '@src/server';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateTagRequest, GetTagByIdResponse, Tag, UpdateTagRequest } from '@modules/tag/tagModel';
+import { CreateTagRequest, GetTagByIdResponse, Tag, TagPartTuple, UpdateTagRequest } from '@modules/tag/tagModel';
 import { tagRepository } from '@modules/tag/tagRepository';
 import { partService } from '@modules/part/partService';
 
@@ -102,15 +102,17 @@ export const tagService = {
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   },
-  addParts: async (data: { tagId: string; partId: string }[]): Promise<ServiceResponse<string | null>> => {
+  addParts: async (data: TagPartTuple[]): Promise<ServiceResponse<string | null>> => {
     try {
       const tags = await tagRepository.findByIdsAsync(data.map(({ tagId }) => tagId));
       if (tags.length !== data.length) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nem todas as tag existem', null, StatusCodes.NOT_FOUND);
+        return new ServiceResponse(ResponseStatus.Failed, 'Nem todas as tags existem', null, StatusCodes.NOT_FOUND);
       }
       const parts = await partService.findByIds(data.map(({ partId }) => partId));
-      if (parts.responseObject?.length !== data.length) {
+      if (parts.success && parts.responseObject?.length !== data.length) {
         return new ServiceResponse(ResponseStatus.Failed, 'Nem todas as parts existem', null, StatusCodes.NOT_FOUND);
+      } else if (!parts.success) {
+        return new ServiceResponse(ResponseStatus.Failed, parts.message, null, parts.statusCode);
       }
 
       await tagRepository.addParts(data);

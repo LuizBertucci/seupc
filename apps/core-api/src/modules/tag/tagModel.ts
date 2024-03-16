@@ -29,6 +29,11 @@ export interface TagRowSchema {
   updated_at: string;
 }
 
+export interface TagPartTuple {
+  partId: string;
+  tagId: string;
+}
+
 export const GetTagByIdRequest = z.object({
   params: z.object({ id: commonValidations.id }),
 });

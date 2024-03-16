@@ -1,5 +1,6 @@
 import knex from '@src/index';
-import { Tag, TagRowSchema } from '@modules/tag/tagModel';
+import { Tag, TagPartTuple, TagRowSchema } from '@modules/tag/tagModel';
+import { arrayBind } from '@common/utils/arrayBinding';
 
 const toModel = (row: TagRowSchema): Tag => ({
   id: row.id,
@@ -26,7 +27,7 @@ export const tagRepository = {
   },
   create: async (part: Tag): Promise<Tag> => {
     const { rows } = await knex.raw(
-      'INSERT INTO tags t (id, name, created_at, updated_at, category) VALUES (?, ?, ?, ?, ?) RETURNING t.*',
+      'INSERT INTO tags (id, name, created_at, updated_at, category) VALUES (?, ?, ?, ?, ?) RETURNING *',
       [part.id, part.name, part.createdAt, part.updatedAt, part.category]
     );
 
@@ -44,18 +45,21 @@ export const tagRepository = {
   delete: async (id: string): Promise<void> => {
     await knex.raw('DELETE FROM tags t WHERE t.id = ?', [id]);
   },
-  addParts: async (data: { tagId: string; partId: string }[]): Promise<void> => {
+  addParts: async (data: TagPartTuple[]): Promise<void> => {
     if (!data.length) {
       return;
     }
-    const values = data.map(() => `(:tagId, :partId)`).join(', ');
-    await knex.raw(`INSERT INTO tag_parts (tagId, partId) VALUES ${values}`, data);
+    const values = data.map(() => `(?, ?)`).join(', ');
+    await knex.raw(
+      `INSERT INTO tag_parts (tag_id, part_id) VALUES ${values} ON CONFLICT DO NOTHING`,
+      data.flatMap(({ tagId, partId }) => [tagId, partId])
+    );
   },
   findByIdsAsync: async (ids: string[]): Promise<Tag[]> => {
     if (!ids.length) {
       return [];
     }
-    const { rows } = await knex.raw('SELECT t.* FROM tags t WHERE t.id in ?', [ids]);
+    const { rows } = await knex.raw(`SELECT t.* FROM tags t WHERE t.id IN ${arrayBind(ids)}`, [...ids]);
     return rows.map(toModel);
   },
 };
