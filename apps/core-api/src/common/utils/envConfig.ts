@@ -1,20 +1,18 @@
-export const getPort = () => getEnvVar<number>('PORT', 'number');
-export const getNodeEnv = () => getEnvVar<string>('NODE_ENV', 'string');
-export const getCorsOrigin = () => getEnvVar<string>('CORS_ORIGIN', 'string');
+import dotenv from 'dotenv';
+import path from 'path';
 
-export function getEnvVar<T extends string | number>(key: string, type: 'string' | 'number'): T {
-  const value = process.env[key];
-  if (value == null) {
-    throw new Error(`Unknown process.env.${key}: ${value}. Is your .env file setup?`);
-  }
+var environment = process.env.NODE_ENV || 'development';
 
-  if (type === 'number') {
-    const numValue = parseInt(value);
-    if (Number.isNaN(numValue)) {
-      throw new Error(`process.env.${key} must be a number. Got ${value}`);
-    }
-    return numValue as T;
-  }
+dotenv.config({
+  path: path.join(__dirname, `../../../.docker/${environment}/.env`),
+});
 
-  return value as T;
-}
+import { cleanEnv, host, port, str } from 'envalid';
+
+export const env = cleanEnv(process.env, {
+  NODE_ENV: str({ choices: ['development', 'production', 'test'], default: 'development' }),
+  HOST: host({ default: 'localhost' }),
+  PORT: port({ default: 8080 }),
+  CORS_ORIGIN: str({ default: 'http://localhost:8080' }),
+  DATABASE_URL: str(),
+});
