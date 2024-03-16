@@ -35,12 +35,10 @@ function handleZodError(err: unknown, res: Response): void {
   }
 }
 
-function handleNotFoundError(err: unknown, res: Response){
-  if(err instanceof NotFoundError){
+function handleNotFoundError(err: unknown, res: Response) {
+  if (err instanceof NotFoundError) {
     const statusCode = StatusCodes.NOT_FOUND;
-    res
-      .status(statusCode)
-      .send(new ServiceResponse<null>(ResponseStatus.Failed, err.message, null, statusCode));
+    res.status(statusCode).send(new ServiceResponse<null>(ResponseStatus.Failed, err.message, null, statusCode));
   }
 }
 

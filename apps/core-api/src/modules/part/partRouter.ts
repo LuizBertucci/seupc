@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import express, { Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import { z } from 'zod';
 
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
@@ -22,9 +22,11 @@ export const partRouter: Router = (() => {
     responses: createApiResponse(z.array(GetPartByIdResponse), 'Success'),
   });
 
-  router.get('/', async (_req: Request, res: Response) => {
-    const serviceResponse = await partService.findAll();
-    handleServiceResponse(serviceResponse, res);
+  router.get('/', (_req: Request, res: Response, next: NextFunction): void => {
+    partService
+      .findAll()
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next);
   });
 
   partRegistry.registerPath({
@@ -35,9 +37,11 @@ export const partRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.get('/:id', validateRequest(GetPartByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await partService.findById(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
+  router.get('/:id', validateRequest(GetPartByIdRequest), (req: Request, res: Response, next: NextFunction): void => {
+    partService
+      .findById(req.params.id as string)
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next);
   });
 
   partRegistry.registerPath({
@@ -56,10 +60,16 @@ export const partRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.post('/', validateRequest(z.object({ body: CreatePartRequest })), async (req: Request, res: Response) => {
-    const serviceResponse = await partService.createPart(req.body);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.post(
+    '/',
+    validateRequest(z.object({ body: CreatePartRequest })),
+    (req: Request, res: Response, next: NextFunction): void => {
+      partService
+        .createPart(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
+    }
+  );
 
   partRegistry.registerPath({
     method: 'put',
@@ -82,9 +92,11 @@ export const partRouter: Router = (() => {
     '/:id',
     validateRequest(GetPartByIdRequest),
     validateRequest(z.object({ body: UpdatePartRequest })),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await partService.updatePart(req.params.id as string, req.body);
-      handleServiceResponse(serviceResponse, res);
+    (req: Request, res: Response, next: NextFunction): void => {
+      partService
+        .updatePart(req.params.id as string, req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
     }
   );
 
@@ -98,10 +110,16 @@ export const partRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.delete('/:id', validateRequest(GetPartByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await partService.deletePart(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.delete(
+    '/:id',
+    validateRequest(GetPartByIdRequest),
+    (req: Request, res: Response, next: NextFunction): void => {
+      partService
+        .deletePart(req.params.id as string)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
+    }
+  );
 
   return router;
 })();

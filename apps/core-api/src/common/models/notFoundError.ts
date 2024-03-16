@@ -1,5 +1,5 @@
 export class NotFoundError extends Error {
   constructor(id: string) {
-    super(`There is not entity with the id ${id}`);
+    super(`There is no entity with the id ${id}`);
   }
 }
