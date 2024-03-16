@@ -1,5 +1,6 @@
 import knex from '@src/index';
 import { Part, PartRowSchema } from '@modules/part/partModel';
+import { arrayBind } from '@common/utils/arrayBinding';
 
 const toModel = (row: PartRowSchema): Part => ({
   id: row.id,
@@ -58,7 +59,7 @@ export const partRepository = {
     if (!ids.length) {
       return [];
     }
-    const { rows } = await knex.raw('SELECT p.* FROM parts p WHERE p.id in ?', [ids]);
+    const { rows } = await knex.raw(`SELECT p.* FROM parts p WHERE p.id IN ${arrayBind(ids)}`, [...ids]);
     return rows.map(toModel);
   },
 };
