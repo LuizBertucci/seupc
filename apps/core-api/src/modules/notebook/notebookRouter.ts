@@ -6,7 +6,7 @@ import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
 import { handleServiceResponse, validateRequest } from '@common/utils/httpHandlers';
 import { notebookService } from '@modules/notebook/notebookService';
 
-import { GetNotebookByIdRequest, GetNotebookByIdResponse } from './notebookModel';
+import { CreateNotebookRequest, GetNotebookByIdRequest, GetNotebookByIdResponse } from './notebookModel';
 
 export const notebookRegistry = new OpenAPIRegistry();
 
@@ -56,7 +56,7 @@ export const notebookRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.post('/', async (req: Request, res: Response) => {
+  router.post('/', validateRequest(z.object({ body: CreateNotebookRequest })), async (req: Request, res: Response) => {
     const serviceResponse = await notebookService.createNotebook(req.body);
     handleServiceResponse(serviceResponse, res);
   });

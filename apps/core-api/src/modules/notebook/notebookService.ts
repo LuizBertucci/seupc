@@ -1,35 +1,31 @@
 import { StatusCodes } from 'http-status-codes';
 
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
-import { GetNotebookByIdResponse, CreateNotebookRequest } from '@modules/notebook/notebookModel';
+import { GetNotebookByIdResponse, CreateNotebookRequest, Notebook } from '@modules/notebook/notebookModel';
 import { notebookRepository } from '@modules/notebook/notebookRepository';
 import { logger } from '@src/server';
 import { v4 as uuidv4 } from 'uuid';
+
+const toDTO = (notebook: Notebook): GetNotebookByIdResponse => ({
+  id: notebook.id,
+  title: notebook.title,
+  brand: notebook.brand,
+  createdAt: notebook.createdAt,
+  updatedAt: notebook.updatedAt,
+});
 
 export const notebookService = {
   findAll: async (): Promise<ServiceResponse<GetNotebookByIdResponse[] | null>> => {
     try {
       const notebooks = await notebookRepository.findAllAsync();
-
-      if (!notebooks) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nenhum notebook encontrado', null, StatusCodes.NOT_FOUND);
-      }
-
-      const response: GetNotebookByIdResponse[] = notebooks.map((notebook) => ({
-        id: notebook.id,
-        title: notebook.title,
-        createdAt: notebook.createdAt,
-        updatedAt: notebook.updatedAt,
-      }));
-
       return new ServiceResponse<GetNotebookByIdResponse[]>(
         ResponseStatus.Success,
         'Notebooks encontrados',
-        response,
+        notebooks.map(toDTO),
         StatusCodes.OK
       );
     } catch (ex) {
-      const errorMessage = `Erro ao encontrar os notebooks: $${(ex as Error).message}`;
+      const errorMessage = `Erro ao encontrar os notebooks: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
@@ -42,17 +38,10 @@ export const notebookService = {
         return new ServiceResponse(ResponseStatus.Failed, 'Nenhum notebook encontrado', null, StatusCodes.NOT_FOUND);
       }
 
-      const response: GetNotebookByIdResponse = {
-        id: notebook.id,
-        title: notebook.title,
-        createdAt: notebook.createdAt,
-        updatedAt: notebook.updatedAt,
-      };
-
       return new ServiceResponse<GetNotebookByIdResponse>(
         ResponseStatus.Success,
         'Notebook encontrado',
-        response,
+        toDTO(notebook),
         StatusCodes.OK
       );
     } catch (ex) {
@@ -67,6 +56,7 @@ export const notebookService = {
       const notebook = await notebookRepository.createNotebook({
         id: uuidv4(),
         title: request.title,
+        brand: request.brand,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
