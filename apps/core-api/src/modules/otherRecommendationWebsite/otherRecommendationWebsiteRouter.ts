@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import express, { Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import { z } from 'zod';
 
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
@@ -29,9 +29,11 @@ export const otherRecommendationWebsiteRouter: Router = (() => {
     responses: createApiResponse(z.array(GetOtherRecommendationWebsiteByIdResponse), 'Success'),
   });
 
-  router.get('/', async (_req: Request, res: Response) => {
-    const serviceResponse = await otherRecommendationWebsiteService.findAll();
-    handleServiceResponse(serviceResponse, res);
+  router.get('/', (_req: Request, res: Response, next: NextFunction) => {
+    otherRecommendationWebsiteService
+      .findAll()
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next);
   });
 
   otherRecommendationWebsiteRegistry.registerPath({
@@ -42,10 +44,16 @@ export const otherRecommendationWebsiteRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.get('/:id', validateRequest(GetOtherRecommendationWebsiteByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await otherRecommendationWebsiteService.findById(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.get(
+    '/:id',
+    validateRequest(GetOtherRecommendationWebsiteByIdRequest),
+    (req: Request, res: Response, next: NextFunction) => {
+      otherRecommendationWebsiteService
+        .findById(req.params.id as string)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
+    }
+  );
 
   otherRecommendationWebsiteRegistry.registerPath({
     method: 'post',
@@ -66,9 +74,11 @@ export const otherRecommendationWebsiteRouter: Router = (() => {
   router.post(
     '/',
     validateRequest(z.object({ body: CreateOtherRecommendationWebsiteRequest })),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await otherRecommendationWebsiteService.create(req.body);
-      handleServiceResponse(serviceResponse, res);
+    (req: Request, res: Response, next: NextFunction) => {
+      otherRecommendationWebsiteService
+        .create(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
     }
   );
 
@@ -93,9 +103,11 @@ export const otherRecommendationWebsiteRouter: Router = (() => {
     '/:id',
     validateRequest(GetOtherRecommendationWebsiteByIdRequest),
     validateRequest(z.object({ body: UpdateOtherRecommendationWebsiteRequest })),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await otherRecommendationWebsiteService.update(req.params.id as string, req.body);
-      handleServiceResponse(serviceResponse, res);
+    (req: Request, res: Response, next: NextFunction) => {
+      otherRecommendationWebsiteService
+        .update(req.params.id as string, req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
     }
   );
 
@@ -112,9 +124,11 @@ export const otherRecommendationWebsiteRouter: Router = (() => {
   router.delete(
     '/:id',
     validateRequest(GetOtherRecommendationWebsiteByIdRequest),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await otherRecommendationWebsiteService.delete(req.params.id as string);
-      handleServiceResponse(serviceResponse, res);
+    (req: Request, res: Response, next: NextFunction) => {
+      otherRecommendationWebsiteService
+        .delete(req.params.id as string)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
     }
   );
 

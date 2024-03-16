@@ -42,7 +42,7 @@ export const partService = {
   },
   createPart: async (request: CreatePartRequest): Promise<ServiceResponse<string>> => {
     if (await partRepository.findByNameAsync(request.name)) {
-      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`,)
+      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`);
     }
 
     const part = await partRepository.createPart({
@@ -64,7 +64,7 @@ export const partService = {
 
     const partByName = await partRepository.findByNameAsync(request.name);
     if (partByName && partByName.id !== part.id) {
-      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`,)
+      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`);
     }
 
     part.name = request.name;
