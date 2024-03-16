@@ -38,6 +38,6 @@ app.use('/others-recommendations-websites', otherRecommendationWebsiteRouter);
 app.use(openAPIRouter);
 
 // Error handlers
-app.use(errorHandler());
+app.use(errorHandler);
 
 export { app, logger };
