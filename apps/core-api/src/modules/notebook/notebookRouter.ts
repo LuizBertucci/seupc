@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import express, { Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import { z } from 'zod';
 
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
@@ -22,9 +22,11 @@ export const notebookRouter: Router = (() => {
     responses: createApiResponse(z.array(GetNotebookByIdResponse), 'Success'),
   });
 
-  router.get('/', async (_req: Request, res: Response) => {
-    const serviceResponse = await notebookService.findAll();
-    handleServiceResponse(serviceResponse, res);
+  router.get('/', (_req: Request, res: Response, next: NextFunction) => {
+    notebookService
+      .findAll()
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next);
   });
 
   notebookRegistry.registerPath({
@@ -35,9 +37,11 @@ export const notebookRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.get('/:id', validateRequest(GetNotebookByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await notebookService.findById(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
+  router.get('/:id', validateRequest(GetNotebookByIdRequest), (req: Request, res: Response, next: NextFunction) => {
+    notebookService
+      .findById(req.params.id as string)
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next);
   });
 
   notebookRegistry.registerPath({
@@ -56,10 +60,16 @@ export const notebookRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.post('/', validateRequest(z.object({ body: CreateNotebookRequest })), async (req: Request, res: Response) => {
-    const serviceResponse = await notebookService.createNotebook(req.body);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.post(
+    '/',
+    validateRequest(z.object({ body: CreateNotebookRequest })),
+    (req: Request, res: Response, next: NextFunction) => {
+      notebookService
+        .createNotebook(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next);
+    }
+  );
 
   return router;
 })();
