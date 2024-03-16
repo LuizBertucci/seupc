@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-var environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'development';
 
 dotenv.config({
   path: path.join(__dirname, `../../../.docker/${environment}/.env`),

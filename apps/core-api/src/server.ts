@@ -16,10 +16,6 @@ import { partRouter } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRouter } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
 import { tagRouter } from '@modules/tag/tagRouter';
 
-dotenv.config({
-  path: path.resolve(__dirname, '../.env'),
-});
-
 const logger = pino({ name: 'server start' });
 const app: Express = express();
 
@@ -30,8 +26,7 @@ app.use(helmet());
 app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
 
-// Request logging
-if (getNodeEnv() !== 'test') {
+if (env.NODE_ENV !== 'test') {
   app.use(requestLogger());
 }
 
