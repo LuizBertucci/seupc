@@ -85,7 +85,7 @@ export const tagRouter: Router = (() => {
 
   router.put(
     '/:id',
-    validateRequest(GetTagByIdResponse),
+    validateRequest(GetTagByIdRequest),
     validateRequest(z.object({ body: UpdateTagRequest })),
     async (req: Request, res: Response) => {
       const serviceResponse = await tagService.update(req.params.id as string, req.body);

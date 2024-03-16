@@ -34,7 +34,7 @@ export const tagRepository = {
     return toModel(rows);
   },
   update: async (part: Tag): Promise<Tag> => {
-    const { rows } = await knex.raw('UPDATE tags t SET t.name = ?, t.updated_at =? WHERE t.id =? RETURNING t.*', [
+    const { rows } = await knex.raw('UPDATE tags SET name = ?, updated_at =? WHERE id =? RETURNING *', [
       part.name,
       part.updatedAt,
       part.id,
@@ -43,7 +43,10 @@ export const tagRepository = {
     return toModel(rows);
   },
   delete: async (id: string): Promise<void> => {
-    await knex.raw('DELETE FROM tags t WHERE t.id = ?', [id]);
+    await knex.transaction(async (trx) => {
+      await knex.raw('DELETE FROM tag_parts WHERE tag_id = ?', [id]).transacting(trx);
+      await knex.raw('DELETE FROM tags WHERE id = ?', [id]).transacting(trx);
+    });
   },
   addParts: async (data: TagPartTuple[]): Promise<void> => {
     if (!data.length) {
