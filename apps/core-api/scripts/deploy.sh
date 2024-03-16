@@ -1,4 +1,4 @@
-docker build -t core-api:latest ../
+docker build -t core-api:latest -f ../Dockerfile.prod ../
 
 image_id=$(docker images --filter=reference=core-api:latest --quiet)
 

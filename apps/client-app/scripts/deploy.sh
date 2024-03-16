@@ -1,4 +1,4 @@
-docker build -t client-app:latest ../
+docker build -t client-app:latest -f ../Dockerfile.prod ../
 
 image_id=$(docker images --filter=reference=client-app:latest --quiet)
 

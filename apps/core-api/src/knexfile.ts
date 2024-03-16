@@ -10,4 +10,12 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
+  production: {
+    client: 'pg',
+    connection: env.DATABASE_URL,
+    migrations: {
+      directory: path.resolve(__dirname, 'migrations'),
+    },
+    ssl: { rejectUnauthorized: false },
+  },
 };
