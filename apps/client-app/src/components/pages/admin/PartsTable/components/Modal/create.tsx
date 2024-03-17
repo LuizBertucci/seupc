@@ -5,7 +5,7 @@ import { SelectSingle } from '@/components/ui/select'
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Parts, SelectOption } from "@/types/parts"
-import { addParts, editParts } from '../../hooks/request'
+import { requestAddParts, requestEditParts } from '../../hooks/request'
 import { useToast } from '@/components/ui/use-toast'
 import { useContext } from 'react'
 
@@ -21,13 +21,14 @@ export default function CreatePart({ edit, editValues, editIndex }: { edit?: boo
       } = useForm<Parts>({ defaultValues: edit ? editValues : {}})
 
       const onSubmit: SubmitHandler<Parts> = async (data) => {
-       edit ? await editParts(data, editIndex) : await addParts(data)
+       data.point = Number(data.point)
+       edit ? await requestEditParts(data, editIndex) : await requestAddParts(data)
       
         toast({ title: `Parte ${edit ? "editada" : "criada"} com sucesso!`})
         setIsOpen(false)
       } 
 
-      const options: Array<SelectOption> = [{ label: "HD", value: "HD" }, { label: "SSD", value: "SSD" }, { label: "Processador", value: "PROCESSADOR" }, { label: "Placa Gráfica", value: "PLACA GRÁFICA" }]
+      const options: Array<SelectOption> = [{ label: "HD", value: "HD" }, { label: "SSD", value: "SSD" }, { label: "Memória RAM", value: "Ram Memory" }, { label: "Processador", value: "Processor" }, { label: "Placa Gráfica", value: "Video Card" }]
 
   return (
     <>
@@ -38,9 +39,9 @@ export default function CreatePart({ edit, editValues, editIndex }: { edit?: boo
 
     <Input formError={errors?.name?.message} {...register("name", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da parte' />
 
-    <SelectSingle options={options} formControl={control} formName="tipo" placeholder={"Tipo da Parte"}  />  
+    {!edit && <SelectSingle options={options} formControl={control} formName="partType" placeholder={"Tipo da Parte"}  /> }
 
-    <Input type='number' formError={errors?.partType?.message} {...register("partType", { pattern: /^[0-9]+$/, required: "Pontos são obrigatórios", maxLength: { value: 6, message: "pontuação máxima ultrapassada" }  })} placeholder='Pontos' />
+    <Input type='number' formError={errors?.partType?.message} {...register("point", { pattern: /^[0-9]+$/, required: "Pontos são obrigatórios", maxLength: { value: 6, message: "pontuação máxima ultrapassada" }  })} placeholder='Pontos' />
 
     <Button type='submit' className='self-end' closeModal errors={errors} icon={edit ? faSave : faAdd} >{edit ? "Salvar" : "Criar"}</Button>
     </form>

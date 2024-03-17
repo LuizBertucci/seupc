@@ -1,8 +1,11 @@
 // Main Types
 export type Parts = {
-  partType: "HD" | "SSD" | "PLACA MÃE" | "PROCESSADOR" | "PLACA GRÁFICA" | "MEMÓRIA RAM",
+  partType: 'Processor' | 'Ram Memory' | 'HD' | 'SSD' | 'Video Card',
   name: string
   point: number
+  id: string,
+  createdAt: string,
+  updatedAt: string
   }
 
 // Components Types

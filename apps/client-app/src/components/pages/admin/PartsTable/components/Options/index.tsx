@@ -14,8 +14,8 @@ export  default function OptionsTable({rowSelection, setRowSelection}: { rowSele
   return (
 <>
 
-<Modal content={<DeletePart selected={Object.keys(rowSelection)} setRowSelection={setRowSelection} />} >
-<ActionButton icon={faTrash} disabled={Object.keys(rowSelection).length === 0} />
+<Modal content={<DeletePart selected={Object.keys(rowSelection)[0]} setRowSelection={setRowSelection} />} >
+<ActionButton icon={faTrash} disabled={Object.keys(rowSelection).length !== 1} />
 </Modal>
 
 <Modal content={<CreatePart edit={true} editValues={dataTable?.[Object.keys(rowSelection)[0]]} editIndex={Number(Object.keys(rowSelection)[0])} />} >

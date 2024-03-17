@@ -1,96 +1,32 @@
 import { useToast } from "@/components/ui/use-toast"
 import { usePartStore } from "../storage"
 import { Parts } from "@/types/parts";
-import { getParts } from "@/api/parts";
+import { EditPartsParams, addParts, deleteParts, editParts, getParts } from "@/api/parts";
 
 
 
 export const requestGetParts = async () => {
     const { setDataTable } = usePartStore.getState().dispatch;
 
-const payload = {
-  dados : [{
-        tipo: "MEMÓRIA RAM",
-        nome: "RXT CORSAIR",
-        pontos: 200
-      },
-      {
-        tipo: "PROCESSADOR",
-        nome: "I5-10400F",
-        pontos: 1000
-      },
-      {
-        tipo: "PLACA GRÁFICA",
-        nome: "RX 7600 AMD",
-        pontos: 2400
-      },
-      {
-        tipo: "MEMÓRIA RAM",
-        nome: "RXT CORSAIR",
-        pontos: 200
-      },
-      {
-        tipo: "PROCESSADOR",
-        nome: "I5-10400F",
-        pontos: 1000
-      },
-      {
-        tipo: "PLACA GRÁFICA",
-        nome: "RX 7600 AMD",
-        pontos: 2400
-      },
-      {
-        tipo: "MEMÓRIA RAM",
-        nome: "RXT CORSAIR",
-        pontos: 200
-      },
-      {
-        tipo: "PROCESSADOR",
-        nome: "I5-10400F",
-        pontos: 1000
-      },
-      {
-        tipo: "PLACA GRÁFICA",
-        nome: "RX 7600 AMD",
-        pontos: 2400
-      },
-      {
-        tipo: "MEMÓRIA RAM",
-        nome: "RXT CORSAIR",
-        pontos: 200
-      },
-      {
-        tipo: "PROCESSADOR",
-        nome: "I5-10400F",
-        pontos: 1000
-      },
-      {
-        tipo: "PLACA GRÁFICA",
-        nome: "RX 7600 AMD",
-        pontos: 2400
-      }
-    ]
-}
-
 const {data} = await getParts()
-
-console.log(data.responseObject)
 
 await setDataTable(data.responseObject)
 }
 
 
-export const addParts = async (value: Parts) => {
+export const requestAddParts = async (value: Parts) => {
     const { addDataTable } = usePartStore.getState().dispatch;
 
-    // payload quando tiver endpoints
-    const payload = {}
+    const { data } = await addParts(value)
+
+if(!data?.success) return false
 
 await addDataTable(value)
+await requestGetParts()
 return true
 }
 
-export const editParts = async (value: Parts | undefined, index: number | undefined) => {
+export const requestEditParts = async (value: EditPartsParams | undefined, index: number | undefined) => {
   const { editDataTable } = usePartStore.getState().dispatch;
   const { dataTable } = usePartStore.getState().dados;
 
@@ -102,23 +38,31 @@ export const editParts = async (value: Parts | undefined, index: number | undefi
     return part
   })
 
-  
-  // payload quando tiver endpoints
-  const payload = {}
+  const getPartId: Parts = await dataTable.find((data: Parts, i: number) => i === index)
+
+  const { data } = await editParts(value, getPartId.id)
+
+  if(!data?.success) return false
+
 
 await editDataTable(editData)
 return true
 }
 
 
-export const deleteParts = async (values: string[]) => {
+export const requestDeleteParts = async (value: string) => {
   const { setDataTable } = usePartStore.getState().dispatch;
   const { dataTable } = usePartStore.getState().dados;
 
-  const filterData = dataTable.filter((part: Parts, index: number) => !values.includes(index.toString()) )
+  const filterData = dataTable.filter((part: Parts, index: number) => value !== index.toString())
 
-  // payload quando tiver endpoints
-  const payload = {}
+  const getPartId: Parts = await dataTable.find((data: Parts, i: number) => i === Number(value))
+
+  console.log(getPartId)
+  
+  const { data } = await deleteParts(getPartId.id)
+
+  if(!data?.success) return false
 
 await setDataTable(filterData)
 return true
