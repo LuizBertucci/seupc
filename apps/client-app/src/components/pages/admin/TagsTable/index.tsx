@@ -1,0 +1,30 @@
+"use client"
+import { DataTable } from "@/components/ui/dataTable";
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useTagsStore } from "./storage";
+import { requestGetTags } from "./hooks/request";
+
+export default function TagsTable() {
+    const { dataTable, columns } = useTagsStore((state) => state.dados)
+  const [rowSelection, setRowSelection ] = useState({})
+  const { toast } = useToast()
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+useEffect(() => {
+    const getData = async () => {
+     await requestGetTags()
+     toast({ title: "Tags encontradas com sucesso!"  })
+    }
+
+    getData()
+    }, [])
+
+  return (
+    <>
+<div className="w-1/2" >
+<DataTable title="tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" />
+      </div>
+    </>
+  )
+}

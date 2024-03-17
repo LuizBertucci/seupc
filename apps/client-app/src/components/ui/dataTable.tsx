@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: any,
   rowSelection: any,
   title: string,
-  rightMenu: React.ReactNode
+  rightMenu?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({

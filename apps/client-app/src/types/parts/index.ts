@@ -8,6 +8,17 @@ export type Parts = {
   updatedAt: string
   }
 
+export type TagCategoria = {
+  GAMES: 'Games',
+  PROGRAMS: 'Programs',
+  COURSES: 'Courses'
+}
+
+export type Tags = {
+  name: string
+  category: 'Games' | 'Programs' | 'Courses'
+}
+
 // Components Types
  export type SelectOption = {
     value: string,

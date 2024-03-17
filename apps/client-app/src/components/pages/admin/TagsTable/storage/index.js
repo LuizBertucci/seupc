@@ -1,22 +1,18 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
 
-export const usePartStore = create(immer(set => ({
+export const useTagsStore = create(immer(set => ({
 dados: {
     dataTable: [],
     columns: [
         {
-          accessorKey: "name",
-          header: "Nome",
-        },
-        {
-          accessorKey: "partType",
-          header: "Tipo da Parte",
-        },
-        {
-          accessorKey: "point",
-          header: "Pontos",
-        },
+            accessorKey: "name",
+            header: "Nome",
+          },
+          {
+            accessorKey: "category",
+            header: "Categoria",
+          }
       ],
 },
 loaders: {},
