@@ -8,15 +8,12 @@ export type Parts = {
   updatedAt: string
   }
 
-export type TagCategoria = {
-  GAMES: 'Games',
-  PROGRAMS: 'Programs',
-  COURSES: 'Courses'
-}
-
 export type Tags = {
-  name: string
-  category: 'Games' | 'Programs' | 'Courses'
+  id: string;
+  category: 'Games' | 'Programs' | 'Courses';
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Components Types

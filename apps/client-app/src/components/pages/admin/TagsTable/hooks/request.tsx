@@ -1,25 +1,26 @@
 import { Tags } from "@/types/parts";
 import { useTagsStore } from "../storage";
+import { addTags, deleteTags, editTags, getTags } from "@/api/tags";
 
 
 export const requestGetTags = async () => {
 const { setDataTable } = useTagsStore.getState().dispatch;
 
-const data: Tags[] = [{ name: "Fortnite", category: "Games" }, { name: "Blender", category: "Programs" }, { name: "Udemy", category: "Courses" }]
+const { data } = await getTags()
 
-await setDataTable(data)
+await setDataTable(data.responseObject)
 }
 
 
 export const requestAddParts = async (value: Tags) => {
     const { addDataTable } = useTagsStore.getState().dispatch;
 
-    // const { data } = await addParts(value)
+    const { data } = await addTags(value)
 
-// if(!data?.success) return false
+if(!data?.success) return false
 
 await addDataTable(value)
-// await requestGetTags()
+await requestGetTags()
 return true
 }
 
@@ -35,11 +36,11 @@ export const requestEditParts = async (value: Tags | undefined, index: number | 
     return part
   })
 
-//   const getPartId: Tags = await dataTable.find((data: Tags, i: number) => i === index)
+  const getPartId: Tags = await dataTable.find((data: Tags, i: number) => i === index)
 
-//   const { data } = await editParts(value, getPartId.id)
+  const { data } = await editTags(value, getPartId.id)
 
-//   if(!data?.success) return false
+  if(!data?.success) return false
 
 
 await editDataTable(editData)
@@ -53,13 +54,11 @@ export const requestDeleteParts = async (value: string) => {
 
   const filterData = dataTable.filter((part: Tags, index: number) => value !== index.toString())
 
-//   const getPartId: Tags = await dataTable.find((data: Tags, i: number) => i === Number(value))
-
-//   console.log(getPartId)
+  const getPartId: Tags = await dataTable.find((data: Tags, i: number) => i === Number(value))
   
-//   const { data } = await deleteParts(getPartId.id)
+  const { data } = await deleteTags(getPartId.id)
 
-//   if(!data?.success) return false
+  if(!data?.success) return false
 
 await setDataTable(filterData)
 return true
