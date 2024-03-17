@@ -4,7 +4,13 @@ import path from 'path';
 module.exports = {
   development: {
     client: 'pg',
-    connection: env.DATABASE_URL,
+    connection: {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      user: env.DB_USER,
+      password: env.DB_PASSWORD,
+      database: env.DB_NAME,
+    },
     migrations: {
       directory: path.resolve(__dirname, 'migrations'),
     },
@@ -12,10 +18,16 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: env.DATABASE_URL,
+    pool: { min: 0, max: 10 },
+    connection: {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      user: env.DB_USER,
+      password: env.DB_PASSWORD,
+      database: env.DB_NAME,
+    },
     migrations: {
       directory: path.resolve(__dirname, 'migrations'),
     },
-    ssl: { rejectUnauthorized: false },
   },
 };
