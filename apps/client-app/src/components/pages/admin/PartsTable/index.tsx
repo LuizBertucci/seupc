@@ -3,7 +3,7 @@ import { DataTable } from "@/components/ui/dataTable";
 import { useEffect, useState } from "react";
 import OptionsTable from "./components/Options";
 import { usePartStore } from "./storage";
-import { getParts } from "./hooks/request";
+import { requestGetParts } from "./hooks/request";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function PartsTable() {
@@ -15,7 +15,7 @@ export default function PartsTable() {
 useEffect(() => {
 
     const getData = async () => {
-     await getParts()
+     await requestGetParts()
      toast({ title: "Dados encontrados com sucesso!"  })
     }
 

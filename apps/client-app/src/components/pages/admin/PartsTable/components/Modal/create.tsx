@@ -36,11 +36,11 @@ export default function CreatePart({ edit, editValues, editIndex }: { edit?: boo
     </DialogHeader>
     <form className='flex flex-col space-y-4 justify-center items-center w-full ' onSubmit={handleSubmit(onSubmit)} >
 
-    <Input formError={errors?.nome?.message} {...register("nome", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da parte' />
+    <Input formError={errors?.name?.message} {...register("name", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da parte' />
 
     <SelectSingle options={options} formControl={control} formName="tipo" placeholder={"Tipo da Parte"}  />  
 
-    <Input type='number' formError={errors?.pontos?.message} {...register("pontos", { pattern: /^[0-9]+$/, required: "Pontos são obrigatórios", maxLength: { value: 6, message: "pontuação máxima ultrapassada" }  })} placeholder='Pontos' />
+    <Input type='number' formError={errors?.partType?.message} {...register("partType", { pattern: /^[0-9]+$/, required: "Pontos são obrigatórios", maxLength: { value: 6, message: "pontuação máxima ultrapassada" }  })} placeholder='Pontos' />
 
     <Button type='submit' className='self-end' closeModal errors={errors} icon={edit ? faSave : faAdd} >{edit ? "Salvar" : "Criar"}</Button>
     </form>

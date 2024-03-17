@@ -1,10 +1,11 @@
 import { useToast } from "@/components/ui/use-toast"
 import { usePartStore } from "../storage"
 import { Parts } from "@/types/parts";
+import { getParts } from "@/api/parts";
 
 
 
-export const getParts = async () => {
+export const requestGetParts = async () => {
     const { setDataTable } = usePartStore.getState().dispatch;
 
 const payload = {
@@ -71,9 +72,11 @@ const payload = {
     ]
 }
 
-// Call para o back será aqui
+const {data} = await getParts()
 
-await setDataTable(payload.dados)
+console.log(data.responseObject)
+
+await setDataTable(data.responseObject)
 }
 
 

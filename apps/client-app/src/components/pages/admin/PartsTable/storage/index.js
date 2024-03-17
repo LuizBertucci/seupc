@@ -7,15 +7,15 @@ dados: {
     dataTable: [],
     columns: [
         {
-          accessorKey: "nome",
+          accessorKey: "name",
           header: "Nome",
         },
         {
-          accessorKey: "tipo",
+          accessorKey: "partType",
           header: "Tipo da Parte",
         },
         {
-          accessorKey: "pontos",
+          accessorKey: "point",
           header: "Pontos",
         },
       ],
