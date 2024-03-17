@@ -1,38 +1,18 @@
 version: '3'
 services:
-  postgres:
-    image: postgres:15
+  postgres-db:
+    image: postgres:14.1-alpine
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-    volumes:
-      - $HOME/monorepo/monorepo-postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=monorepodb
+      - POSTGRES_PASSWORD=PgAdmin2024!
+      - POSTGRES_DB=postgresdb-seupc-dev
     networks:
       - application
-    container_name: monorepo-postgres
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  postgres-test:
-    image: postgres:15
-    ports:
-      - '5431:5432'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-    networks:
-      - application
-    volumes:
-      - $HOME/monorepo/monorepo-postgres-test:/var/lib/postgresql/data
-    restart: always
-    container_name: monorepo-postgres-test
+    container_name: postgres-db
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
@@ -41,83 +21,35 @@ services:
 
   core-api:
     build:
-      context: ../apps/core-api/.
-      dockerfile: ./Dockerfile-local
+      context: ./apps/core-api/.
+      dockerfile: ./Dockerfile
     image: core-api:v1
     ports:
-      - '3000:3000'
-    tty: true
+      - '8080:8080'
     volumes:
-      - '../apps/core-api:/app'
+      - './apps/core-api:/apps/core-api/'
     networks:
       - application
     container_name: core-api
     depends_on:
-      postgres:
-        condition: service_healthy
-    entrypoint: ['/bin/sh', '-c']
+      - postgres-db
     environment:
-      - INTEGRATION_TEST_HOST_URL= http://localhost:3002
-    command:
-      - |
-        npm i
-        npm run sequelize db:migrate
-        npm run dev
+      - DATABASE_URL=postgres://postgres:PgAdmin2024!@postgres-db:5432/postgresdb-seupc-dev
 
-  core-api-test:
+  client-app:
     build:
-      context: ../apps/core-api/.
-      dockerfile: ./Dockerfile-local
-    image: api-test:v1
+      context: ./apps/client-app/.
+      dockerfile: ./Dockerfile
+    image: client-app
     ports:
-      - '3002:3000'
-    tty: true
+      - '3000:3000'
     volumes:
-      - '../apps/core-api:/app'
+      - './apps/client-app/:/apps/client-app/'
     networks:
       - application
-    container_name: core-api-test
-    depends_on:
-      postgres-test:
-        condition: service_healthy
-    entrypoint: ['/bin/sh', '-c']
-    environment:
-      - NODE_ENV=test
-      - DB_HOST=postgres-test
-      - DB_DATABASE=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - INTEGRATION_TEST_HOST_URL= http://localhost:3002
-    command:
-      - |
-        npm i
-        npm run sequelize db:migrate:undo:all
-        npm run sequelize db:migrate
-        npm run sequelize db:seed:all
-        nodemon --legacy-watch src/server.js
-
-  web-app:
-    build:
-      context: ../apps/web-app/
-      dockerfile: ./Dockerfile-local
-    image: web-app:v1
-    ports:
-      - '3001:3000'
-    tty: true
-    volumes:
-      - ../apps/web-app/:/app
-    networks:
-      - application
-    container_name: web-app
-    entrypoint: ['/bin/sh', '-c']
-    command:
-      - |
-        npm i
-        npm run dev
+    container_name: client-app
     depends_on:
       - core-api
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
 
 networks:
   application:

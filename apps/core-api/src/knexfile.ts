@@ -1,14 +1,10 @@
-const path = require('path');
+import { env } from './common/utils/envConfig';
+import path from 'path';
 
 module.exports = {
   development: {
     client: 'pg',
-    connection: {
-      host: 'localhost',
-      user: 'postgres',
-      password: 'PgAdmin2024!',
-      database: 'postgresdb-seupc-dev',
-    },
+    connection: env.DATABASE_URL,
     migrations: {
       directory: path.resolve(__dirname, 'migrations'),
     },

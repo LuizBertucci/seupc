@@ -20,4 +20,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   modulePaths: ['<rootDir>/src'],
   moduleDirectories: ['node_modules'],
+  setupFiles: ['<rootDir>/tests/testSetup.ts'],
 };

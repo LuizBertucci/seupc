@@ -51,3 +51,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.out
+/tmp

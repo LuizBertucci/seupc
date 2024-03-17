@@ -43,7 +43,7 @@ export const GetPartByIdResponse = z.object({
   id: z.string().uuid(),
   partType: z.nativeEnum(PartType),
   point: z.number(),
-  name: z.string(),
+  name: z.string().min(1),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -51,7 +51,7 @@ export const GetPartByIdResponse = z.object({
 export type CreatePartRequest = z.infer<typeof CreatePartRequest>;
 
 export const CreatePartRequest = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   partType: z.nativeEnum(PartType),
   point: z.number().gt(0),
 });
@@ -59,6 +59,6 @@ export const CreatePartRequest = z.object({
 export type UpdatePartRequest = z.infer<typeof UpdatePartRequest>;
 
 export const UpdatePartRequest = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   point: z.number().gt(0),
 });
