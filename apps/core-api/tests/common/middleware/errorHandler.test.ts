@@ -4,6 +4,8 @@ import request from 'supertest';
 
 import errorHandler from '@common/middleware/errorHandler';
 
+jest.mock('@src/server');
+
 describe('Error Handler Middleware', () => {
   const app = express();
 
@@ -13,7 +15,7 @@ describe('Error Handler Middleware', () => {
   });
 
   // Use your error handler middleware
-  app.use(errorHandler());
+  app.use(errorHandler);
 
   it('should return 404 for unknown routes', async () => {
     const response = await request(app).get('/unknown');
