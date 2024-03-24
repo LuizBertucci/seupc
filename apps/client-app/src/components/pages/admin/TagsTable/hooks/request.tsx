@@ -12,7 +12,7 @@ await setDataTable(data.responseObject)
 }
 
 
-export const requestAddParts = async (value: Tags) => {
+export const requestAddTags = async (value: Tags) => {
     const { addDataTable } = useTagsStore.getState().dispatch;
 
     const { data } = await addTags(value)
@@ -24,7 +24,7 @@ await requestGetTags()
 return true
 }
 
-export const requestEditParts = async (value: Tags | undefined, index: number | undefined) => {
+export const requestEditTags = async (value: Tags | undefined, index: number | undefined) => {
   const { editDataTable } = useTagsStore.getState().dispatch;
   const { dataTable } = useTagsStore.getState().dados;
 
@@ -48,7 +48,7 @@ return true
 }
 
 
-export const requestDeleteParts = async (value: string) => {
+export const requestDeleteTags = async (value: string) => {
   const { setDataTable } = useTagsStore.getState().dispatch;
   const { dataTable } = useTagsStore.getState().dados;
 

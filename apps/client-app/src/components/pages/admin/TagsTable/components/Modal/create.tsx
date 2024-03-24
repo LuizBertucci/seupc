@@ -5,7 +5,7 @@ import { SelectSingle } from '@/components/ui/select'
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { SelectOption, Tags } from "@/types/parts"
-import { requestAddParts, requestEditParts } from '../../hooks/request'
+import { requestAddTags, requestEditTags } from '../../hooks/request'
 import { useToast } from '@/components/ui/use-toast'
 import { useContext } from 'react'
 
@@ -21,7 +21,7 @@ export default function CreateTags({ edit, editValues, editIndex }: { edit?: boo
       } = useForm<Tags>({ defaultValues: edit ? editValues : {}})
 
       const onSubmit: SubmitHandler<Tags> = async (data) => {
-       edit ? await requestEditParts(data, editIndex) : await requestAddParts(data)
+       edit ? await requestEditTags(data, editIndex) : await requestAddTags(data)
       
         toast({ title: `Tag ${edit ? "editada" : "criada"} com sucesso!`})
         setIsOpen(false)
@@ -36,7 +36,7 @@ export default function CreateTags({ edit, editValues, editIndex }: { edit?: boo
     </DialogHeader>
     <form className='flex flex-col space-y-4 justify-center items-center w-full ' onSubmit={handleSubmit(onSubmit)} >
 
-    <Input formError={errors?.name?.message} {...register("name", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da parte' />
+    <Input formError={errors?.name?.message} {...register("name", { required: "Nome para o tipo obrigatório", maxLength: { value: 100, message: "Tamanho máximo do nome ultrapassado" } }) } placeholder='Nome da Tag' />
 
     <SelectSingle options={options} formControl={control} formName="category" placeholder={"Categoria"}  /> 
 

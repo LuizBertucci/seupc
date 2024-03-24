@@ -3,19 +3,18 @@ import { DialogHeader, ModalContext } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useForm, SubmitHandler } from "react-hook-form"
-import { CategoryTags, SelectOption, Tags } from "@/types/parts"
+import { CategoryTags } from "@/types/parts"
 import { requestAddCategoriesTags, requestEditCategoriesTags } from '../../hooks/request'
 import { useToast } from '@/components/ui/use-toast'
 import { useContext } from 'react'
 
-export default function CreateCategoriesTags({ edit, editValues, editIndex }: { edit?: boolean, editValues?: Tags, editIndex?: number }) {
+export default function CreateCategoriesTags({ edit, editValues, editIndex }: { edit?: boolean, editValues?: CategoryTags, editIndex?: number }) {
   const { toast } = useToast()
   const { setIsOpen } = useContext(ModalContext)
 
     const {
         register,
         handleSubmit,
-        control,
         formState: { errors },
       } = useForm<CategoryTags>({ defaultValues: edit ? editValues : {}})
 

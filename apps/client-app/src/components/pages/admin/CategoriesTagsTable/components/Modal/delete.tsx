@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/components/ui/button";
 import { DialogHeader, ModalContext } from "@/components/ui/dialog";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +19,7 @@ export  default function DeleteCategoriesTags({selected, setRowSelection }: { se
   return (
     <>
       <DialogHeader>
-        Deletar Tag
+        Deletar Categoria
       </DialogHeader>
 
       <h4>Deseja realmente <b>deletar</b> a categoria selecionada?</h4>

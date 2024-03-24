@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DialogHeader, ModalContext } from "@/components/ui/dialog";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
-import {requestDeleteParts } from "../../hooks/request";
+import {requestDeleteTags } from "../../hooks/request";
 import { toast } from "@/components/ui/use-toast";
 import { useContext } from "react";
 
@@ -11,7 +11,7 @@ export  default function DeleteTags({selected, setRowSelection }: { selected: st
   const { setIsOpen } = useContext(ModalContext);
 
   const handleDelete = async () => {
-   await requestDeleteParts(selected)
+   await requestDeleteTags(selected)
     toast({ title: "Tag deletada com sucesso!"})
     setIsOpen(false)
     setRowSelection({})
