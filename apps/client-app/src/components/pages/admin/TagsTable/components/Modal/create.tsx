@@ -9,7 +9,7 @@ import { requestAddParts, requestEditParts } from '../../hooks/request'
 import { useToast } from '@/components/ui/use-toast'
 import { useContext } from 'react'
 
-export default function CreatePart({ edit, editValues, editIndex }: { edit?: boolean, editValues?: Tags, editIndex?: number }) {
+export default function CreateTags({ edit, editValues, editIndex }: { edit?: boolean, editValues?: Tags, editIndex?: number }) {
   const { toast } = useToast()
   const { setIsOpen } = useContext(ModalContext)
 

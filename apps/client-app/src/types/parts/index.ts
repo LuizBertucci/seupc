@@ -16,6 +16,10 @@ export type Tags = {
   updatedAt: Date;
 }
 
+export type CategoryTags = {
+  category: string
+}
+
 // Components Types
  export type SelectOption = {
     value: string,
