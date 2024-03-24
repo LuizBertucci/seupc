@@ -3,15 +3,15 @@ import { DialogHeader, ModalContext } from "@/components/ui/dialog";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "@/components/ui/use-toast";
 import { useContext } from "react";
-import { requestDeleteCategoriesTags } from "../../hooks/request";
+import { requestDeleteMarca } from "../../hooks/request";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export  default function DeleteCategoriesTags({selected, setRowSelection }: { selected: string, setRowSelection: any }) {
+export  default function DeleteMarca({selected, setRowSelection }: { selected: string, setRowSelection: any }) {
   const { setIsOpen } = useContext(ModalContext);
 
   const handleDelete = async () => {
-   await requestDeleteCategoriesTags(selected)
-    toast({ title: "Categoria deletada com sucesso!"})
+   await requestDeleteMarca(selected)
+    toast({ title: "Marca deletada com sucesso!"})
     setIsOpen(false)
     setRowSelection({})
   }
@@ -19,10 +19,10 @@ export  default function DeleteCategoriesTags({selected, setRowSelection }: { se
   return (
     <>
       <DialogHeader>
-        Deletar Categoria
+        Deletar Marca
       </DialogHeader>
 
-      <h4>Deseja realmente <b>deletar</b> a categoria selecionada?</h4>
+      <h4>Deseja realmente <b>deletar</b> a marca selecionada?</h4>
 
 <div className="flex flex-row justify-between items-center  w-full mt-5" >
 <Button type="submit" icon={faTrash} size="sm" closeModal onClick={handleDelete} >Deletar</Button>

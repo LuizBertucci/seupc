@@ -20,6 +20,10 @@ export type CategoryTags = {
   category: string
 }
 
+export type Marca = {
+  name: string
+}
+
 // Components Types
  export type SelectOption = {
     value: string,
