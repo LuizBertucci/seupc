@@ -1,4 +1,5 @@
 import CategoriesTagsTable from "@/components/pages/admin/CategoriesTagsTable";
+import LojasTable from "@/components/pages/admin/LojasTable";
 import MarcaTable from "@/components/pages/admin/MarcasTable";
 import PartsTable from "@/components/pages/admin/PartsTable";
 import TagsTable from "@/components/pages/admin/TagsTable";
@@ -13,8 +14,11 @@ export default function Admin() {
    <CategoriesTagsTable />  
     </div>
     <div className="flex flex-row gap-4 justify-start items-start " >
-   <PartsTable />
    <MarcaTable />
+   <LojasTable />
+    </div>
+    <div className="flex flex-row gap-4 justify-start items-start " >
+   <PartsTable />
     </div>
     </div>
   )

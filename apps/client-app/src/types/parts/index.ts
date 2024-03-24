@@ -24,6 +24,10 @@ export type Marca = {
   name: string
 }
 
+export type Loja = {
+  name: string
+}
+
 // Components Types
  export type SelectOption = {
     value: string,
