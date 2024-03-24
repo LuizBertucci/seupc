@@ -28,6 +28,10 @@ export type Loja = {
   name: string
 }
 
+export type Recomendacao = {
+  name: string
+}
+
 // Components Types
  export type SelectOption = {
     value: string,
