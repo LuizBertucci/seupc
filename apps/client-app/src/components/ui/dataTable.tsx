@@ -72,14 +72,14 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="w-full p-4 bg-white rounded-md hover:translate-y-[-2px] min-h-[460px] transition-all duration-150 hover:shadow-md " >
+    <div className="w-full p-4 bg-white rounded-md hover:translate-y-[-2px] min-h-[380px] transition-all duration-150 hover:shadow-md " >
       <div className="flex flex-row w-full justify-between items-center " >
       <h1 className=" font-bold hover:translate-y-[-1px] text-gray-500 " >{title.toUpperCase()}</h1>
       <div className="flex flex-row justify-center items-center space-x-2" >
       {rightMenu}
       </div>
       </div>
-    <div className={`rounded-md border bg-white mt-[10px] ${className} `}>
+    <div className={`flex flex-col justify-between items-start rounded-md border bg-white mt-[10px] min-h-[380px] ${className} `}>
       <Table >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4 px-4 ">
+      <div className="flex self-end items-center justify-end space-x-2 py-4 px-4 ">
         <Button
           variant="outline"
           size="sm"
