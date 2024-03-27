@@ -60,8 +60,8 @@ export type GetNotebookByIdResponse = z.infer<typeof GetNotebookByIdResponse>;
 
 // Response for 'GET notebook/:id' endpoint
 export const GetNotebookByIdResponse = z.object({
-  id: z.string(),
-  title: z.string(),
+  id: z.string().uuid(),
+  title: z.string().min(1),
   brand: z.nativeEnum(Brand),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -71,6 +71,6 @@ export type CreateNotebookRequest = z.infer<typeof CreateNotebookRequest>;
 
 // Input Validation for 'POST notebook' endpoint
 export const CreateNotebookRequest = z.object({
-  title: z.string(),
+  title: z.string().min(1),
   brand: z.nativeEnum(Brand),
 });

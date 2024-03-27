@@ -1,5 +1,6 @@
 import knex from '@src/index';
 import { Part, PartRowSchema } from '@modules/part/partModel';
+import { arrayBind } from '@common/utils/arrayBinding';
 
 const toModel = (row: PartRowSchema): Part => ({
   id: row.id,
@@ -33,7 +34,7 @@ export const partRepository = {
 
     return toModel(rows[0]);
   },
-  createPart: async (part: Part): Promise<Part> => {
+  create: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw(
       'INSERT INTO parts (id, name, created_at, updated_at, part_type, point) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
       [part.id, part.name, part.createdAt, part.updatedAt, part.partType, part.point]
@@ -41,7 +42,7 @@ export const partRepository = {
 
     return toModel(rows);
   },
-  updatePart: async (part: Part): Promise<Part> => {
+  update: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw('UPDATE parts SET name = ?, updated_at =?, point =? WHERE id =? RETURNING *', [
       part.name,
       part.updatedAt,
@@ -51,7 +52,14 @@ export const partRepository = {
 
     return toModel(rows);
   },
-  deletePart: async (id: string): Promise<void> => {
+  delete: async (id: string): Promise<void> => {
     await knex.raw('DELETE FROM parts p WHERE p.id = ?', [id]);
+  },
+  findByIdsAsync: async (ids: string[]): Promise<Part[]> => {
+    if (!ids.length) {
+      return [];
+    }
+    const { rows } = await knex.raw(`SELECT p.* FROM parts p WHERE p.id IN ${arrayBind(ids)}`, [...ids]);
+    return rows.map(toModel);
   },
 };

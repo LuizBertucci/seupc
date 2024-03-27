@@ -57,7 +57,7 @@ export const notebookRouter: Router = (() => {
   });
 
   router.post('/', validateRequest(z.object({ body: CreateNotebookRequest })), async (req: Request, res: Response) => {
-    const serviceResponse = await notebookService.createNotebook(req.body);
+    const serviceResponse = await notebookService.create(req.body);
     handleServiceResponse(serviceResponse, res);
   });
 
