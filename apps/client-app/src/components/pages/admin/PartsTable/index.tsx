@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { SimpleTable } from "@/components/ui/simpleTable";
 import { DataTable } from "@/components/ui/dataTable";
 
-export default function PartsTable() {
+export default function PartsTable({ type, className }: { type?: string, className?: string }) {
   const { dataTable, columns } = usePartStore((state) => state.dados)
   const [rowSelection, setRowSelection ] = useState({})
   const { toast } = useToast()
@@ -26,8 +26,10 @@ useEffect(() => {
 
   return (
     <>
-<div className="w-1/2" >
-<DataTable title="partes" filterId="Nome" filterPlaceholder="Filtrar por nome" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />
+<div className={className} >
+{ type === "simple" ? 
+<SimpleTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />
+: <DataTable title="partes" filterId="name" filterPlaceholder="Filtrar por nome" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />}
       </div>
     </>
   )

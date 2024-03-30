@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/table"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { SelectSingle } from "./select"
 
 const selectionColumn: ColumnDef<[]> = {
   id: "select",
@@ -70,12 +71,13 @@ export function DataTable<TData, TValue>({
   filterId,
   filterPlaceholder,
 }: DataTableProps<TData, TValue>) {
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [pageIndex, setPageIndex] = useState(0)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   
+  console.log(pageSize)
 
   const table = useReactTable({
     data,
@@ -198,6 +200,7 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
       <div className="flex self-end items-center justify-end space-x-2 py-4 px-4 ">
+        <SelectSingle controllable selectValue={pageSize.toString()} className=" border-0 border-white " setSelectValue={setPageSize} options={[{ label: "10", value: "10"}, { label: "20", value: "20"}, { label: "30", value: "30"}, { label: "40", value: "40"}, { label: "50", value: "50"} ]} placeholder={""}  />
         <Button
           variant="outline"
           size="sm"

@@ -19,7 +19,7 @@ export default function Admin() {
    <LojasTable />
     </div>
     <div className="flex flex-row gap-4 justify-start items-start " >
-   <PartsTable />
+   <PartsTable type="simple" className="w-1/2" />
    <RecTable />
     </div>
     </div>
