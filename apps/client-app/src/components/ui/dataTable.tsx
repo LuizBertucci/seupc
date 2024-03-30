@@ -6,6 +6,7 @@ import {
   ColumnDef,
   SortingState,
   ColumnFiltersState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -18,6 +19,12 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import {
   Table,
@@ -27,6 +34,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const selectionColumn: ColumnDef<[]> = {
   id: "select",
@@ -65,7 +74,7 @@ export function DataTable<TData, TValue>({
   const [pageIndex, setPageIndex] = useState(0)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   
 
   const table = useReactTable({
@@ -79,6 +88,7 @@ export function DataTable<TData, TValue>({
       sorting,
       rowSelection,
       columnFilters,
+      columnVisibility,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -87,6 +97,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
   })
 
   return (
@@ -107,6 +118,32 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex flex-row justify-center items-center space-x-2" >
       {rightMenu}
+      <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+          <FontAwesomeIcon className=" text-primary " icon={faBars} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return column.id !== "select" && (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.columnDef.header?.toString()}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       </div>
     <div className={`flex flex-col justify-between items-start rounded-md border bg-white mt-[10px] min-h-[380px] ${className} `}>
