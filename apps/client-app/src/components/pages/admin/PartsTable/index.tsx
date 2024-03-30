@@ -27,7 +27,7 @@ useEffect(() => {
   return (
     <>
 <div className="w-1/2" >
-<DataTable title="partes" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />
+<DataTable title="partes" filterId="Nome" filterPlaceholder="Filtrar por nome" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />
       </div>
     </>
   )

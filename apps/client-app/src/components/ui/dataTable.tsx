@@ -1,17 +1,23 @@
 "use client"
 
 
-
+import { useState } from "react"
 import {
   ColumnDef,
+  SortingState,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 
 import {
   Table,
@@ -21,7 +27,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from "react"
 
 const selectionColumn: ColumnDef<[]> = {
   id: "select",
@@ -40,7 +45,9 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: any,
   rowSelection: any,
   title: string,
-  rightMenu?: React.ReactNode
+  rightMenu?: React.ReactNode,
+  filterId?: string,
+  filterPlaceholder?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -50,10 +57,15 @@ export function DataTable<TData, TValue>({
   rowSelection,
   setRowSelection,
   title,
-  rightMenu
+  rightMenu,
+  filterId,
+  filterPlaceholder,
 }: DataTableProps<TData, TValue>) {
   const [pageSize, setPageSize] = useState(5)
   const [pageIndex, setPageIndex] = useState(0)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
   
 
   const table = useReactTable({
@@ -62,19 +74,37 @@ export function DataTable<TData, TValue>({
     state: {
       pagination: {
         pageSize,
-        pageIndex
+        pageIndex,
       },
+      sorting,
       rowSelection,
+      columnFilters,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
   })
 
   return (
     <div className="w-full p-4 bg-white rounded-md hover:translate-y-[-2px] min-h-[380px] transition-all duration-150 hover:shadow-md " >
-      <div className="flex flex-row w-full justify-between items-center " >
       <h1 className=" font-bold hover:translate-y-[-1px] text-gray-500 " >{title.toUpperCase()}</h1>
+      <div className="flex flex-row w-full justify-between items-center " >
+        <div className="flex flex-row justify-center items-center space-x-2" >
+      <div className="flex items-center py-4">
+        <Input
+          placeholder={filterPlaceholder || "Pesquisar"}
+          value={(table.getColumn(filterId || "")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(filterId || "")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm h-[30px] border-primary "
+        />
+      </div>
+      </div>
       <div className="flex flex-row justify-center items-center space-x-2" >
       {rightMenu}
       </div>
@@ -89,10 +119,18 @@ export function DataTable<TData, TValue>({
                   <TableHead className=" font-bold " key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
+                      : 
+                      <Button
+                      className={` ${ header.id === "select" && "hidden" } p-0 `}
+                      variant="ghost"
+                      onClick={() => header.column.toggleSorting(header.column.getIsSorted() === "asc")}
+                    >
+                      {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+          <ArrowUpDown className=" ml-2 h-4 w-4  " />
+        </Button>}
                   </TableHead>
                 )
               })}
