@@ -1,10 +1,10 @@
 "use client"
-import { DataTable } from "@/components/ui/dataTable";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTagsStore } from "./storage";
 import { requestGetTags } from "./hooks/request";
 import OptionsTable from "./components/Options";
+import { SimpleTable } from "@/components/ui/simpleTable";
 
 export default function TagsTable() {
     const { dataTable, columns } = useTagsStore((state) => state.dados)
@@ -24,7 +24,7 @@ useEffect(() => {
   return (
     <>
 <div className="w-1/2" >
-<DataTable title="tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } className="w-full" />
+<SimpleTable title="tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } className="w-full" />
       </div>
     </>
   )

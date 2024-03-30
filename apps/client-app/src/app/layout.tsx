@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`flex flex-row  ${inter.className}`} >
         <MainNav />
-        <div className="w-full" >
+        <div className="w-full min-h-screen" >
         {children}
         </div>
         <Toaster />

@@ -1,10 +1,12 @@
 "use client"
-import { DataTable } from "@/components/ui/dataTable";
+ 
 import { useEffect, useState } from "react";
 import OptionsTable from "./components/Options";
 import { usePartStore } from "./storage";
 import { requestGetParts } from "./hooks/request";
 import { useToast } from "@/components/ui/use-toast";
+import { SimpleTable } from "@/components/ui/simpleTable";
+import { DataTable } from "@/components/ui/dataTable";
 
 export default function PartsTable() {
   const { dataTable, columns } = usePartStore((state) => state.dados)
