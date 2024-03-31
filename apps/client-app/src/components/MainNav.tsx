@@ -1,11 +1,11 @@
 "use client"
 
 import Image from "next/image";
-import logo from "../../../public/logo.png"
+import logo from "../../public/logo.png"
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLaptop, faGear, faMicrochip, faHashtag } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "../ui/tooltip";
+import { Tooltip } from "./ui/tooltip";
 
 export default function MainNav() {
 

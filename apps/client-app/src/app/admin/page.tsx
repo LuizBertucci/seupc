@@ -1,27 +1,6 @@
-import CategoriesTagsTable from "@/components/pages/admin/CategoriesTagsTable";
-import LojasTable from "@/components/pages/admin/LojasTable";
-import MarcaTable from "@/components/pages/admin/MarcasTable";
-import PartsTable from "@/components/pages/admin/PartsTable";
-import RecTable from "@/components/pages/admin/RecTable";
-import TagsTable from "@/components/pages/admin/TagsTable";
+import Admin from "@/components/pages/admin";
 
 
-export default function Admin() {
-
-  return (
-    <div className="flex flex-col px-[30px] mt-[20px] gap-4 " >  
-    <div className="flex flex-row gap-4 justify-start items-start " >
-   <TagsTable />
-   <CategoriesTagsTable />  
-    </div>
-    <div className="flex flex-row gap-4 justify-start items-start " >
-   <MarcaTable />
-   <LojasTable />
-    </div>
-    <div className="flex flex-row gap-4 justify-start items-start " >
-   <PartsTable type="simple" className="w-1/2" />
-   <RecTable />
-    </div>
-    </div>
-  )
+export default function AdminPage() {
+  return <Admin />
 }

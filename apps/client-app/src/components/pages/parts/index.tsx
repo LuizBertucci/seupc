@@ -1,6 +1,6 @@
 "use client"
 
-import PartsTable from "../admin/PartsTable"
+import PartsTable from "@/components/AdminTableParts"
 
 export default function Parts() {
   return (
