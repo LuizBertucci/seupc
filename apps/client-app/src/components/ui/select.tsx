@@ -152,14 +152,14 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const  SelectSingle = ({options, placeholder = "Selecione um valor", width = "100%", className, formControl, formName, controllable, setSelectValue, selectValue}: { options: Array<SelectOption>, placeholder: string, width?: string, className?: string, formControl?: Control<any>, formName?: string, controllable?: boolean, selectValue?: string | undefined, setSelectValue?: any   }) => {
+const  SelectSingle = ({options, placeholder = "Selecione um valor", width = "100%", className, classNameTrigger, formControl, formName, controllable, setSelectValue, selectValue}: { options: Array<SelectOption>, placeholder: string, width?: string, className?: string, formControl?: Control<any>, formName?: string, controllable?: boolean, selectValue?: string | undefined, setSelectValue?: any, classNameTrigger?: string   }) => {
   return controllable ? 
   <Select 
   value={selectValue}
   onValueChange={setSelectValue}
 //@ts-ignore
 className={` w-[${width}] ${className}  `}>
-  <SelectTrigger className="border-0 space-x-1" >
+  <SelectTrigger className={classNameTrigger} >
     <SelectValue placeholder={placeholder} />
   </SelectTrigger>
   <SelectContent >
