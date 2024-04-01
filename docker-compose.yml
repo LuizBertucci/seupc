@@ -34,7 +34,11 @@ services:
     depends_on:
       - postgres-db
     environment:
-      - DATABASE_URL=postgres://postgres:PgAdmin2024!@postgres-db:5432/postgresdb-seupc-dev
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=PgAdmin2024!
+      - DB_NAME=postgresdb-seupc-dev
 
   client-app:
     build:
