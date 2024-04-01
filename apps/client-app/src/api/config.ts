@@ -1,6 +1,6 @@
-import axios from "axios"
+import axios from 'axios';
 
 export const api = axios.create({
-	baseURL: "http://localhost:8080",
-	headers: { Accept: "application/json" },
+  baseURL: 'https://seupc-core-api.azurewebsites.net/',
+  headers: { Accept: 'application/json' },
 });
