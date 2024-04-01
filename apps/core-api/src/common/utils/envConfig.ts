@@ -14,5 +14,9 @@ export const env = cleanEnv(process.env, {
   HOST: host({ default: 'localhost' }),
   PORT: port({ default: 8080 }),
   CORS_ORIGIN: str({ default: 'http://localhost:8080' }),
-  DATABASE_URL: str(),
+  DB_HOST: str(),
+  DB_PORT: port(),
+  DB_USER: str(),
+  DB_PASSWORD: str(),
+  DB_NAME: str(),
 });

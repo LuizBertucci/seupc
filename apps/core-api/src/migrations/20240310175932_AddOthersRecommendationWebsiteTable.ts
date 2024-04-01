@@ -1,8 +1,9 @@
 import type { Knex } from 'knex';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('others_recommendations_websites', function (table) {
-    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
+    table.uuid('id').primary().defaultTo(uuidv4());
     table
       .enum('name', [
         'Zoom',
