@@ -11,7 +11,7 @@ export default function AdminPage() {
     <div className="flex flex-col px-[30px] mt-[20px] gap-4 " >  
     <div className="flex flex-row gap-4 justify-start items-start " >
    <TagsTable type="simple" className="w-1/2" />
-   <CategoriesTagsTable />  
+   <CategoriesTagsTable type="simple" className="w-1/2" />  
     </div>
     <div className="flex flex-row gap-4 justify-start items-start " >
    <MarcaTable />

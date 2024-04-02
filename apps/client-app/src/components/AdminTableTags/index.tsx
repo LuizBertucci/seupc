@@ -27,7 +27,7 @@ useEffect(() => {
 <div className={className} >
 { type === "simple" ? 
 <SimpleTable title="tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } className="w-full" /> 
-: <DataTable title="tags" columnsFilter={[ { column: "partType", options:[{ label: "HD", value: "HD" }, { label: "SSD", value: "SSD" }, { label: "Memória RAM", value: "Ram Memory" }, { label: "Processador", value: "Processor" }, { label: "Placa Gráfica", value: "Video Card" }], title: "Partes"  } ]} filterId="name" filterPlaceholder="Filtrar por nome" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />}
+: <DataTable title="tags" filterId="name" filterPlaceholder="Filtrar por nome" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />}
       </div>
     </>
   )
