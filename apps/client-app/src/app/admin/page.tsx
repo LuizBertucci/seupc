@@ -10,7 +10,7 @@ export default function AdminPage() {
   return (
     <div className="flex flex-col px-[30px] mt-[20px] gap-4 " >  
     <div className="flex flex-row gap-4 justify-start items-start " >
-   <TagsTable />
+   <TagsTable type="simple" className="w-1/2" />
    <CategoriesTagsTable />  
     </div>
     <div className="flex flex-row gap-4 justify-start items-start " >
