@@ -54,7 +54,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   }[]
 }
 
-const selectionColumn: ColumnDef<[]> = {
+const selectionColumn: ColumnDef<any> = {
   id: "select",
   cell: ({ row }) => (
     <Checkbox
@@ -66,7 +66,7 @@ const selectionColumn: ColumnDef<[]> = {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
-  data: TData[],
+  data: any,
   className: string,
   setRowSelection: any,
   rowSelection: any,
@@ -78,7 +78,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
-    data,
+  data,
   columns,
   className,
   rowSelection,
