@@ -141,5 +141,6 @@ export {
   DialogTitle,
   DialogDescription,
   DialogClose,
-  ModalContext
+  ModalContext, 
+  Dialog
 }

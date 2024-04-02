@@ -57,8 +57,8 @@ export function SimpleTable<TData, TValue>({
   
 
   const table = useReactTable({
-    data,
-    columns: [selectionColumn, ...columns],
+    data: data as any,
+    columns: [selectionColumn, ...columns as any],
     state: {
       pagination: {
         pageSize,
