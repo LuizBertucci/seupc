@@ -116,7 +116,7 @@ export const tagRouter: Router = (() => {
       body: {
         content: {
           'application/json': {
-            schema: UpdateTagRequest,
+            schema: AddPartsOnTagsRequest,
           },
         },
       },
