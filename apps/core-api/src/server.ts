@@ -21,7 +21,7 @@ const app: Express = express();
 
 // Middlewares
 app.use(express.json());
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: false, preflightContinue: true }));
 app.use(helmet());
 app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
