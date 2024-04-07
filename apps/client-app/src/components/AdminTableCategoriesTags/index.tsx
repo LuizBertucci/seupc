@@ -6,8 +6,9 @@ import { useCategoriesTagsStore } from "./storage";
 import { requestGetCategoriesTags } from "./hooks/request";
 import OptionsTable from "./components/Options";
 import { SimpleTable } from "@/components/ui/simpleTable";
+import { DataTable } from "../ui/dataTable";
 
-export default function CategoriesTagsTable() {
+export default function CategoriesTagsTable({ type, className }: { type?: string, className?: string }) {
     const { dataTable, columns } = useCategoriesTagsStore((state) => state.dados)
   const [rowSelection, setRowSelection ] = useState({})
   const { toast } = useToast()
@@ -24,8 +25,10 @@ useEffect(() => {
 
   return (
     <>
-<div className="w-1/2" >
-<SimpleTable title="categorias tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } className="w-full" />
+<div className={className} >
+{ type === "simple" ? 
+<SimpleTable title="categorias tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } className="w-full" /> 
+: <DataTable title="categorias tags" filterId="category" filterPlaceholder="Filtrar por categoria" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={ <OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} /> } />}
       </div>
     </>
   )
