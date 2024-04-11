@@ -91,3 +91,11 @@ Esta estrutura de nomes nos permite entender facilmente o propósito de cada bra
 Após completar as modificações na sua branch, certifique-se de que seu código segue os padrões adotados no projeto e de que todos os testes estão passando.
 
 Feito isso, é necessário abrir um Pull Request (PR). No início do projeto, por padrão, todos os PRs devem ser feitos diretamente para a branch `main`. Certifique-se de fornecer uma descrição detalhada do que foi feito em sua branch na descrição do PR.
+
+## Links Úteis
+- Admin: https://seupc-client-app.azurewebsites.net/admin
+- Notion, com mais explicações sobre o sistema: https://seupc.notion.site/Nosso-c-digo-63dfa3881fa648d1831cf38ea54a36f7?pvs=74
+- Mapa mental: https://mm.tt/app/map/2902173144?t=QfEc6RrDnk
+- Swagger UI: https://seupc-core-api.azurewebsites.net/
+- Estrutura Schema: https://lucid.app/lucidchart/11622696-62da-4f87-bdcc-d195ca619ddc/edit?viewport_loc=-741%2C-526%2C2640%2C1660%2C0_0&invitationId=inv_36e06db8-4f32-4199-977c-579bb31dac11
+- ChatGPT4: pegar acesso com Administradores para acessar "SeuPC GPT" 
