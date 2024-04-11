@@ -1,6 +1,6 @@
-# Seu PC
+# SeuPC
 
-Seu PC é um projeto que permite ao usuário encontrar a melhor configuração de notebooks, com base em seu perfil de uso. O projeto abrange um back-end desenvolvido com Node.js e um front-end construído com Next.js. Diversas bibliotecas são utilizadas para fornecer a funcionalidade do projeto, incluindo express, typescript, knex, swagger e zod. O banco de dados usado é Postgres. O repositório é estruturado como um monorepo e inclui um arquivo docker-compose.yml na raiz do repositório.
+SeuPC é um projeto que permite ao usuário encontrar a melhor configuração de notebooks, com base em seu perfil de uso. O projeto abrange um back-end desenvolvido com Node.js e um front-end construído com Next.js. Diversas bibliotecas são utilizadas para fornecer a funcionalidade do projeto, incluindo express, typescript, knex, swagger e zod. O banco de dados usado é Postgres. O repositório é estruturado como um monorepo e inclui um arquivo docker-compose.yml na raiz do repositório.
 
 ## Começando
 
