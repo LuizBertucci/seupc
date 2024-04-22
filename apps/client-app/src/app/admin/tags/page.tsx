@@ -1,7 +1,7 @@
 "use client"
 
-import AdminCategoriesTagsTable from "@/components/AdminCategoriesTagsCard";
-import TagsTable from "@/components/AdminTableTags";
+import AdminCategoriesTagsCard from "@/components/AdminCategoriesTagsCard";
+import AdminTagsCard from "@/components/AdminTagsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function PartsPage() {
@@ -12,8 +12,8 @@ export default function PartsPage() {
           <TabsTrigger className="w-1/2" value="tags">Tags</TabsTrigger>
           <TabsTrigger className="w-1/2" value="categories">Categorias</TabsTrigger>
         </TabsList>
-        <TabsContent value="tags"><TagsTable className="w-full" /></TabsContent>
-        <TabsContent value="categories"><AdminCategoriesTagsTable className="w-full" /></TabsContent>
+        <TabsContent value="tags"><AdminTagsCard className="w-full" /></TabsContent>
+        <TabsContent value="categories"><AdminCategoriesTagsCard className="w-full" /></TabsContent>
       </Tabs>
     </div>
   )
