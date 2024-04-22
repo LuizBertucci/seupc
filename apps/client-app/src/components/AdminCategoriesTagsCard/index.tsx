@@ -24,12 +24,12 @@ export default function AdminCategoriesTagsCard({ type, className }: { type?: st
   }, [])
 
   return (
-    <>
-      <div className={className} >
-        {type === "simple" ?
-          <SimpleTable title="categorias tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />} className="w-full" />
-          : <DataTable title="categorias tags" filterId="category" filterPlaceholder="Filtrar por categoria" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />} />}
-      </div>
-    </>
+
+    <div className={className} >
+      {type === "simple" ?
+        <SimpleTable title="categorias tags" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />} className="w-full" />
+        : <DataTable title="categorias tags" filterId="category" filterPlaceholder="Filtrar por categoria" setRowSelection={setRowSelection} rowSelection={rowSelection} columns={columns || []} data={dataTable || []} className="w-full" rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />} />}
+    </div>
+
   )
 }
