@@ -7,7 +7,7 @@ import OptionsTable from "./components/Options";
 import { requestGetMarcas } from "./hooks/request";
 import { useMarcasStore } from "./storage";
 
-export default function AdminBrandsTable() {
+export default function AdminBrandsCard() {
   const { dataTable, columns } = useMarcasStore((state) => state.dados)
   const [rowSelection, setRowSelection] = useState({})
   const { toast } = useToast()
