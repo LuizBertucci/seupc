@@ -4,7 +4,8 @@
     "es2021": true
   },
   "extends": [
-    "airbnb"
+    "airbnb",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -40,6 +41,14 @@
   },
   "rules": {
     "react/react-in-jsx-scope": "off",
+    "react/jsx-props-no-spreading": "off",
+    "no-empty": [
+      "error",
+      {
+        "allowEmptytCatch": true
+      }
+    ],
+    "react/jsx-no-bind": "off",
     "react/jsx-filename-extension": [
       1,
       {
@@ -73,6 +82,19 @@
           "caseInsensitive": true
         },
         "newlines-between": "always"
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": [
+          "PascalCase"
+        ],
+        "custom": {
+          "regex": "^[A-Z]",
+          "match": true
+        }
       }
     ]
   }
