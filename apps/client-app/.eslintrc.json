@@ -16,7 +16,26 @@
   ],
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "typescript": {},
+      "alias": {
+        "map": [
+          [
+            "@/components",
+            "./apps/client-app/src/components"
+          ],
+          [
+            "@/lib/utils",
+            "./src/lib"
+          ]
+        ],
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".json",
+          ".ts",
+          ".tsx"
+        ]
+      }
     }
   },
   "rules": {
