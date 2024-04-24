@@ -40,12 +40,13 @@
     }
   },
   "rules": {
+    "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "no-empty": [
       "error",
       {
-        "allowEmptytCatch": true
+        "allowEmptyCatch": true
       }
     ],
     "react/jsx-no-bind": "off",
