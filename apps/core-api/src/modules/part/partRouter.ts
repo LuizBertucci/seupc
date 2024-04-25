@@ -65,7 +65,7 @@ export const partRouter: Router = (() => {
     validateRequest(z.object({ body: CreatePartRequest })),
     (req: Request, res: Response, next: NextFunction): void => {
       partService
-        .createPart(req.body)
+        .create(req.body)
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next);
     }
@@ -94,7 +94,7 @@ export const partRouter: Router = (() => {
     validateRequest(z.object({ body: UpdatePartRequest })),
     (req: Request, res: Response, next: NextFunction): void => {
       partService
-        .updatePart(req.params.id as string, req.body)
+        .update(req.params.id as string, req.body)
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next);
     }
@@ -115,7 +115,7 @@ export const partRouter: Router = (() => {
     validateRequest(GetPartByIdRequest),
     (req: Request, res: Response, next: NextFunction): void => {
       partService
-        .deletePart(req.params.id as string)
+        .delete(req.params.id as string)
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next);
     }

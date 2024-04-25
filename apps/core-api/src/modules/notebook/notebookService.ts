@@ -36,8 +36,8 @@ export const notebookService = {
       StatusCodes.OK
     );
   },
-  createNotebook: async (request: CreateNotebookRequest): Promise<ServiceResponse<string | null>> => {
-    const notebook = await notebookRepository.createNotebook({
+  create: async (request: CreateNotebookRequest): Promise<ServiceResponse<string | null>> => {
+    const notebook = await notebookRepository.create({
       id: uuidv4(),
       title: request.title,
       brand: request.brand,

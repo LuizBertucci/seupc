@@ -1,53 +1,25 @@
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+import AdminBrandsCard from '@/components/AdminBrands/AdminBrandsCard';
+import AdminCategoriesTagsCard from '@/components/AdminCategoriesTags/AdminCategoriesTagsCard';
+import AdminPartsCard from '@/components/AdminParts/AdminsPartsCard';
+import AdminRecCard from '@/components/AdminRec/AdminRecCard';
+import AdminStoresCard from '@/components/AdminStores/AdminStoresCard';
+import AdminTagsCard from '@/components/AdminTags/AdminTagsCard';
 
-type Payment = {
-    id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
-  }
-
-export default function Admin() {
-       
-    const payments: Payment[] = [
-        {
-          id: "728ed52f",
-          amount: 100,
-          status: "pending",
-          email: "m@example.com",
-        },
-        {
-          id: "489e1d42",
-          amount: 125,
-          status: "processing",
-          email: "example@gmail.com",
-        },
-      ]
-
-  const columns: ColumnDef<Payment>[] = [
-        {
-          accessorKey: "status",
-          header: "Status",
-        },
-        {
-          accessorKey: "email",
-          header: "Email",
-        },
-        {
-          accessorKey: "amount",
-          header: "Amount",
-        },
-      ]
-
-
+export default function AdminPage() {
   return (
-    <div className="flex flex-col justify-center items-center px-[30px] mt-[20px] " >
-        <h1>Admin</h1>
-
-<DataTable columns={columns || []} data={payments || []} className="w-full" />
-
-
+    <div className="flex flex-col px-[30px] mt-[20px] gap-4 ">
+      <div className="flex flex-row gap-4 justify-start items-start ">
+        <AdminTagsCard type="simple" className="w-1/2" />
+        <AdminCategoriesTagsCard type="simple" className="w-1/2" />
+      </div>
+      <div className="flex flex-row gap-4 justify-start items-start ">
+        <AdminBrandsCard />
+        <AdminStoresCard />
+      </div>
+      <div className="flex flex-row gap-4 justify-start items-start ">
+        <AdminPartsCard type="simple" className="w-1/2" />
+        <AdminRecCard />
+      </div>
     </div>
-  )
+  );
 }

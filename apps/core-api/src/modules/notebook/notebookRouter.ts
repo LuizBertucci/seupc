@@ -65,7 +65,7 @@ export const notebookRouter: Router = (() => {
     validateRequest(z.object({ body: CreateNotebookRequest })),
     (req: Request, res: Response, next: NextFunction) => {
       notebookService
-        .createNotebook(req.body)
+        .create(req.body)
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next);
     }

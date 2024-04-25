@@ -67,14 +67,14 @@ describe('partService', () => {
     it('handles errors for deletePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
 
-      await expect(partService.deletePart(randomUUID())).rejects.toThrow(NotFoundError)
+      await expect(partService.delete(randomUUID())).rejects.toThrow(NotFoundError)
     });
 
     it('delete a Part', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
-      jest.spyOn(partRepository, 'deletePart').mockResolvedValue();
+      jest.spyOn(partRepository, 'delete').mockResolvedValue();
 
-      expect(await partService.deletePart(part.id)).toEqual({
+      expect(await partService.delete(part.id)).toEqual({
         message: 'Part deletada',
         responseObject: part.id,
         statusCode: StatusCodes.OK,
@@ -82,8 +82,8 @@ describe('partService', () => {
       });
       expect(partRepository.findByIdAsync).toHaveBeenCalledTimes(1);
       expect(partRepository.findByIdAsync).toHaveBeenCalledWith(part.id);
-      expect(partRepository.deletePart).toHaveBeenCalledTimes(1);
-      expect(partRepository.deletePart).toHaveBeenCalledWith(part.id);
+      expect(partRepository.delete).toHaveBeenCalledTimes(1);
+      expect(partRepository.delete).toHaveBeenCalledWith(part.id);
     });
   });
 
@@ -94,22 +94,22 @@ describe('partService', () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({ id: randomUUID() } as Part);
 
-      await expect(partService.updatePart(part.id, request).catch()).rejects.toThrow(BusinessRuleError)
+      await expect(partService.update(part.id, request).catch()).rejects.toThrow(BusinessRuleError)
     });
 
     it('handles errors for updatePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
-      await expect(partService.updatePart(randomUUID(), {} as UpdatePartRequest).catch()).rejects.toThrow(NotFoundError)
+      await expect(partService.update(randomUUID(), {} as UpdatePartRequest).catch()).rejects.toThrow(NotFoundError)
     });
 
     it.each([{ findByNameAsync: null }, { findByNameAsync: part }])('update a Part', async ({ findByNameAsync }) => {
       const newValues: UpdatePartRequest = { name: 'HD 1GB', point: 0.5 };
       const updatePart = { ...part, ...newValues, updatedAt: new Date() };
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
-      jest.spyOn(partRepository, 'updatePart').mockResolvedValue(part);
+      jest.spyOn(partRepository, 'update').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue(findByNameAsync);
 
-      expect(await partService.updatePart(part.id, newValues)).toEqual({
+      expect(await partService.update(part.id, newValues)).toEqual({
         message: 'Part alterada',
         responseObject: part.id,
         statusCode: StatusCodes.OK,
@@ -118,8 +118,8 @@ describe('partService', () => {
       expect(partRepository.findByNameAsync).toHaveBeenCalledWith(newValues.name);
       expect(partRepository.findByIdAsync).toHaveBeenCalledTimes(1);
       expect(partRepository.findByIdAsync).toHaveBeenCalledWith(part.id);
-      expect(partRepository.updatePart).toHaveBeenCalledTimes(1);
-      expect(partRepository.updatePart).toHaveBeenCalledWith(updatePart);
+      expect(partRepository.update).toHaveBeenCalledTimes(1);
+      expect(partRepository.update).toHaveBeenCalledWith(updatePart);
     });
   });
 
@@ -127,7 +127,7 @@ describe('partService', () => {
     it('handles errors for duplicate name', async () => {
       const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: PartType.HD };
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({} as Part);
-      await expect(partService.createPart(request).catch()).rejects.toThrow(BusinessRuleError)
+      await expect(partService.create(request).catch()).rejects.toThrow(BusinessRuleError)
     });
 
     it('create a Part', async () => {
@@ -136,18 +136,18 @@ describe('partService', () => {
         point: part.point,
         partType: part.partType,
       };
-      jest.spyOn(partRepository, 'createPart').mockResolvedValue(part);
+      jest.spyOn(partRepository, 'create').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue(null);
 
-      expect(await partService.createPart(createValues)).toEqual({
+      expect(await partService.create(createValues)).toEqual({
         message: 'Part criada',
         responseObject: part.id,
         statusCode: StatusCodes.CREATED,
         success: true,
       });
       expect(partRepository.findByNameAsync).toHaveBeenCalledWith(part.name);
-      expect(partRepository.createPart).toHaveBeenCalledTimes(1);
-      expect(partRepository.createPart).toHaveBeenCalledWith({
+      expect(partRepository.create).toHaveBeenCalledTimes(1);
+      expect(partRepository.create).toHaveBeenCalledWith({
         ...createValues,
         createdAt: new Date(),
         updatedAt: new Date(),

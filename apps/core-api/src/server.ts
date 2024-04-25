@@ -14,25 +14,28 @@ import compression from 'compression';
 import { compressionMiddleware } from '@common/middleware/compression';
 import { partRouter } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRouter } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
+import { tagRouter } from '@modules/tag/tagRouter';
 
 const logger = pino({ name: 'server start' });
 const app: Express = express();
 
 // Middlewares
 app.use(express.json());
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: false, preflightContinue: true }));
 app.use(helmet());
 app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
 
-// Logging
-app.use(requestLogger());
+if (env.NODE_ENV !== 'test') {
+  app.use(requestLogger());
+}
 
 // Routes
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
 app.use('/parts', partRouter);
 app.use('/others-recommendations-websites', otherRecommendationWebsiteRouter);
+app.use('/tags', tagRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

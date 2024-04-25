@@ -4,6 +4,7 @@ import { healthCheckRegistry } from '@modules/healthCheck/healthCheckRouter';
 import { notebookRegistry } from '@modules/notebook/notebookRouter';
 import { partRegistry } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRegistry } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
+import { tagRegistry } from '@modules/tag/tagRouter';
 
 export function generateOpenAPIDocument() {
   const registry = new OpenAPIRegistry([
@@ -11,6 +12,7 @@ export function generateOpenAPIDocument() {
     notebookRegistry,
     partRegistry,
     otherRecommendationWebsiteRegistry,
+    tagRegistry,
   ]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 

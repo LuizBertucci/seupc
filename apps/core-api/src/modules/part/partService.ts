@@ -40,12 +40,12 @@ export const partService = {
       StatusCodes.OK
     );
   },
-  createPart: async (request: CreatePartRequest): Promise<ServiceResponse<string>> => {
+  create: async (request: CreatePartRequest): Promise<ServiceResponse<string>> => {
     if (await partRepository.findByNameAsync(request.name)) {
       throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`);
     }
 
-    const part = await partRepository.createPart({
+    const part = await partRepository.create({
       point: request.point,
       id: uuidv4(),
       name: request.name,
@@ -56,7 +56,7 @@ export const partService = {
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Part criada', part.id, StatusCodes.CREATED);
   },
-  updatePart: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string>> => {
+  update: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string>> => {
     const part = await partRepository.findByIdAsync(id);
     if (!part) {
       throw new NotFoundError(id);
@@ -71,18 +71,27 @@ export const partService = {
     part.point = request.point;
     part.updatedAt = new Date();
 
-    await partRepository.updatePart(part);
+    await partRepository.update(part);
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Part alterada', part.id, StatusCodes.OK);
   },
-  deletePart: async (id: string): Promise<ServiceResponse<string>> => {
+  delete: async (id: string): Promise<ServiceResponse<string>> => {
     const part = await partRepository.findByIdAsync(id);
     if (!part) {
       throw new NotFoundError(id);
     }
 
-    await partRepository.deletePart(id);
+    await partRepository.delete(id);
 
-    return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK);
+      return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK)
+  },
+  findByIds: async (ids: string[]): Promise<ServiceResponse<GetPartByIdResponse[] | null>> => {
+    const parts = await partRepository.findByIdsAsync(ids);
+    return new ServiceResponse<GetPartByIdResponse[]>(
+      ResponseStatus.Success,
+      'Parts encontradas',
+      parts.map(toDTO),
+      StatusCodes.OK
+    );
   },
 };
