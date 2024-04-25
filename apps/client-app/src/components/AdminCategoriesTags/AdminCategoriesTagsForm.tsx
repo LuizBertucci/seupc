@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { CategoryTags } from '@/types/parts';
 
-import { requestAddCategoriesTags, requestEditCategoriesTags } from '../../hooks/request';
+import { requestAddCategoriesTags, requestEditCategoriesTags } from './hooks/request';
 
 interface ICreateCategoriesTagsProps {
   edit?: boolean;
@@ -16,7 +16,7 @@ interface ICreateCategoriesTagsProps {
   editIndex?: number;
 }
 
-function CreateCategoriesTags({ edit, editValues, editIndex }: ICreateCategoriesTagsProps) {
+function AdminCategoriesTagsForm({ edit, editValues, editIndex }: ICreateCategoriesTagsProps) {
   const { toast } = useToast();
   const { setIsOpen } = useContext(ModalContext);
 
@@ -60,4 +60,4 @@ function CreateCategoriesTags({ edit, editValues, editIndex }: ICreateCategories
   );
 }
 
-export default CreateCategoriesTags;
+export default AdminCategoriesTagsForm;
