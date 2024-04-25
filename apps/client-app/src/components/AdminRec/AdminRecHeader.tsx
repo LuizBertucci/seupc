@@ -10,7 +10,7 @@ import AdminRecForm from './AdminRecForm';
 import { requestDeleteRec } from './hooks/request';
 import { useRecStore } from './storage';
 
-export default function OptionsTable({
+export default function AdminRecHeader({
   rowSelection,
   setRowSelection,
 }: {

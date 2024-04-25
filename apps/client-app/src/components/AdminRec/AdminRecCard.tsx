@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { SimpleTable } from '@/components/ui/simpleTable';
 import { useToast } from '@/components/ui/use-toast';
 
-import OptionsTable from './components/Options';
+import AdminRecHeader from './AdminRecHeader';
 import { requestGetRec } from './hooks/request';
 import { useRecStore } from './storage';
 
@@ -32,7 +32,7 @@ export default function AdminRecCard() {
         rowSelection={rowSelection}
         columns={columns || []}
         data={dataTable || []}
-        rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+        rightMenu={<AdminRecHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
         className="w-full"
       />
     </div>
