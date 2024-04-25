@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { SimpleTable } from '@/components/ui/simpleTable';
 import { useToast } from '@/components/ui/use-toast';
 
-import OptionsTable from './components/Options';
+import AdminBrandsHeader from './AdminBrandsHeader';
 import { requestGetMarcas } from './hooks/request';
 import { useMarcasStore } from './storage';
 
@@ -14,7 +14,6 @@ export default function AdminBrandsCard() {
   const [rowSelection, setRowSelection] = useState({});
   const { toast } = useToast();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const getData = async () => {
       await requestGetMarcas();
@@ -32,7 +31,7 @@ export default function AdminBrandsCard() {
         rowSelection={rowSelection}
         columns={columns || []}
         data={dataTable || []}
-        rightMenu={<OptionsTable setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+        rightMenu={<AdminBrandsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
         className="w-full"
       />
     </div>

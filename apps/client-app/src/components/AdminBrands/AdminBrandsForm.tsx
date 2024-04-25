@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { Marca } from '@/types/parts';
 
-import { requestAddMarca, requestEditMarca } from '../../hooks/request';
+import { requestAddMarca, requestEditMarca } from './hooks/request';
 
 interface ICreateMarcaProps {
   edit?: boolean;
@@ -16,7 +16,7 @@ interface ICreateMarcaProps {
   editIndex?: number;
 }
 
-export default function CreateMarca({ edit, editValues, editIndex }: ICreateMarcaProps) {
+export default function AdminBrandsForm({ edit, editValues, editIndex }: ICreateMarcaProps) {
   const { toast } = useToast();
   const { setIsOpen } = useContext(ModalContext);
 
