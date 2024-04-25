@@ -1,6 +1,6 @@
 import AdminBrandsCard from '@/components/AdminBrands/AdminBrandsCard';
 import AdminCategoriesTagsCard from '@/components/AdminCategoriesTags/AdminCategoriesTagsCard';
-import AdminPartsCard from '@/components/AdminPartsCard';
+import AdminPartsCard from '@/components/AdminParts/AdminsPartsCard';
 import AdminRecCard from '@/components/AdminRecCard';
 import AdminStoresCard from '@/components/AdminStoresCard';
 import AdminTagsCard from '@/components/AdminTagsCard';

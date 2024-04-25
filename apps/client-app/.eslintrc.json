@@ -33,6 +33,10 @@
           [
             "@/types",
             "./apps/client-app/src/types"
+          ],
+          [
+            "@/api/parts",
+            "./apps/client-app/src/api/parts"
           ]
         ],
         "extensions": [
