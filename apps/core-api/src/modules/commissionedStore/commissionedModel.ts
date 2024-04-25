@@ -8,11 +8,8 @@ extendZodWithOpenApi(z);
 export type CommisionedStore = CommissionedStoreSchema;
 
 export enum CommissionedStoreName {
-  PROCESSOR = 'Processor',
-  RAM_MEMORY = 'Ram Memory',
-  HD = 'HD',
-  SSD = 'SSD',
-  VIDEO_CARD = 'Video Card',
+  MAGALU = 'Magalu',
+  AMAZON = 'Amazon',
 }
 
 interface CommissionedStoreSchema {
@@ -20,7 +17,7 @@ interface CommissionedStoreSchema {
   commissionedCompany: CommissionedStoreName;
   notebookId: string;
   productUrl: string;
-  commissionedUrl: string
+  commissionedUrl: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,7 +27,7 @@ export interface CommissionedStoreRowSchema {
   commissioned_company: CommissionedStoreName;
   notebook_id: string;
   product_url: string;
-  commissioned_url: string
+  commissioned_url: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -43,9 +40,10 @@ export type GetCommissionedStoreByIdResponse = z.infer<typeof GetCommissionedSto
 
 export const GetCommissionedStoreByIdResponse = z.object({
   id: z.string().uuid(),
-  partType: z.nativeEnum(CommissionedStoreName),
-  point: z.number(),
-  name: z.string(),
+  commissionedCompany: z.nativeEnum(CommissionedStoreName),
+  notebookId: z.string().uuid(),
+  productUrl: z.string(),
+  commissionedUrl: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -53,14 +51,15 @@ export const GetCommissionedStoreByIdResponse = z.object({
 export type CreateCommissionedStoreRequest = z.infer<typeof CreateCommissionedStoreRequest>;
 
 export const CreateCommissionedStoreRequest = z.object({
-  name: z.string(),
-  partType: z.nativeEnum(CommissionedStoreName),
-  point: z.number().gt(0),
+  commissionedCompany: z.nativeEnum(CommissionedStoreName),
+  notebookId: z.string().uuid(),
+  productUrl: z.string(),
+  commissionedUrl: z.string(),
 });
 
 export type UpdateCommissionedStoreRequest = z.infer<typeof UpdateCommissionedStoreRequest>;
 
 export const UpdateCommissionedStoreRequest = z.object({
-  name: z.string(),
-  point: z.number().gt(0),
+  productUrl: z.string(),
+  commissionedUrl: z.string(),
 });

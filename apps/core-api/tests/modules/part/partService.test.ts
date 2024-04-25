@@ -46,7 +46,7 @@ describe('partService', () => {
     it('handles errors for findById', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
 
-      await expect(partService.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError)
+      await expect(partService.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError);
     });
 
     it('return a Part', async () => {
@@ -67,7 +67,7 @@ describe('partService', () => {
     it('handles errors for deletePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
 
-      await expect(partService.delete(randomUUID())).rejects.toThrow(NotFoundError)
+      await expect(partService.delete(randomUUID())).rejects.toThrow(NotFoundError);
     });
 
     it('delete a Part', async () => {
@@ -94,12 +94,12 @@ describe('partService', () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({ id: randomUUID() } as Part);
 
-      await expect(partService.update(part.id, request).catch()).rejects.toThrow(BusinessRuleError)
+      await expect(partService.update(part.id, request).catch()).rejects.toThrow(BusinessRuleError);
     });
 
     it('handles errors for updatePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
-      await expect(partService.update(randomUUID(), {} as UpdatePartRequest).catch()).rejects.toThrow(NotFoundError)
+      await expect(partService.update(randomUUID(), {} as UpdatePartRequest).catch()).rejects.toThrow(NotFoundError);
     });
 
     it.each([{ findByNameAsync: null }, { findByNameAsync: part }])('update a Part', async ({ findByNameAsync }) => {
@@ -127,7 +127,7 @@ describe('partService', () => {
     it('handles errors for duplicate name', async () => {
       const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: PartType.HD };
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({} as Part);
-      await expect(partService.create(request).catch()).rejects.toThrow(BusinessRuleError)
+      await expect(partService.create(request).catch()).rejects.toThrow(BusinessRuleError);
     });
 
     it('create a Part', async () => {

@@ -53,7 +53,7 @@ describe('otherRecommendationWebsiteService', () => {
     it('handles errors for findById', async () => {
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(null);
 
-      await expect(service.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError)
+      await expect(service.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError);
     });
 
     it('return a Part', async () => {
@@ -98,7 +98,9 @@ describe('otherRecommendationWebsiteService', () => {
     it('handles errors for update', async () => {
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(null);
 
-      await expect(service.update(randomUUID(), {} as UpdateOtherRecommendationWebsiteRequest).catch()).rejects.toThrow(NotFoundError)
+      await expect(service.update(randomUUID(), {} as UpdateOtherRecommendationWebsiteRequest).catch()).rejects.toThrow(
+        NotFoundError
+      );
     });
 
     it('update an ORW', async () => {
