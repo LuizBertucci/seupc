@@ -2,7 +2,7 @@ import AdminBrandsCard from '@/components/AdminBrands/AdminBrandsCard';
 import AdminCategoriesTagsCard from '@/components/AdminCategoriesTags/AdminCategoriesTagsCard';
 import AdminPartsCard from '@/components/AdminParts/AdminsPartsCard';
 import AdminRecCard from '@/components/AdminRec/AdminRecCard';
-import AdminStoresCard from '@/components/AdminStoresCard';
+import AdminStoresCard from '@/components/AdminStores/AdminStoresCard';
 import AdminTagsCard from '@/components/AdminTagsCard';
 
 export default function AdminPage() {
