@@ -1,11 +1,11 @@
 "use client"
 
-import PartsTable from "@/components/AdminTableParts";
+import AdminPartsCard from "@/components/AdminPartsCard";
 
 export default function PartsPage() {
   return (
     <div className="p-[30px]" >
-     <PartsTable className="w-full" />   
+      <AdminPartsCard className="w-full" />
     </div>
   )
 }
