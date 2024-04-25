@@ -35,8 +35,8 @@
             "./apps/client-app/src/types"
           ],
           [
-            "@/api/parts",
-            "./apps/client-app/src/api/parts"
+            "@/api",
+            "./apps/client-app/src/api"
           ]
         ],
         "extensions": [

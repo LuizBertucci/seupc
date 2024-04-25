@@ -3,7 +3,7 @@ import AdminCategoriesTagsCard from '@/components/AdminCategoriesTags/AdminCateg
 import AdminPartsCard from '@/components/AdminParts/AdminsPartsCard';
 import AdminRecCard from '@/components/AdminRec/AdminRecCard';
 import AdminStoresCard from '@/components/AdminStores/AdminStoresCard';
-import AdminTagsCard from '@/components/AdminTagsCard';
+import AdminTagsCard from '@/components/AdminTags/AdminTagsCard';
 
 export default function AdminPage() {
   return (

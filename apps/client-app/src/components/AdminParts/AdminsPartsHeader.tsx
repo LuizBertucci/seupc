@@ -10,7 +10,6 @@ import AdminsPartsForm from './AdminsPartsForm';
 import { requestDeleteParts } from './hooks/request';
 import { usePartStore } from './storage';
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export default function AdminsPartsHeader({
   rowSelection,
   setRowSelection,

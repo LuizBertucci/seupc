@@ -6,24 +6,24 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, Modal, ModalContext } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
 
-import AdminRecForm from './AdminRecForm';
-import { requestDeleteRec } from './hooks/request';
-import { useRecStore } from './storage';
+import AdminTagsForm from './AdminTagsForm';
+import { requestDeleteTags } from './hooks/request';
+import { useTagsStore } from './storage';
 
-export default function OptionsTable({
+export default function AdminTagsHeader({
   rowSelection,
   setRowSelection,
 }: {
   rowSelection: object;
   setRowSelection: any;
 }) {
-  const { dataTable } = useRecStore((state) => state.dados);
+  const { dataTable } = useTagsStore((state) => state.dados);
 
   const { setIsOpen } = useContext(ModalContext);
 
   const handleDelete = async () => {
-    await requestDeleteRec(Object.keys(rowSelection)[0]);
-    toast({ title: 'Site de recomendação deletado com sucesso!' });
+    await requestDeleteTags(Object.keys(rowSelection)[0]);
+    toast({ title: 'Tag deletada com sucesso!' });
     setIsOpen(false);
     setRowSelection({});
   };
@@ -33,10 +33,10 @@ export default function OptionsTable({
       <Modal
         content={
           <>
-            <DialogHeader>Deletar Site de Recomendação</DialogHeader>
+            <DialogHeader>Deletar Tag</DialogHeader>
 
             <h4>
-              Deseja realmente <b>deletar</b> o site de recomendação selecionado?
+              Deseja realmente <b>deletar</b> a tag selecionada?
             </h4>
 
             <div className="flex flex-row justify-between items-center  w-full mt-5">
@@ -55,7 +55,7 @@ export default function OptionsTable({
 
       <Modal
         content={
-          <AdminRecForm
+          <AdminTagsForm
             edit
             editValues={dataTable?.[Object.keys(rowSelection)[0]]}
             editIndex={Number(Object.keys(rowSelection)[0])}
@@ -65,7 +65,7 @@ export default function OptionsTable({
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminRecForm />}>
+      <Modal content={<AdminTagsForm />}>
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
