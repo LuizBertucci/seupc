@@ -1,13 +1,13 @@
-## Seu PC Core Api
+## Seu PC Core API
 
-Este é o backend do produto SeuPC. O backend foi feito com as seguintes tecnologias:
+Este é o backend do produto SeuPC. O backend foi desenvolvido utilizando as seguintes tecnologias:
 
-- Node20
+- Node.js 20
 - Express
-- Postgres10
+- PostgreSQL 10
 
-Para rodar o projeto localmente, rode:
+Para executar o projeto localmente, utilize o seguinte comando:
 
 `npm run dev`
 
-Pode ser que seja necessário criar o banco 'postgresdb-seupc-dev' manualmente.
+Pode ser necessário criar o banco de dados 'postgresdb-seupc-dev' manualmente.
