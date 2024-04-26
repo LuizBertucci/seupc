@@ -125,6 +125,5 @@ export {
   DialogHeader,
   DialogTitle,
   Modal,
-  // eslint-disable-next-line prettier/prettier
-  ModalContext
+  ModalContext,
 };

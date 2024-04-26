@@ -129,6 +129,5 @@ export {
   CommandItem,
   CommandList,
   CommandSeparator,
-  // eslint-disable-next-line prettier/prettier
-  CommandShortcut
+  CommandShortcut,
 };

@@ -212,6 +212,5 @@ export {
   SelectSeparator,
   SelectSingle,
   SelectTrigger,
-  // eslint-disable-next-line prettier/prettier
-  SelectValue
+  SelectValue,
 };
