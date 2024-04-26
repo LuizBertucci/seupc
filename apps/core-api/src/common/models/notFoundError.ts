@@ -3,3 +3,9 @@ export class NotFoundError extends Error {
     super(`There is no entity with the id ${id}`);
   }
 }
+
+export class BatchNotFoundError extends Error {
+  constructor() {
+    super(`Not all entities exists`);
+  }
+}

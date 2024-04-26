@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 import { logger } from '@src/server';
 import { ZodError, ZodIssue } from 'zod';
-import { NotFoundError } from '@common/models/notFoundError';
+import { BatchNotFoundError, NotFoundError } from '@common/models/notFoundError';
 
 function handleSyntaxError(err: unknown, _req: Request, res: Response): void {
   if (err instanceof SyntaxError && 'type' in err && 'body' in err) {
@@ -36,7 +36,7 @@ function handleZodError(err: unknown, res: Response): void {
 }
 
 function handleNotFoundError(err: unknown, res: Response) {
-  if (err instanceof NotFoundError) {
+  if (err instanceof NotFoundError || err instanceof BatchNotFoundError) {
     const statusCode = StatusCodes.NOT_FOUND;
     res.status(statusCode).send(new ServiceResponse<null>(ResponseStatus.Failed, err.message, null, statusCode));
   }
