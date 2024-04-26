@@ -15,7 +15,6 @@ function AdminPartsCard({ type, className }: { type?: string; className?: string
   const [rowSelection, setRowSelection] = useState({});
   const { toast } = useToast();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const getData = async () => {
       await requestGetParts();
@@ -23,6 +22,7 @@ function AdminPartsCard({ type, className }: { type?: string; className?: string
     };
 
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

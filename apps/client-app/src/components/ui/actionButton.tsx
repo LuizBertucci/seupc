@@ -1,7 +1,6 @@
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
-import React from 'react';
 
-interface ActionButtonProps {
+interface IActionButtonProps {
   icon: FontAwesomeIconProps['icon'];
   background?: string;
   iconSize?: number;
@@ -10,15 +9,15 @@ interface ActionButtonProps {
   disabled?: boolean;
 }
 
-export default function ActionButton({ 
-  icon, 
-  background = "primary", 
-  iconSize = 12, 
-  width = "28px", 
-  height = "28px",
-  disabled = false, 
-  ...props 
-}: ActionButtonProps) {
+export default function ActionButton({
+  icon,
+  background = 'primary',
+  iconSize = 12,
+  width = '28px',
+  height = '28px',
+  disabled = false,
+  ...props
+}: IActionButtonProps) {
   const disabledClass = disabled ? `bg-${background} disabled:opacity-50 cursor-not-allowed` : `bg-${background}`;
 
   return (

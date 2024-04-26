@@ -27,8 +27,8 @@
             "./apps/client-app/src/components"
           ],
           [
-            "@/lib/utils",
-            "./src/lib"
+            "@/lib",
+            "./apps/client-app/src/lib"
           ],
           [
             "@/types",
@@ -51,6 +51,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
+    "import/prefer-default-export": "off",
     "react/require-default-props": "off",
     "object-curly-spacing": [
       "error",
