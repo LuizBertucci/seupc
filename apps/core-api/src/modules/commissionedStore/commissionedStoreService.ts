@@ -10,6 +10,7 @@ import {
   UpdateCommissionedStoreRequest,
 } from '@modules/commissionedStore/commissionedStoreModel';
 import { NotFoundError } from '@common/models/notFoundError';
+import { notebookService } from '@modules/notebook/notebookService';
 
 const toDTO = (commissionedStore: CommissionedStore): GetCommissionedStoreByIdResponse => ({
   id: commissionedStore.id,
@@ -44,6 +45,7 @@ export const commissionedStoreService = {
     );
   },
   create: async (request: CreateCommissionedStoreRequest): Promise<ServiceResponse<string | null>> => {
+    await notebookService.findById(request.notebookId);
     const store = await commissionedStoreRepository.create({
       id: uuidv4(),
       commissionedCompany: request.commissionedCompany,
