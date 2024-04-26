@@ -4,14 +4,14 @@ import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse'
 import { v4 as uuidv4 } from 'uuid';
 import { commissionedStoreRepository } from '@modules/commissionedStore/commissionedStoreRepository';
 import {
-  CommisionedStore,
+  CommissionedStore,
   CreateCommissionedStoreRequest,
   GetCommissionedStoreByIdResponse,
   UpdateCommissionedStoreRequest,
 } from '@modules/commissionedStore/commissionedStoreModel';
 import { NotFoundError } from '@common/models/notFoundError';
 
-const toDTO = (commissionedStore: CommisionedStore): GetCommissionedStoreByIdResponse => ({
+const toDTO = (commissionedStore: CommissionedStore): GetCommissionedStoreByIdResponse => ({
   id: commissionedStore.id,
   commissionedCompany: commissionedStore.commissionedCompany,
   notebookId: commissionedStore.notebookId,

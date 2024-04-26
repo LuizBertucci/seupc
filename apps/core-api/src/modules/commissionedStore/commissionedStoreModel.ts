@@ -5,7 +5,7 @@ import { commonValidations } from '@common/utils/commonValidation';
 
 extendZodWithOpenApi(z);
 
-export type CommisionedStore = CommissionedStoreSchema;
+export type CommissionedStore = CommissionedStoreSchema;
 
 export enum CommissionedStoreName {
   MAGALU = 'Magalu',
