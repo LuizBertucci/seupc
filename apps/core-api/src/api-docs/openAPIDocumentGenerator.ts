@@ -5,9 +5,11 @@ import { notebookRegistry } from '@modules/notebook/notebookRouter';
 import { partRegistry } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRegistry } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
 import { tagRegistry } from '@modules/tag/tagRouter';
+import { storeRegistry } from '@modules/commissionedStore/commissionedStoreRouter';
 
 export function generateOpenAPIDocument() {
   const registry = new OpenAPIRegistry([
+    storeRegistry,
     healthCheckRegistry,
     notebookRegistry,
     partRegistry,
