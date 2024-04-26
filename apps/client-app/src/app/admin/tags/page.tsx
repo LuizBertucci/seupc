@@ -1,7 +1,7 @@
 'use client';
 
 import AdminCategoriesTagsCard from '@/components/AdminCategoriesTags/AdminCategoriesTagsCard';
-import AdminTagsCard from '@/components/AdminTagsCard';
+import AdminTagsCard from '@/components/AdminTags/AdminTagsCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PartsPage() {

@@ -14,7 +14,6 @@ export default function AdminRecCard() {
   const [rowSelection, setRowSelection] = useState({});
   const { toast } = useToast();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <exðplanation>
   useEffect(() => {
     const getData = async () => {
       await requestGetRec();
@@ -22,6 +21,7 @@ export default function AdminRecCard() {
     };
 
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

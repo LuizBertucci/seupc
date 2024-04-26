@@ -1,26 +1,28 @@
-import { Tags } from "@/types/parts";
-import { api } from "./config";
+import { Tags } from '@/types/parts';
 
-interface GetTagsResponse {
-    success: boolean,
-    message: string,
-    responseObject: Tags[] | string,
-    statusCode: number
+import { api } from './config';
+
+interface IGetTagsResponse {
+  success: boolean;
+  message: string;
+  responseObject: Tags[] | string;
+  statusCode: number;
 }
 
-interface AddTagsParams {
-    name: string,
-    category: 'Games' | 'Programs' | 'Courses'
+interface IAddTagsParams {
+  name: string;
+  category: 'Games' | 'Programs' | 'Courses';
 }
 
-export interface EditTagsParams {
-    name: string
+export interface IEditTagsParams {
+  name: string;
 }
 
-export const getTags =  async () => api.get<GetTagsResponse>("/tags")
+export const getTags = async () => api.get<IGetTagsResponse>('/tags');
 
-export const addTags =  async (params: AddTagsParams) => api.post<GetTagsResponse>("/tags", params)
+export const addTags = async (params: IAddTagsParams) => api.post<IGetTagsResponse>('/tags', params);
 
-export const editTags =  async (params: EditTagsParams | undefined, id: string) => api.put<GetTagsResponse>(`/tags/${id}`, params)
+export const editTags = async (params: IEditTagsParams | undefined, id: string) =>
+  api.put<IGetTagsResponse>(`/tags/${id}`, params);
 
-export const deleteTags =  async (id: string) => api.delete<GetTagsResponse>(`/tags/${id}`)
+export const deleteTags = async (id: string) => api.delete<IGetTagsResponse>(`/tags/${id}`);

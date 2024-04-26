@@ -1,45 +1,41 @@
-import * as React from "react"
+import { InputHTMLAttributes, forwardRef } from 'react';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-    formError?: string
-  }
+export interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  formError?: string;
+}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, formError, ...props }, ref) => {
-
-    const input = (
-      <input
+const Input = forwardRef<HTMLInputElement, IInputProps>(({ className, type, formError, ...props }, ref) => {
+  const input = (
+    <input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-md border border-black bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus:ring-primary  focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+        'flex h-10 w-full rounded-md border border-black bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus:ring-primary  focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       ref={ref}
       {...props}
     />
-    )
+  );
 
-    const formInput = (
-      <div className='flex flex-col justify-center items-start w-full' >
+  const formInput = (
+    <div className="flex flex-col justify-center items-start w-full">
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-black bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus:ring-primary  focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          'flex h-10 w-full rounded-md border border-black bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus:ring-primary  focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
         ref={ref}
         {...props}
       />
-       <p className=' text-[12px] font-medium text-red-500 self-start mt-2 ' >{formError}</p>
-      </div>
-    )
+      <p className=" text-[12px] font-medium text-red-500 self-start mt-2 ">{formError}</p>
+    </div>
+  );
 
-    return formError ? formInput : input
-  }
-)
-Input.displayName = "Input"
+  return formError ? formInput : input;
+});
+Input.displayName = 'Input';
 
-export { Input }
+export { Input };

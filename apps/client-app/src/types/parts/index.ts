@@ -1,12 +1,12 @@
 // Main Types
 export type Parts = {
-  partType: 'Processor' | 'Ram Memory' | 'HD' | 'SSD' | 'Video Card',
-  name: string
-  point: number
-  id: string,
-  createdAt: string,
-  updatedAt: string
-  }
+  partType: 'Processor' | 'Ram Memory' | 'HD' | 'SSD' | 'Video Card';
+  name: string;
+  point: number;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type Tags = {
   id: string;
@@ -14,26 +14,26 @@ export type Tags = {
   name: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type CategoryTags = {
-  category: string
-}
+  category: string;
+};
 
 export type Marca = {
-  name: string
-}
+  name: string;
+};
 
 export type Loja = {
-  name: string
-}
+  name: string;
+};
 
 export type Recomendacao = {
-  name: string
-}
+  name: string;
+};
 
 // Components Types
- export type SelectOption = {
-    value: string,
-    label: string
-  }
+export type SelectOption = {
+  value: string;
+  label: string;
+};
