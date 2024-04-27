@@ -25,7 +25,25 @@
     }
   },
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "es5",
+        "endOfLine": "auto",
+        "tabWidth": 2,
+        "printWidth": 120,
+        "singleQuote": true,
+        "semi": true,
+        "overrides": [
+          {
+            "files": "*.json",
+            "options": {
+              "parser": "json"
+            }
+          }
+        ]
+      }
+    ],
     "import/prefer-default-export": "off",
     "react/require-default-props": "off",
     "object-curly-spacing": ["error", "always"],
