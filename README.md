@@ -92,10 +92,63 @@ Após completar as modificações na sua branch, certifique-se de que seu códig
 
 Feito isso, é necessário abrir um Pull Request (PR). No início do projeto, por padrão, todos os PRs devem ser feitos diretamente para a branch `main`. Certifique-se de fornecer uma descrição detalhada do que foi feito em sua branch na descrição do PR.
 
+## Deploy
+
+Para fazer o deploy da aplicação, siga os passos abaixo:
+
+#### Encontrar usuário e senha do Azure CR
+
+Os administradores podem encontrar o usuário e senha do Azure CR acessando o portal do Azure, navegando até o Container Registry desejado e clicando em "Acess keys". É necessário utilizar o "Username" e o "Password" para completar o login no Container Registry.
+
+#### Executar o deploy
+
+Dentro das pastas `client-app` e `core-api`, você encontrará um arquivo chamado `deploy.sh` que fica dentro da pasta `scripts`. Para executá-lo, siga os passos abaixo:
+
+1. Faça o login no Docker:
+
+```bash
+docker login <nome-do-registry>.azurecr.io
+```
+
+2. Execute o script de deploy:
+
+```bash
+./deploy.sh
+```
+
+Lembre-se de que é necessário ter o Docker instalado na máquina para realizar o deploy e que todas aplicações precisam estar completando o build.
+
+## Acessando ao Banco de Dados de produção na Azure de forma externa
+
+Para acessar um Banco de Dados PostgreSQL na Azure de forma externa, será necessário adicionar o seu IP local nas configurações de firewall. Abaixo estão os passos para realizar essa configuração:
+
+#### Adicionar o IP local nas configurações de firewall
+
+1. Acesse o portal do Azure e faça login na conta.
+
+2. No painel de navegação à esquerda, procure por "Grupos de recursos" e selecione o grupo de recursos onde está localizado o seu Banco de Dados PostgreSQL.
+
+3. Dentro do grupo de recursos, encontre o Banco de Dados PostgreSQL que deseja acessar externamente e clique nele.
+
+4. No menu lateral esquerdo, clique em "Set server firewall".
+
+5. Em seguida, você verá uma lista de regras de firewall. Para adicionar o seu IP local, clique em "Adicionar endereço de IP" na seção "Firewall rules".
+
+6. Você pode encontrar o seu endereço de IP público pesquisando no Google por "Qual é o meu IP" ou se a opção "Add your client IPv4 address" estiver disponível, basta clicar no botão.
+
+7. Após adicionar o seu IP local, clique em "Salvar" para aplicar as alterações.
+
+#### Acessar o Banco de Dados externamente
+
+Agora que o seu IP local foi adicionado às configurações de firewall do Banco de Dados PostgreSQL na Azure, você pode acessá-lo externamente utilizando um cliente de PostgreSQL, como o pgAdmin ou o psql.
+
+Certifique-se de que a string de conexão do seu cliente inclui o host (endereço do servidor), porta, nome do banco de dados, nome de usuário e senha corretos.
+
 ## Links Úteis
+
 - Admin: https://seupc-client-app.azurewebsites.net/admin
 - Notion, com mais explicações sobre o sistema: https://seupc.notion.site/Nosso-c-digo-63dfa3881fa648d1831cf38ea54a36f7?pvs=74
 - Mapa mental: https://mm.tt/app/map/2902173144?t=QfEc6RrDnk
 - Swagger UI: https://seupc-core-api.azurewebsites.net/
 - Estrutura Schema: https://lucid.app/lucidchart/11622696-62da-4f87-bdcc-d195ca619ddc/edit?viewport_loc=-741%2C-526%2C2640%2C1660%2C0_0&invitationId=inv_36e06db8-4f32-4199-977c-579bb31dac11
-- ChatGPT4: pegar acesso com Administradores para acessar "SeuPC GPT" 
+- ChatGPT4: pegar acesso com Administradores para acessar "SeuPC GPT"
