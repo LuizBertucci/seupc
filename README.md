@@ -118,6 +118,16 @@ docker login <nome-do-registry>.azurecr.io
 
 Lembre-se de que é necessário ter o Docker instalado na máquina para realizar o deploy e que todas aplicações precisam estar completando o build.
 
+#### Problemas durante o deploy
+
+Durante o processo de deploy, podem surgir alguns problemas comuns, tais como:
+
+- **DevDependencies**: Caso haja dependências que são utilizadas em todos os ambientes, e que constam apenas em `devDependencies`, pode ocorrer problemas ao enviar a aplicação para produção. Certifique-se de mover essas dependências para `dependencies` antes do deploy.
+
+- **Configuração do Prettier**: Ao rodar o comando `docker build .`, verifique se o container está sendo construído com sucesso. Problemas relacionados à formatação do código pelo Prettier podem causar erros durante o build do Docker.
+
+- **Build da aplicação**: Antes de realizar o deploy, certifique-se de testar o build da aplicação localmente rodando o comando `npm run build`. Problemas durante o processo de build podem gerar falhas no deploy da aplicação. Certifique-se de corrigir quaisquer erros ou alertas que surjam durante o build local antes de prosseguir com o deploy.
+
 ## Acessando ao Banco de Dados de produção na Azure de forma externa
 
 Para acessar um Banco de Dados PostgreSQL na Azure de forma externa, será necessário adicionar o seu IP local nas configurações de firewall. Abaixo estão os passos para realizar essa configuração:
