@@ -11,7 +11,7 @@ import { Parts, SelectOption } from '@/types/parts';
 
 import { requestAddParts, requestEditParts } from './hooks/request';
 
-export default function AdminsPartsForm({
+export default function AdminPartsForm({
   edit,
   editValues,
   editIndex,
@@ -31,10 +31,15 @@ export default function AdminsPartsForm({
   } = useForm<Parts>({ defaultValues: edit ? editValues : {} });
 
   const onSubmit: SubmitHandler<Parts> = async (data) => {
+    const parsedData = {
+      ...data,
+      point: Number(data.point),
+    };
+
     if (edit) {
-      await requestEditParts(data, editIndex);
+      await requestEditParts(parsedData, editIndex);
     } else {
-      await requestAddParts(data);
+      await requestAddParts(parsedData);
     }
 
     toast({ title: `Parte ${edit ? 'editada' : 'criada'} com sucesso!` });
