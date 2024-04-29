@@ -6,7 +6,7 @@ import { DataTable } from '@/components/ui/dataTable';
 import { SimpleTable } from '@/components/ui/simpleTable';
 import { useToast } from '@/components/ui/use-toast';
 
-import AdminsPartsHeader from './AdminsPartsHeader';
+import AdminPartsHeader from './AdminPartsHeader';
 import { requestGetParts } from './hooks/request';
 import { usePartStore } from './storage';
 
@@ -35,7 +35,7 @@ function AdminPartsCard({ type, className }: { type?: string; className?: string
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<AdminsPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={<AdminPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
         />
       ) : (
         <DataTable
@@ -60,7 +60,7 @@ function AdminPartsCard({ type, className }: { type?: string; className?: string
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<AdminsPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={<AdminPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
         />
       )}
     </div>

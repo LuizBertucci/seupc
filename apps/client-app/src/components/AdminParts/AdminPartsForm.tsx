@@ -11,7 +11,7 @@ import { Parts, SelectOption } from '@/types/parts';
 
 import { requestAddParts, requestEditParts } from './hooks/request';
 
-export default function AdminsPartsForm({
+export default function AdminPartsForm({
   edit,
   editValues,
   editIndex,

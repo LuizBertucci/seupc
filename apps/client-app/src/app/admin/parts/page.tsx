@@ -1,6 +1,6 @@
 'use client';
 
-import AdminPartsCard from '@/components/AdminParts/AdminsPartsCard';
+import AdminPartsCard from '@/components/AdminParts/AdminPartsCard';
 
 export default function PartsPage() {
   return (

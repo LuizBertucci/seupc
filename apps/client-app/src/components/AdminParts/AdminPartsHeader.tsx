@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, Modal, ModalContext } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
 
-import AdminsPartsForm from './AdminsPartsForm';
+import AdminPartsForm from './AdminPartsForm';
 import { requestDeleteParts } from './hooks/request';
 import { usePartStore } from './storage';
 
-export default function AdminsPartsHeader({
+export default function AdminPartsHeader({
   rowSelection,
   setRowSelection,
 }: {
@@ -55,7 +55,7 @@ export default function AdminsPartsHeader({
 
       <Modal
         content={
-          <AdminsPartsForm
+          <AdminPartsForm
             edit
             editValues={dataTable?.[Object.keys(rowSelection)[0]]}
             editIndex={Number(Object.keys(rowSelection)[0])}
@@ -65,7 +65,7 @@ export default function AdminsPartsHeader({
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminsPartsForm />}>
+      <Modal content={<AdminPartsForm />}>
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
