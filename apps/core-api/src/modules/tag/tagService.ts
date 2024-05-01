@@ -72,7 +72,7 @@ export const tagService = {
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Tag deletada', tag.id, StatusCodes.OK);
   },
-  addParts: async (data: TagPartTuple[]): Promise<ServiceResponse<string | null>> => {
+  addParts: async (data: TagPartTuple[]): Promise<ServiceResponse<TagPartTuple[]>> => {
     const tags = await tagRepository.findByIdsAsync(data.map(({ tagId }) => tagId));
     if (tags.length !== data.length) {
       throw new BatchNotFoundError();
@@ -84,11 +84,6 @@ export const tagService = {
 
     await tagRepository.addParts(data);
 
-    return new ServiceResponse<string>(
-      ResponseStatus.Success,
-      'Tags associadas a parts',
-      data.toString(),
-      StatusCodes.OK
-    );
+    return new ServiceResponse<TagPartTuple[]>(ResponseStatus.Success, 'Tags associadas a parts', data, StatusCodes.OK);
   },
 };
