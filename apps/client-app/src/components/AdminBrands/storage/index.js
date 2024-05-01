@@ -1,5 +1,6 @@
-import {create} from 'zustand';
-import {immer} from 'zustand/middleware/immer';
+/* eslint-disable no-param-reassign */
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 export const useMarcasStore = create(
   immer((set) => ({

@@ -23,6 +23,7 @@ export default function AdminCategoriesTagsCard({ type, className }: { type?: st
     };
 
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

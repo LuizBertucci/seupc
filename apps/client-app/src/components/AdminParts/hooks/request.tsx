@@ -1,4 +1,4 @@
-import { EditPartsParams, addParts, deleteParts, editParts, getParts } from '@/api/parts';
+import { IEditPartsParams, addParts, deleteParts, editParts, getParts } from '@/api/parts';
 import { Parts } from '@/types/parts';
 
 import { usePartStore } from '../storage';
@@ -23,7 +23,7 @@ export const requestAddParts = async (value: Parts) => {
   return true;
 };
 
-export const requestEditParts = async (value: EditPartsParams | undefined, index: number | undefined) => {
+export const requestEditParts = async (value: IEditPartsParams | undefined, index: number | undefined) => {
   const { editDataTable } = usePartStore.getState().dispatch;
   const { dataTable } = usePartStore.getState().dados;
 
@@ -52,8 +52,6 @@ export const requestDeleteParts = async (value: string) => {
   const filterData = dataTable.filter((part: Parts, index: number) => value !== index.toString());
 
   const getPartId: Parts = await dataTable.find((data: Parts, i: number) => i === Number(value));
-
-  console.log(getPartId);
 
   const { data } = await deleteParts(getPartId.id);
 

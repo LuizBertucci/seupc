@@ -1,44 +1,53 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { X } from "lucide-react"
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
+import {
+  ComponentPropsWithoutRef,
+  ElementRef,
+  HTMLAttributes,
+  ReactNode,
+  createContext,
+  forwardRef,
+  useContext,
+  useState,
+} from 'react';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
-
-const ModalContext = React.createContext({
-  setIsOpen: (open: boolean) => {}
+const ModalContext = createContext({
+  // eslint-disable-next-line no-unused-vars
+  setIsOpen: (open: boolean) => {},
 });
 
-const Dialog = DialogPrimitive.Root
+const Dialog = DialogPrimitive.Root;
 
-const DialogTrigger = DialogPrimitive.Trigger
+const DialogTrigger = DialogPrimitive.Trigger;
 
-const DialogPortal = DialogPrimitive.Portal
+const DialogPortal = DialogPrimitive.Portal;
 
-const DialogClose = DialogPrimitive.Close
+const DialogClose = DialogPrimitive.Close;
 
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+const DialogOverlay = forwardRef<
+  ElementRef<typeof DialogPrimitive.Overlay>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
   />
-))
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
+));
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+const DialogContent = forwardRef<
+  ElementRef<typeof DialogPrimitive.Content>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  const { setIsOpen } = React.useContext(ModalContext); 
+  const { setIsOpen } = useContext(ModalContext);
 
   return (
     <DialogPortal>
@@ -46,101 +55,75 @@ const DialogContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+          'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
           className
         )}
         {...props}
       >
         {children}
-        
-          <X className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity h-4 w-4 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground" onClick={() => setIsOpen(false)}  />
+
+        <X
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity h-4 w-4 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+          onClick={() => setIsOpen(false)}
+        />
       </DialogPrimitive.Content>
     </DialogPortal>
   );
 });
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-const DialogHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col space-y-1.5 text-center sm:text-left",
-      className
-    )}
-    {...props}
-  />
-)
-DialogHeader.displayName = "DialogHeader"
+function DialogHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />;
+}
+DialogHeader.displayName = 'DialogHeader';
 
-const DialogFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      className
-    )}
-    {...props}
-  />
-)
-DialogFooter.displayName = "DialogFooter"
+function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />;
+}
+DialogFooter.displayName = 'DialogFooter';
 
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+const DialogTitle = forwardRef<
+  ElementRef<typeof DialogPrimitive.Title>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
-      className
-    )}
+    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
     {...props}
   />
-))
-DialogTitle.displayName = DialogPrimitive.Title.displayName
+));
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
-const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+const DialogDescription = forwardRef<
+  ElementRef<typeof DialogPrimitive.Description>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props}
-  />
-))
-DialogDescription.displayName = DialogPrimitive.Description.displayName
+  <DialogPrimitive.Description ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+));
+DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
+function Modal({ children, content }: { children: ReactNode; content: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
 
-const Modal = ({ children, content }: { children: React.ReactNode, content: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  
-return (
-  <Dialog open={isOpen} onOpenChange={() => setIsOpen(true)} >
-     <ModalContext.Provider value={{ setIsOpen }}>
-  <DialogTrigger asChild >
-    {children}
-    </DialogTrigger>
-  <DialogContent>
-    {content}
-  </DialogContent>
-  </ModalContext.Provider>
-</Dialog>
-)
+  return (
+    <Dialog open={isOpen} onOpenChange={() => setIsOpen(true)}>
+      {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
+      <ModalContext.Provider value={{ setIsOpen }}>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogContent>{content}</DialogContent>
+      </ModalContext.Provider>
+    </Dialog>
+  );
 }
 
 export {
-  Modal,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
+  Dialog,
   DialogClose,
-  ModalContext, 
-  Dialog
-}
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Modal,
+  ModalContext,
+};

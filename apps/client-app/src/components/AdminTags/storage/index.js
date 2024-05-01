@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
