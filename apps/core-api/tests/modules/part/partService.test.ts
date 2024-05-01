@@ -2,8 +2,9 @@ import { partRepository } from '@modules/part/partRepository';
 import { partService } from '@modules/part/partService';
 import { StatusCodes } from 'http-status-codes';
 import { randomUUID } from 'crypto';
-import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
 import { CreatePartRequest, Part, PartType, UpdatePartRequest } from '@modules/part/partModel';
+import { NotFoundError } from '@common/models/notFoundError';
+import { BusinessRuleError } from '@common/models/businessRuleError';
 
 jest.mock('@modules/part/partRepository');
 jest.mock('@src/index');
@@ -28,17 +29,6 @@ describe('partService', () => {
   });
 
   describe('findAll', () => {
-    it('handles errors for findAllAsync', async () => {
-      jest.spyOn(partRepository, 'findAllAsync').mockRejectedValue(new Error('Database error'));
-
-      expect(await partService.findAll()).toEqual({
-        message: 'Erro ao encontrar as parts: Database error',
-        responseObject: null,
-        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        success: false,
-      });
-    });
-
     it('return all Parts', async () => {
       jest.spyOn(partRepository, 'findAllAsync').mockResolvedValue([part]);
 
@@ -56,12 +46,7 @@ describe('partService', () => {
     it('handles errors for findById', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
 
-      expect(await partService.findById(randomUUID())).toEqual({
-        message: 'Nenhuma part encontrada',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(partService.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError);
     });
 
     it('return a Part', async () => {
@@ -82,12 +67,7 @@ describe('partService', () => {
     it('handles errors for deletePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
 
-      expect(await partService.delete(randomUUID())).toEqual({
-        message: 'Nenhuma part encontrada',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(partService.delete(randomUUID())).rejects.toThrow(NotFoundError);
     });
 
     it('delete a Part', async () => {
@@ -114,25 +94,12 @@ describe('partService', () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(part);
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({ id: randomUUID() } as Part);
 
-      expect(await partService.update(part.id, request)).toEqual(
-        new ServiceResponse(
-          ResponseStatus.Failed,
-          `Nome ${request.name} já é utilizado por outra part`,
-          null,
-          StatusCodes.BAD_REQUEST
-        )
-      );
+      await expect(partService.update(part.id, request).catch()).rejects.toThrow(BusinessRuleError);
     });
 
     it('handles errors for updatePart', async () => {
       jest.spyOn(partRepository, 'findByIdAsync').mockResolvedValue(null);
-
-      expect(await partService.update(randomUUID(), {} as UpdatePartRequest)).toEqual({
-        message: 'Nenhuma part encontrada',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(partService.update(randomUUID(), {} as UpdatePartRequest).catch()).rejects.toThrow(NotFoundError);
     });
 
     it.each([{ findByNameAsync: null }, { findByNameAsync: part }])('update a Part', async ({ findByNameAsync }) => {
@@ -157,29 +124,10 @@ describe('partService', () => {
   });
 
   describe('createPart', () => {
-    it('handles errors for createPart', async () => {
-      jest.spyOn(partRepository, 'create').mockRejectedValue(new Error('Database error'));
-      jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue(null);
-
-      expect(await partService.create({} as CreatePartRequest)).toEqual({
-        message: 'Erro ao criar a part: Database error',
-        responseObject: null,
-        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        success: false,
-      });
-    });
-
     it('handles errors for duplicate name', async () => {
       const request: CreatePartRequest = { name: 'HD 1GB', point: 0.5, partType: PartType.HD };
       jest.spyOn(partRepository, 'findByNameAsync').mockResolvedValue({} as Part);
-      expect(await partService.create(request)).toEqual(
-        new ServiceResponse(
-          ResponseStatus.Failed,
-          `Nome ${request.name} já é utilizado por outra part`,
-          null,
-          StatusCodes.BAD_REQUEST
-        )
-      );
+      await expect(partService.create(request).catch()).rejects.toThrow(BusinessRuleError);
     });
 
     it('create a Part', async () => {

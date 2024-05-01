@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import express, { Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import { z } from 'zod';
 
 import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
@@ -27,10 +27,12 @@ export const tagRouter: Router = (() => {
     responses: createApiResponse(z.array(GetTagByIdResponse), 'Success'),
   });
 
-  router.get('/', async (_req: Request, res: Response) => {
-    const serviceResponse = await tagService.findAll();
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.get('/', async (_req: Request, res: Response, next: NextFunction) =>
+    tagService
+      .findAll()
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next)
+  );
 
   tagRegistry.registerPath({
     method: 'get',
@@ -40,10 +42,12 @@ export const tagRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.get('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await tagService.findById(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.get('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response, next: NextFunction) =>
+    tagService
+      .findById(req.params.id as string)
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next)
+  );
 
   tagRegistry.registerPath({
     method: 'post',
@@ -61,10 +65,15 @@ export const tagRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.post('/', validateRequest(z.object({ body: CreateTagRequest })), async (req: Request, res: Response) => {
-    const serviceResponse = await tagService.create(req.body);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.post(
+    '/',
+    validateRequest(z.object({ body: CreateTagRequest })),
+    async (req: Request, res: Response, next: NextFunction) =>
+      tagService
+        .create(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next)
+  );
 
   tagRegistry.registerPath({
     method: 'put',
@@ -87,10 +96,11 @@ export const tagRouter: Router = (() => {
     '/:id',
     validateRequest(GetTagByIdRequest),
     validateRequest(z.object({ body: UpdateTagRequest })),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await tagService.update(req.params.id as string, req.body);
-      handleServiceResponse(serviceResponse, res);
-    }
+    async (req: Request, res: Response, next: NextFunction) =>
+      tagService
+        .update(req.params.id as string, req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next)
   );
 
   tagRegistry.registerPath({
@@ -103,10 +113,12 @@ export const tagRouter: Router = (() => {
     responses: createApiResponse(z.string(), 'Success'),
   });
 
-  router.delete('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response) => {
-    const serviceResponse = await tagService.delete(req.params.id as string);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.delete('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response, next: NextFunction) =>
+    tagService
+      .delete(req.params.id as string)
+      .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+      .catch(next)
+  );
 
   tagRegistry.registerPath({
     method: 'post',
@@ -127,10 +139,11 @@ export const tagRouter: Router = (() => {
   router.post(
     '/add-parts',
     validateRequest(z.object({ body: AddPartsOnTagsRequest })),
-    async (req: Request, res: Response) => {
-      const serviceResponse = await tagService.addParts(req.body);
-      handleServiceResponse(serviceResponse, res);
-    }
+    async (req: Request, res: Response, next: NextFunction) =>
+      tagService
+        .addParts(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next)
   );
 
   return router;

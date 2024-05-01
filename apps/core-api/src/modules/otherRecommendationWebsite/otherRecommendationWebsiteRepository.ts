@@ -44,12 +44,15 @@ export const otherRecommendationWebsiteRepository = {
     return toModel(rows);
   },
   update: async (recommendationWebsite: OtherRecommendationWebsite): Promise<OtherRecommendationWebsite> => {
-    const { rows } = await knex.raw('UPDATE others_recommendations_websites SET name = ?, updated_at =?, link =? WHERE id =? RETURNING *', [
-      recommendationWebsite.name,
-      recommendationWebsite.updatedAt,
-      recommendationWebsite.link,
-      recommendationWebsite.id,
-    ]);
+    const { rows } = await knex.raw(
+      'UPDATE others_recommendations_websites SET name = ?, updated_at =?, link =? WHERE id =? RETURNING *',
+      [
+        recommendationWebsite.name,
+        recommendationWebsite.updatedAt,
+        recommendationWebsite.link,
+        recommendationWebsite.id,
+      ]
+    );
 
     return toModel(rows);
   },

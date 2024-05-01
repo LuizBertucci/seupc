@@ -6,14 +6,11 @@ import {
   OtherRecommendationWebsite,
   UpdateOtherRecommendationWebsiteRequest,
 } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
-import {
-  otherRecommendationWebsiteRepository as repository,
-} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
-import {
-  otherRecommendationWebsiteService as service,
-} from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
+import { otherRecommendationWebsiteRepository as repository } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository';
+import { otherRecommendationWebsiteService as service } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteService';
 import { notebookService } from '@modules/notebook/notebookService';
-import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
+import { ServiceResponse } from '@common/models/serviceResponse';
+import { NotFoundError } from '@common/models/notFoundError';
 
 jest.mock('@modules/otherRecommendationWebsite/otherRecommendationWebsiteRepository');
 jest.mock('@modules/notebook/notebookService');
@@ -39,17 +36,6 @@ describe('otherRecommendationWebsiteService', () => {
   });
 
   describe('findAll', () => {
-    it('handles errors for findAllAsync', async () => {
-      jest.spyOn(repository, 'findAllAsync').mockRejectedValue(new Error('Database error'));
-
-      expect(await service.findAll()).toEqual({
-        message: 'Erro ao encontrar ORWs: Database error',
-        responseObject: null,
-        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        success: false,
-      });
-    });
-
     it('return all Parts', async () => {
       jest.spyOn(repository, 'findAllAsync').mockResolvedValue([website]);
 
@@ -67,12 +53,7 @@ describe('otherRecommendationWebsiteService', () => {
     it('handles errors for findById', async () => {
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(null);
 
-      expect(await service.findById(randomUUID())).toEqual({
-        message: 'Nenhum ORW encontrado',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(service.findById(randomUUID()).catch()).rejects.toThrow(NotFoundError);
     });
 
     it('return a Part', async () => {
@@ -93,12 +74,7 @@ describe('otherRecommendationWebsiteService', () => {
     it('handles errors for delete', async () => {
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(null);
 
-      expect(await service.delete(randomUUID())).toEqual({
-        message: 'Nenhum ORW encontrado',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(service.delete(randomUUID()).catch()).rejects.toThrow(NotFoundError);
     });
 
     it('delete a Part', async () => {
@@ -122,16 +98,16 @@ describe('otherRecommendationWebsiteService', () => {
     it('handles errors for update', async () => {
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(null);
 
-      expect(await service.update(randomUUID(), {} as UpdateOtherRecommendationWebsiteRequest)).toEqual({
-        message: 'Nenhum ORW encontrado',
-        responseObject: null,
-        statusCode: StatusCodes.NOT_FOUND,
-        success: false,
-      });
+      await expect(service.update(randomUUID(), {} as UpdateOtherRecommendationWebsiteRequest).catch()).rejects.toThrow(
+        NotFoundError
+      );
     });
 
     it('update an ORW', async () => {
-      const newValues: UpdateOtherRecommendationWebsiteRequest = { name: ORWName.BUSCAPE, link: 'https://buscape.com.br' };
+      const newValues: UpdateOtherRecommendationWebsiteRequest = {
+        name: ORWName.BUSCAPE,
+        link: 'https://buscape.com.br',
+      };
       const update = { ...website, ...newValues, updatedAt: new Date() };
       jest.spyOn(repository, 'findByIdAsync').mockResolvedValue(website);
       jest.spyOn(repository, 'update').mockResolvedValue(website);
@@ -150,18 +126,6 @@ describe('otherRecommendationWebsiteService', () => {
   });
 
   describe('create', () => {
-    it('handles errors for invalid orw', async () => {
-      jest
-        .spyOn(notebookService, 'findById')
-        .mockResolvedValue(
-          new ServiceResponse(ResponseStatus.Failed, 'Nenhum notebook encontrado', null, StatusCodes.NOT_FOUND)
-        );
-
-      expect(await service.create({ notebookId: randomUUID() } as CreateOtherRecommendationWebsiteRequest)).toEqual(
-        new ServiceResponse(ResponseStatus.Failed, 'Nenhum notebook encontrado', null, StatusCodes.NOT_FOUND)
-      );
-    });
-
     it('create an ORW', async () => {
       const createValues: CreateOtherRecommendationWebsiteRequest = {
         name: ORWName.BUSCAPE,

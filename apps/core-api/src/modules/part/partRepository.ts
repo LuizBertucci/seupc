@@ -49,11 +49,13 @@ export const partRepository = {
       part.point,
       part.id,
     ]);
-
     return toModel(rows);
   },
   delete: async (id: string): Promise<void> => {
-    await knex.raw('DELETE FROM parts p WHERE p.id = ?', [id]);
+    await knex.transaction(async (trx) => {
+      await knex.raw('DELETE FROM tag_parts WHERE part_id = ?', [id]).transacting(trx);
+      await knex.raw('DELETE FROM parts p WHERE p.id = ?', [id]).transacting(trx);
+    });
   },
   findByIdsAsync: async (ids: string[]): Promise<Part[]> => {
     if (!ids.length) {

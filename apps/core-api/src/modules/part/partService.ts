@@ -1,11 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
-import { logger } from '@src/server';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CreatePartRequest, GetPartByIdResponse, Part, UpdatePartRequest } from '@modules/part/partModel';
 import { partRepository } from '@modules/part/partRepository';
+import { NotFoundError } from '@common/models/notFoundError';
+import { BusinessRuleError } from '@common/models/businessRuleError';
 
 const toDTO = (part: Part): GetPartByIdResponse => ({
   id: part.id,
@@ -17,126 +18,80 @@ const toDTO = (part: Part): GetPartByIdResponse => ({
 });
 
 export const partService = {
-  findAll: async (): Promise<ServiceResponse<GetPartByIdResponse[] | null>> => {
-    try {
-      const parts = await partRepository.findAllAsync();
-      return new ServiceResponse<GetPartByIdResponse[]>(
-        ResponseStatus.Success,
-        'Parts encontradas',
-        parts.map(toDTO),
-        StatusCodes.OK
-      );
-    } catch (ex) {
-      const errorMessage = `Erro ao encontrar as parts: ${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+  findAll: async (): Promise<ServiceResponse<GetPartByIdResponse[]>> => {
+    const parts = await partRepository.findAllAsync();
+    return new ServiceResponse<GetPartByIdResponse[]>(
+      ResponseStatus.Success,
+      'Parts encontradas',
+      parts.map(toDTO),
+      StatusCodes.OK
+    );
   },
-  findById: async (id: string): Promise<ServiceResponse<GetPartByIdResponse | null>> => {
-    try {
-      const part = await partRepository.findByIdAsync(id);
-      if (!part) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nenhuma part encontrada', null, StatusCodes.NOT_FOUND);
-      }
-
-      return new ServiceResponse<GetPartByIdResponse>(
-        ResponseStatus.Success,
-        'Part encontrada',
-        toDTO(part),
-        StatusCodes.OK
-      );
-    } catch (ex) {
-      const errorMessage = `Erro ao encontrar a part: $${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+  findById: async (id: string): Promise<ServiceResponse<GetPartByIdResponse>> => {
+    const part = await partRepository.findByIdAsync(id);
+    if (!part) {
+      throw new NotFoundError(id);
     }
+
+    return new ServiceResponse<GetPartByIdResponse>(
+      ResponseStatus.Success,
+      'Part encontrada',
+      toDTO(part),
+      StatusCodes.OK
+    );
   },
-  create: async (request: CreatePartRequest): Promise<ServiceResponse<string | null>> => {
-    try {
-      if (await partRepository.findByNameAsync(request.name)) {
-        return new ServiceResponse(
-          ResponseStatus.Failed,
-          `Nome ${request.name} já é utilizado por outra part`,
-          null,
-          StatusCodes.BAD_REQUEST
-        );
-      }
-
-      const part = await partRepository.create({
-        point: request.point,
-        id: uuidv4(),
-        name: request.name,
-        partType: request.partType,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-
-      return new ServiceResponse<string>(ResponseStatus.Success, 'Part criada', part.id, StatusCodes.CREATED);
-    } catch (ex) {
-      const errorMessage = `Erro ao criar a part: ${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+  create: async (request: CreatePartRequest): Promise<ServiceResponse<string>> => {
+    if (await partRepository.findByNameAsync(request.name)) {
+      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`);
     }
+
+    const part = await partRepository.create({
+      point: request.point,
+      id: uuidv4(),
+      name: request.name,
+      partType: request.partType,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    return new ServiceResponse<string>(ResponseStatus.Success, 'Part criada', part.id, StatusCodes.CREATED);
   },
-  update: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string | null>> => {
-    try {
-      const part = await partRepository.findByIdAsync(id);
-      if (!part) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nenhuma part encontrada', null, StatusCodes.NOT_FOUND);
-      }
-
-      const partByName = await partRepository.findByNameAsync(request.name);
-      if (partByName && partByName.id !== part.id) {
-        return new ServiceResponse(
-          ResponseStatus.Failed,
-          `Nome ${request.name} já é utilizado por outra part`,
-          null,
-          StatusCodes.BAD_REQUEST
-        );
-      }
-
-      part.name = request.name;
-      part.point = request.point;
-      part.updatedAt = new Date();
-
-      await partRepository.update(part);
-
-      return new ServiceResponse<string>(ResponseStatus.Success, 'Part alterada', part.id, StatusCodes.OK);
-    } catch (ex) {
-      const errorMessage = `Erro ao alterar a part: ${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+  update: async (id: string, request: UpdatePartRequest): Promise<ServiceResponse<string>> => {
+    const part = await partRepository.findByIdAsync(id);
+    if (!part) {
+      throw new NotFoundError(id);
     }
+
+    const partByName = await partRepository.findByNameAsync(request.name);
+    if (partByName && partByName.id !== part.id) {
+      throw new BusinessRuleError(`Nome ${request.name} já é utilizado por outra part`);
+    }
+
+    part.name = request.name;
+    part.point = request.point;
+    part.updatedAt = new Date();
+
+    await partRepository.update(part);
+
+    return new ServiceResponse<string>(ResponseStatus.Success, 'Part alterada', part.id, StatusCodes.OK);
   },
-  delete: async (id: string): Promise<ServiceResponse<string | null>> => {
-    try {
-      const part = await partRepository.findByIdAsync(id);
-      if (!part) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Nenhuma part encontrada', null, StatusCodes.NOT_FOUND);
-      }
-
-      await partRepository.delete(id);
-
-      return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK);
-    } catch (ex) {
-      const errorMessage = `Erro ao alterar a part: ${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
+  delete: async (id: string): Promise<ServiceResponse<string>> => {
+    const part = await partRepository.findByIdAsync(id);
+    if (!part) {
+      throw new NotFoundError(id);
     }
+
+    await partRepository.delete(id);
+
+    return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK);
   },
   findByIds: async (ids: string[]): Promise<ServiceResponse<GetPartByIdResponse[] | null>> => {
-    try {
-      const parts = await partRepository.findByIdsAsync(ids);
-      return new ServiceResponse<GetPartByIdResponse[]>(
-        ResponseStatus.Success,
-        'Parts encontradas',
-        parts.map(toDTO),
-        StatusCodes.OK
-      );
-    } catch (ex) {
-      const errorMessage = `Erro ao encontrar as parts: $${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return new ServiceResponse(ResponseStatus.Failed, errorMessage, null, StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+    const parts = await partRepository.findByIdsAsync(ids);
+    return new ServiceResponse<GetPartByIdResponse[]>(
+      ResponseStatus.Success,
+      'Parts encontradas',
+      parts.map(toDTO),
+      StatusCodes.OK
+    );
   },
 };
