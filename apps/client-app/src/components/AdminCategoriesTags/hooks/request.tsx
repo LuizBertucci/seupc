@@ -8,8 +8,7 @@ export const requestGetCategoriesTags = async () => {
   const MockCategoriesTags = [
     { category: 'Jogos' },
     { category: 'Programa' },
-    { category: 'Curso' },
-    { category: 'Sites' },
+    { category: 'Curso' }
   ];
 
   await setDataTable(MockCategoriesTags);
