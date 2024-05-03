@@ -1,5 +1,5 @@
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -7,19 +7,41 @@ import { DialogHeader, ModalContext } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { SelectSingle } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { SelectOption, Tags } from '@/types/parts';
+import { PartTypeEnum, Parts, SelectOption, Tags } from '@/types/parts';
 
 import { requestAddTags, requestEditTags } from './hooks/request';
+
+interface PartsSelectionOption {
+  processors: SelectOption[];
+  ram: SelectOption[];
+  hd: SelectOption[];
+  ssd: SelectOption[];
+  gpu: SelectOption[];
+}
 
 export default function AdminTagsForm({
   edit,
   editValues,
   editIndex,
+  parts,
 }: {
   edit?: boolean;
   editValues?: Tags;
   editIndex?: number;
+  parts?: Parts[]
 }) {
+  function emptyPartsSelection(): PartsSelectionOption {
+    return {
+      processors: [],
+      ram: [],
+      hd: [],
+      ssd: [],
+      gpu: [],
+    };
+  }  
+  
+  const [{processors, ram, hd, ssd, gpu}, setPartSelection] = useState<PartsSelectionOption>(emptyPartsSelection())
+  
   const { toast } = useToast();
   const { setIsOpen } = useContext(ModalContext);
 
@@ -29,6 +51,30 @@ export default function AdminTagsForm({
     control,
     formState: { errors },
   } = useForm<Tags>({ defaultValues: edit ? editValues : {} });
+
+useEffect(() => {
+  const newPartSelection = emptyPartsSelection();
+  for (const part of parts ?? []) {
+    const data = {label: part.name, value: part.id};
+    switch (part.partType) {
+      case PartTypeEnum.HD:
+        newPartSelection.hd.push(data);
+        break;
+      case PartTypeEnum.Processor:
+        newPartSelection.processors.push(data);
+        break
+      case PartTypeEnum.RamMemory:
+        newPartSelection.ram.push(data);
+        break;
+      case PartTypeEnum.SSD:
+        newPartSelection.ssd.push(data);
+        break;
+      case PartTypeEnum.VideoCard:
+        newPartSelection.gpu.push(data);
+    }
+  }
+  setPartSelection(newPartSelection);
+}, [parts])
 
   const onSubmit: SubmitHandler<Tags> = async (data) => {
     if (edit) {
@@ -63,6 +109,17 @@ export default function AdminTagsForm({
         />
 
         <SelectSingle options={options} formControl={control} formName="category" placeholder="Categoria" />
+        
+        {edit && <>
+          <div style={{ alignSelf: 'self-start', marginLeft: '5px' }}>
+            <h2>Associar Parts</h2>
+          </div>
+          {processors.length > 0 && <SelectSingle options={processors} formControl={control} formName="partProcessor" placeholder="Processador" />}
+          {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="partRam" placeholder="RAM" />}
+          {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="partHD" placeholder="HD" />}
+          {ssd.length > 0 && (<SelectSingle options={ssd} formControl={control} formName="partSSD" placeholder="SSD" />)}
+          {gpu.length > 0 && <SelectSingle options={gpu} formControl={control} formName="partGPU" placeholder="Placa de vídeo" />}
+        </>}
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>
           {edit ? 'Salvar' : 'Criar'}
