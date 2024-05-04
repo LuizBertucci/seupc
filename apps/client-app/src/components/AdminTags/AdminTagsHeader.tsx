@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import AdminTagsForm from './AdminTagsForm';
 import { requestDeleteTags } from './hooks/request';
 import { useTagsStore } from './storage';
+import { usePartStore } from '../AdminParts/storage';
 
 export default function AdminTagsHeader({
   rowSelection,
@@ -18,6 +19,7 @@ export default function AdminTagsHeader({
   setRowSelection: any;
 }) {
   const { dataTable } = useTagsStore((state) => state.dados);
+  const { dataTable: parts } = usePartStore((state) => state.dados);
 
   const { setIsOpen } = useContext(ModalContext);
 
@@ -59,6 +61,7 @@ export default function AdminTagsHeader({
             edit
             editValues={dataTable?.[Object.keys(rowSelection)[0]]}
             editIndex={Number(Object.keys(rowSelection)[0])}
+            parts={parts}
           />
         }
       >

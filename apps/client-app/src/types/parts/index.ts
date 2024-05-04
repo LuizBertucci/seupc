@@ -1,6 +1,18 @@
 // Main Types
+
+export enum PartTypeEnum {
+  Processor = 'Processor',
+  RamMemory = 'Ram Memory',
+  HD = 'HD',
+  SSD = 'SSD',
+  VideoCard = 'Video Card'
+}
+
+type PartType = PartTypeEnum.HD | PartTypeEnum.SSD | PartTypeEnum.Processor | PartTypeEnum.RamMemory | PartTypeEnum.VideoCard;
+
+
 export type Parts = {
-  partType: 'Processor' | 'Ram Memory' | 'HD' | 'SSD' | 'Video Card';
+  partType: PartType;
   name: string;
   point: number;
   id: string;
@@ -15,6 +27,14 @@ export type Tags = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type AddPartsToTag = {
+  processors?: string;
+  ram?: string;
+  hd?: string;
+  ssd?: string;
+  gpu?: string;
+}
 
 export type CategoryTags = {
   category: string;
@@ -33,7 +53,7 @@ export type Recomendacao = {
 };
 
 // Components Types
-export type SelectOption = {
+export type SelectOption<> = {
   value: string;
   label: string;
 };
