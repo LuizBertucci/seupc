@@ -7,9 +7,9 @@ import { DialogHeader, ModalContext } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { SelectSingle } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { PartTypeEnum, Parts, SelectOption, Tags } from '@/types/parts';
+import { AddPartsToTag, PartTypeEnum, Parts, SelectOption, Tags } from '@/types/parts';
 
-import { requestAddTags, requestEditTags } from './hooks/request';
+import { requestAddPartsToTag, requestAddTags, requestEditTags } from './hooks/request';
 
 interface PartsSelectionOption {
   processors: SelectOption[];
@@ -76,9 +76,13 @@ useEffect(() => {
   setPartSelection(newPartSelection);
 }, [parts])
 
-  const onSubmit: SubmitHandler<Tags> = async (data) => {
+  const onSubmit: SubmitHandler<Tags> = async (data: Tags & AddPartsToTag) => {
     if (edit) {
-      await requestEditTags(data, editIndex);
+      await Promise.all([
+          requestEditTags(data, editIndex),
+          requestAddPartsToTag(data, editIndex)
+        ]
+      )
     } else {
       await requestAddTags(data);
     }
@@ -114,11 +118,11 @@ useEffect(() => {
           <div style={{ alignSelf: 'self-start', marginLeft: '5px' }}>
             <h2>Associar Parts</h2>
           </div>
-          {processors.length > 0 && <SelectSingle options={processors} formControl={control} formName="partProcessor" placeholder="Processador" />}
-          {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="partRam" placeholder="RAM" />}
-          {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="partHD" placeholder="HD" />}
-          {ssd.length > 0 && (<SelectSingle options={ssd} formControl={control} formName="partSSD" placeholder="SSD" />)}
-          {gpu.length > 0 && <SelectSingle options={gpu} formControl={control} formName="partGPU" placeholder="Placa de vídeo" />}
+          {processors.length > 0 && <SelectSingle options={processors} formControl={control} formName="processors" placeholder="Processador" />}
+          {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="ram" placeholder="RAM" />}
+          {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="hd" placeholder="HD" />}
+          {ssd.length > 0 && (<SelectSingle options={ssd} formControl={control} formName="ssd" placeholder="SSD" />)}
+          {gpu.length > 0 && <SelectSingle options={gpu} formControl={control} formName="gpu" placeholder="Placa de vídeo" />}
         </>}
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>

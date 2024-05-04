@@ -28,6 +28,14 @@ export type Tags = {
   updatedAt: Date;
 };
 
+export type AddPartsToTag = {
+  processors?: string;
+  ram?: string;
+  hd?: string;
+  ssd?: string;
+  gpu?: string;
+}
+
 export type CategoryTags = {
   category: string;
 };

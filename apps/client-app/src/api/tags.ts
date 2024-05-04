@@ -18,9 +18,16 @@ export interface IEditTagsParams {
   name: string;
 }
 
+export interface IAddPartsTagsParams {
+  tagId: string;
+  partId: string
+}
+
 export const getTags = async () => api.get<IGetTagsResponse>('/tags');
 
 export const addTags = async (params: IAddTagsParams) => api.post<IGetTagsResponse>('/tags', params);
+
+export const addPartsTags = async (params: IAddPartsTagsParams[]) => api.post<IGetTagsResponse>(`/tags/add-parts`, params);
 
 export const editTags = async (params: IEditTagsParams | undefined, id: string) =>
   api.put<IGetTagsResponse>(`/tags/${id}`, params);

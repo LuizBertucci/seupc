@@ -1,5 +1,5 @@
-import { addTags, deleteTags, editTags, getTags } from '@/api/tags';
-import { Tags } from '@/types/parts';
+import { addPartsTags, addTags, deleteTags, editTags, getTags } from '@/api/tags';
+import { AddPartsToTag, Tags } from '@/types/parts';
 
 import { useTagsStore } from '../storage';
 
@@ -22,6 +22,22 @@ export const requestAddTags = async (value: Tags) => {
   await requestGetTags();
   return true;
 };
+
+export const requestAddPartsToTag = async (value: AddPartsToTag, index?: number): Promise<boolean>  => {
+  const partsIds: string[] = [];
+
+  for (const part of [value?.gpu, value?.hd, value?.processors, value?.ram, value?.ssd]) {
+      if (part) {
+          partsIds.push(part);
+      }
+}
+  if (!partsIds.length) return true;
+
+  const { dataTable } = useTagsStore.getState().dados;
+  const {id: tagId} = await dataTable.find((data: Tags, i: number) => i === index);
+  const { data } = await addPartsTags(partsIds.map((partId) => ({tagId, partId})));
+  return data.success;
+}
 
 export const requestEditTags = async (value: Tags | undefined, index: number | undefined) => {
   const { editDataTable } = useTagsStore.getState().dispatch;
