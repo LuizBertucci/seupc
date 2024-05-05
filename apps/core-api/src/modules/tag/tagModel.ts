@@ -53,6 +53,7 @@ export type CreateTagRequest = z.infer<typeof CreateTagRequest>;
 export const CreateTagRequest = z.object({
   name: z.string().min(1),
   category: z.nativeEnum(TagCategory),
+  partsIds: z.array(z.string().uuid()).optional(),
 });
 
 export type UpdateTagRequest = z.infer<typeof UpdateTagRequest>;

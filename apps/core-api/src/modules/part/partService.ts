@@ -85,7 +85,7 @@ export const partService = {
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Part deletada', part.id, StatusCodes.OK);
   },
-  findByIds: async (ids: string[]): Promise<ServiceResponse<GetPartByIdResponse[] | null>> => {
+  findByIds: async (ids: string[]): Promise<ServiceResponse<GetPartByIdResponse[]>> => {
     const parts = await partRepository.findByIdsAsync(ids);
     return new ServiceResponse<GetPartByIdResponse[]>(
       ResponseStatus.Success,

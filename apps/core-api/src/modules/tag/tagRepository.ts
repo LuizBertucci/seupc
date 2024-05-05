@@ -25,19 +25,32 @@ export const tagRepository = {
 
     return toModel(rows[0]);
   },
-  create: async (part: Tag): Promise<Tag> => {
-    const { rows } = await knex.raw(
-      'INSERT INTO tags (id, name, created_at, updated_at, category) VALUES (?, ?, ?, ?, ?) RETURNING *',
-      [part.id, part.name, part.createdAt, part.updatedAt, part.category]
-    );
+  create: async (tag: Tag, partsIds?: string[]): Promise<Tag> => {
+    try {
+      return knex.transaction(async (trx) => {
+        const { rows } = await trx.raw(
+          'INSERT INTO tags (id, name, created_at, updated_at, category) VALUES (?, ?, ?, ?, ?) RETURNING *',
+          [tag.id, tag.name, tag.createdAt, tag.updatedAt, tag.category]
+        );
 
-    return toModel(rows);
+        if (partsIds?.length) {
+          const values = partsIds.map(() => `(?, ?)`).join(', ');
+          await trx.raw(
+            `INSERT INTO tag_parts (tag_id, part_id) VALUES ${values} ON CONFLICT DO NOTHING`,
+            partsIds.flatMap((partId) => [tag.id, partId])
+          );
+        }
+        return toModel(rows[0]);
+      });
+    } catch (error) {
+      throw error;
+    }
   },
-  update: async (part: Tag): Promise<Tag> => {
+  update: async (tag: Tag): Promise<Tag> => {
     const { rows } = await knex.raw('UPDATE tags SET name = ?, updated_at =? WHERE id =? RETURNING *', [
-      part.name,
-      part.updatedAt,
-      part.id,
+      tag.name,
+      tag.updatedAt,
+      tag.id,
     ]);
 
     return toModel(rows);
