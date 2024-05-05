@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc",
     "start": "tsx src/index.ts | knex migrate:latest --knexfile src/knexfile.ts",
     "format": "prettier --write 'src/**/*.{ts,js,json}' 'tests/**/*.{ts,js,json}'",
-    "test": "jest",
+    "test": "DEBUG=*,-express:*,TZ=UTC jest",
     "prepare": "husky install"
   },
   "dependencies": {

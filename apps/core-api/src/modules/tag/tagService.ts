@@ -38,14 +38,25 @@ export const tagService = {
       StatusCodes.OK
     );
   },
-  create: async (request: CreateTagRequest): Promise<ServiceResponse<string | null>> => {
-    const tag = await tagRepository.create({
-      id: uuidv4(),
-      name: request.name,
-      category: request.category,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+  create: async (request: CreateTagRequest): Promise<ServiceResponse<string>> => {
+    const partsIds = request.partsIds;
+    if (partsIds?.length) {
+      const { responseObject: parts } = await partService.findByIds(partsIds);
+      if (parts.length !== partsIds.length) {
+        throw new BatchNotFoundError();
+      }
+    }
+
+    const tag = await tagRepository.create(
+      {
+        id: uuidv4(),
+        name: request.name,
+        category: request.category,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      partsIds
+    );
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Tag criada', tag.id, StatusCodes.CREATED);
   },
