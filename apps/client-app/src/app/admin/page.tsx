@@ -7,8 +7,8 @@ export default function AdminPage() {
   return (
     <div className="flex flex-col px-[30px] mt-[20px] gap-4 ">
       <div className="flex flex-row gap-4 justify-start items-start ">
-        <AdminPartsCard type="simple" className="w-full" />
-        <AdminTagsCard type="simple" className="w-full" />
+        <AdminPartsCard className="w-full " />
+        <AdminTagsCard className="w-full" />
       </div>
       <div className="flex flex-row gap-4 justify-start items-start ">
         <AdminStoresCard />
