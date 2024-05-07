@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
   filterPlaceholder,
   columnsFilter,
 }: IDataTableProps<TData, TValue>) {
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [pageIndex, setPageIndex] = useState(0);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -187,20 +187,22 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead className=" font-bold " key={header.id}>
-                    {header.isPlaceholder ? null : (
-                      <Button
-                        className={` ${header.id === 'select' && 'hidden'} p-0 `}
-                        variant="ghost"
-                        onClick={() => header.column.toggleSorting(header.column.getIsSorted() === 'asc')}
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        <ArrowUpDown className=" ml-2 h-4 w-4  " />
-                      </Button>
-                    )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead className=" font-bold" key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <Button
+                          className={` ${header.id === 'select' && 'hidden'} p-0 `}
+                          variant="ghost"
+                          onClick={() => header.column.toggleSorting(header.column.getIsSorted() === 'asc')}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          <ArrowUpDown className=" ml-2 h-4 w-4  " />
+                        </Button>
+                      )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -230,6 +232,7 @@ export function DataTable<TData, TValue>({
             classNameTrigger=" border-0 w-[70px] "
             setSelectValue={setPageSize}
             options={[
+              { label: '5', value: '5' },
               { label: '10', value: '10' },
               { label: '20', value: '20' },
               { label: '30', value: '30' },
