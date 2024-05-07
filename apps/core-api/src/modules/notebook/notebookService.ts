@@ -6,6 +6,10 @@ import { CreateNotebookRequest, GetNotebookByIdResponse, Notebook } from '@modul
 import { notebookRepository } from '@modules/notebook/notebookRepository';
 import { v4 as uuidv4 } from 'uuid';
 
+const createServiceResponse = (responseStatus: ResponseStatus, message: string, data: any, statusCode: StatusCodes) => {
+  return new ServiceResponse(responseStatus, message, data, statusCode);
+};
+
 const toDTO = (notebook: Notebook): GetNotebookByIdResponse => ({
   id: notebook.id,
   name: notebook.name,
@@ -25,41 +29,46 @@ const toDTO = (notebook: Notebook): GetNotebookByIdResponse => ({
 export const notebookService = {
   findAll: async (): Promise<ServiceResponse<GetNotebookByIdResponse[] | null>> => {
     const notebooks = await notebookRepository.findAllAsync();
-    return new ServiceResponse<GetNotebookByIdResponse[]>(
-      ResponseStatus.Success,
-      'Notebooks encontrados',
-      notebooks.map(toDTO),
-      StatusCodes.OK
-    );
+    return createServiceResponse(ResponseStatus.Success, 'Notebooks encontrados', notebooks.map(toDTO), StatusCodes.OK);
   },
+
   findById: async (id: string): Promise<ServiceResponse<GetNotebookByIdResponse | null>> => {
-    const notebook: Notebook | null = await notebookRepository.findByIdAsync(id);
+    const notebook = await notebookRepository.findByIdAsync(id);
     if (!notebook) {
       throw new NotFoundError(id);
     }
-    return new ServiceResponse<GetNotebookByIdResponse>(
-      ResponseStatus.Success,
-      'Notebook encontrado',
-      toDTO(notebook),
-      StatusCodes.OK
-    );
+    return createServiceResponse(ResponseStatus.Success, 'Notebook encontrado', toDTO(notebook), StatusCodes.OK);
   },
+
   create: async (request: CreateNotebookRequest): Promise<ServiceResponse<string | null>> => {
+    const {
+      name,
+      brand,
+      color = '',
+      screen_size = '',
+      screen_resolution = '',
+      battery = '',
+      has_numeric_keypad = false,
+      operating_system = '',
+      manufacturer_id = '',
+      weight = '',
+    } = request;
+
     const notebook = await notebookRepository.create({
       id: uuidv4(),
-      name: request.name,
-      color: request.color ?? '',
-      screen_size: request.screen_size ?? '',
-      screen_resolution: request.screen_resolution ?? '',
-      battery: request.battery ?? '',
-      has_numeric_keypad: request.has_numeric_keypad ?? false,
-      operating_system: request.operating_system ?? '',
-      manufacturer_id: request.manufacturer_id ?? '',
-      weight: request.weight ?? '',
-      brand: request.brand,
+      name,
+      brand,
+      color,
+      screen_size,
+      screen_resolution,
+      battery,
+      has_numeric_keypad,
+      operating_system,
+      manufacturer_id,
+      weight,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return new ServiceResponse<string>(ResponseStatus.Success, 'Notebook criado', notebook.id, StatusCodes.CREATED);
+    return createServiceResponse(ResponseStatus.Success, 'Notebook criado', notebook.id, StatusCodes.CREATED);
   },
 };
