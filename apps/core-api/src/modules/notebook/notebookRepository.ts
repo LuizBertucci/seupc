@@ -19,39 +19,54 @@ const toModel = (row: NotebookRowSchema): Notebook => ({
 
 export const notebookRepository = {
   findAllAsync: async (): Promise<Notebook[]> => {
-    const { rows } = await knex.raw('SELECT n.* FROM notebooks n');
+    const rows = await knex('notebooks').select('*');
 
     return rows.map(toModel);
   },
-  findByIdAsync: async (id: string): Promise<Notebook | null> => {
-    const { rows } = await knex.raw('SELECT n.* FROM notebooks n WHERE n.id = ?', [id]);
 
-    if (rows.length === 0) {
+  findByIdAsync: async (id: string): Promise<Notebook | null> => {
+    const row = await knex('notebooks').select('*').where('id', id).first();
+
+    if (!row) {
       return null;
     }
 
-    return toModel(rows[0]);
+    return toModel(row);
   },
-  create: async (notebook: Notebook): Promise<Notebook> => {
-    const { rows } = await knex.raw(
-      'INSERT INTO notebooks (id, name, brand, color, screen_size, screen_resolution, battery, has_numeric_keypad, operating_system, manufacturer_id, weight, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *',
-      [
-        notebook.id,
-        notebook.name,
-        notebook.brand,
-        notebook.color,
-        notebook.screen_size,
-        notebook.screen_resolution,
-        notebook.battery,
-        notebook.has_numeric_keypad,
-        notebook.operating_system,
-        notebook.manufacturer_id,
-        notebook.weight,
-        notebook.createdAt,
-        notebook.updatedAt,
-      ]
-    );
 
-    return toModel(rows[0]);
+  create: async (notebook: Notebook): Promise<Notebook> => {
+    const {
+      id,
+      name,
+      brand,
+      color,
+      screen_size,
+      screen_resolution,
+      battery,
+      has_numeric_keypad,
+      operating_system,
+      manufacturer_id,
+      weight,
+    } = notebook;
+
+    const [result] = await knex('notebooks')
+      .insert({
+        id,
+        name,
+        brand,
+        color,
+        screen_size,
+        screen_resolution,
+        battery,
+        has_numeric_keypad,
+        operating_system,
+        manufacturer_id,
+        weight,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+      .returning('*');
+
+    return toModel(result);
   },
 };
