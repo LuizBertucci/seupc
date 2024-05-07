@@ -7,7 +7,7 @@ extendZodWithOpenApi(z);
 
 export enum Brand {
   ACER = 'Acer',
-  APELL = 'Apple',
+  APPLE = 'Apple',
   ALIENWARE = 'Alienware',
   ASUS = 'Asus',
   AVELL = 'Avell',
@@ -37,16 +37,32 @@ export type Notebook = NotebookSchema;
 
 interface NotebookSchema {
   id: string;
-  title: string;
+  name: string;
   brand: Brand;
+  color?: string;
+  screen_size?: string;
+  screen_resolution?: string;
+  battery?: string;
+  has_numeric_keypad?: boolean;
+  operating_system?: string;
+  manufacturer_id?: string;
+  weight?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface NotebookRowSchema {
   id: string;
-  title: string;
+  name: string;
   brand: Brand;
+  color?: string;
+  screen_size?: string;
+  screen_resolution?: string;
+  battery?: string;
+  has_numeric_keypad?: boolean;
+  operating_system?: string;
+  manufacturer_id?: string;
+  weight?: string;
   created_at: string;
   updated_at: string;
 }
@@ -61,8 +77,16 @@ export type GetNotebookByIdResponse = z.infer<typeof GetNotebookByIdResponse>;
 // Response for 'GET notebook/:id' endpoint
 export const GetNotebookByIdResponse = z.object({
   id: z.string().uuid(),
-  title: z.string().min(1),
+  name: z.string().min(1),
   brand: z.nativeEnum(Brand),
+  color: z.string().optional(),
+  screen_size: z.string().optional(),
+  screen_resolution: z.string().optional(),
+  battery: z.string().optional(),
+  has_numeric_keypad: z.boolean().optional(),
+  operating_system: z.string().optional(),
+  manufacturer_id: z.string().optional(),
+  weight: z.string().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -71,6 +95,14 @@ export type CreateNotebookRequest = z.infer<typeof CreateNotebookRequest>;
 
 // Input Validation for 'POST notebook' endpoint
 export const CreateNotebookRequest = z.object({
-  title: z.string().min(1),
+  name: z.string().min(1),
   brand: z.nativeEnum(Brand),
+  color: z.string().optional(),
+  screen_size: z.string().optional(),
+  screen_resolution: z.string().optional(),
+  battery: z.string().optional(),
+  has_numeric_keypad: z.boolean().optional(),
+  operating_system: z.string().optional(),
+  manufacturer_id: z.string().optional(),
+  weight: z.string().optional(),
 });

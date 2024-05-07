@@ -3,10 +3,18 @@ import knex from '@src/index';
 
 const toModel = (row: NotebookRowSchema): Notebook => ({
   id: row.id,
-  title: row.title,
+  name: row.name,
+  brand: row.brand,
+  color: row.color ?? '',
+  screen_size: row.screen_size ?? '',
+  screen_resolution: row.screen_resolution ?? '',
+  battery: row.battery ?? '',
+  has_numeric_keypad: row.has_numeric_keypad ?? false,
+  operating_system: row.operating_system ?? '',
+  manufacturer_id: row.manufacturer_id ?? '',
+  weight: row.weight ?? '',
   createdAt: new Date(row.created_at),
   updatedAt: new Date(row.updated_at),
-  brand: row.brand,
 });
 
 export const notebookRepository = {
@@ -26,8 +34,22 @@ export const notebookRepository = {
   },
   create: async (notebook: Notebook): Promise<Notebook> => {
     const { rows } = await knex.raw(
-      'INSERT INTO notebooks (id, title, created_at, updated_at, brand) VALUES (?, ?, ?, ?, ?) RETURNING *',
-      [notebook.id, notebook.title, notebook.createdAt, notebook.updatedAt, notebook.brand]
+      'INSERT INTO notebooks (id, name, brand, color, screen_size, screen_resolution, battery, has_numeric_keypad, operating_system, manufacturer_id, weight, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *',
+      [
+        notebook.id,
+        notebook.name,
+        notebook.brand,
+        notebook.color,
+        notebook.screen_size,
+        notebook.screen_resolution,
+        notebook.battery,
+        notebook.has_numeric_keypad,
+        notebook.operating_system,
+        notebook.manufacturer_id,
+        notebook.weight,
+        notebook.createdAt,
+        notebook.updatedAt,
+      ]
     );
 
     return toModel(rows[0]);
