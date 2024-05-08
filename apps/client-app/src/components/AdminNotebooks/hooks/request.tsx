@@ -1,4 +1,4 @@
-import { getNotebooks } from '@/api/notebooks';
+import { INotebook, getNotebooks } from '@/api/notebooks';
 
 import { useNotebooksStore } from '../storage';
 
@@ -8,4 +8,10 @@ export const requestGetNotebooks = async () => {
   const { data } = await getNotebooks();
 
   await setDataTable(data.responseObject);
+};
+
+export const requestAddNotebooks = async (value: INotebook) => {
+  const { addDataTable } = useNotebooksStore.getState();
+
+  await addDataTable(value);
 };
