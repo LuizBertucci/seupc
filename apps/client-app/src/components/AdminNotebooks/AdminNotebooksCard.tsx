@@ -2,40 +2,39 @@
 
 import { useEffect, useState } from 'react';
 
-import { DataTable } from '@/components/ui/dataTable';
-import { SimpleTable } from '@/components/ui/simpleTable';
+import { DataTable } from '../ui/dataTable';
+import { SimpleTable } from '../ui/simpleTable';
 
-import AdminPartsHeader from './AdminPartsHeader';
-import { requestGetParts } from './hooks/request';
-import { usePartStore } from './storage';
+import { requestGetNotebooks } from './hooks/request';
+import { useNotebooksStore } from './storage';
 
-function AdminPartsCard({ type, className }: { type?: string; className?: string }) {
-  const { dataTable, columns } = usePartStore((state) => state.dados);
+export default function AdminNotebooksCard({ type }: { type?: string }) {
+  const { dataTable, columns } = useNotebooksStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {
     const getData = async () => {
-      await requestGetParts();
+      await requestGetNotebooks();
     };
 
     getData();
   }, []);
 
   return (
-    <div className={className}>
+    <div className="w-full">
       {type === 'simple' ? (
         <SimpleTable
-          title="partes"
+          title="notebooks"
           setRowSelection={setRowSelection}
           rowSelection={rowSelection}
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<AdminPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={<div>Oi</div>}
         />
       ) : (
         <DataTable
-          title="partes"
+          title="notebooks"
           columnsFilter={[
             {
               column: 'partType',
@@ -56,11 +55,9 @@ function AdminPartsCard({ type, className }: { type?: string; className?: string
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<AdminPartsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={<div>oi</div>}
         />
       )}
     </div>
   );
 }
-
-export default AdminPartsCard;
