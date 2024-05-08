@@ -3,33 +3,70 @@ import knex from '@src/index';
 
 const toModel = (row: NotebookRowSchema): Notebook => ({
   id: row.id,
-  title: row.title,
+  name: row.name,
+  brand: row.brand,
+  color: row.color ?? '',
+  screen_size: row.screen_size ?? '',
+  screen_resolution: row.screen_resolution ?? '',
+  battery: row.battery ?? '',
+  has_numeric_keypad: row.has_numeric_keypad ?? false,
+  operating_system: row.operating_system ?? '',
+  manufacturer_id: row.manufacturer_id ?? '',
+  weight: row.weight ?? '',
   createdAt: new Date(row.created_at),
   updatedAt: new Date(row.updated_at),
-  brand: row.brand,
 });
 
 export const notebookRepository = {
   findAllAsync: async (): Promise<Notebook[]> => {
-    const { rows } = await knex.raw('SELECT n.* FROM notebooks n');
+    const rows = await knex('notebooks').select('*');
 
     return rows.map(toModel);
   },
-  findByIdAsync: async (id: string): Promise<Notebook | null> => {
-    const { rows } = await knex.raw('SELECT n.* FROM notebooks n WHERE n.id = ?', [id]);
 
-    if (rows.length === 0) {
+  findByIdAsync: async (id: string): Promise<Notebook | null> => {
+    const row = await knex('notebooks').select('*').where('id', id).first();
+
+    if (!row) {
       return null;
     }
 
-    return toModel(rows[0]);
+    return toModel(row);
   },
-  create: async (notebook: Notebook): Promise<Notebook> => {
-    const { rows } = await knex.raw(
-      'INSERT INTO notebooks (id, title, created_at, updated_at, brand) VALUES (?, ?, ?, ?, ?) RETURNING *',
-      [notebook.id, notebook.title, notebook.createdAt, notebook.updatedAt, notebook.brand]
-    );
 
-    return toModel(rows[0]);
+  create: async (notebook: Notebook): Promise<Notebook> => {
+    const {
+      id,
+      name,
+      brand,
+      color,
+      screen_size,
+      screen_resolution,
+      battery,
+      has_numeric_keypad,
+      operating_system,
+      manufacturer_id,
+      weight,
+    } = notebook;
+
+    const [result] = await knex('notebooks')
+      .insert({
+        id,
+        name,
+        brand,
+        color,
+        screen_size,
+        screen_resolution,
+        battery,
+        has_numeric_keypad,
+        operating_system,
+        manufacturer_id,
+        weight,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+      .returning('*');
+
+    return toModel(result);
   },
 };
