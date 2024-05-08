@@ -11,8 +11,8 @@ jest.mock('@src/server');
 
 describe('notebookService', () => {
   const mockNotebooks: Notebook[] = [
-    { id: randomUUID(), title: 'Notebook 1', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ACER },
-    { id: randomUUID(), title: 'Notebook 2', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ALIENWARE },
+    { id: randomUUID(), name: 'Notebook 1', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ACER },
+    { id: randomUUID(), name: 'Notebook 2', createdAt: new Date(), updatedAt: new Date(), brand: Brand.ALIENWARE },
   ];
 
   beforeEach(() => {
