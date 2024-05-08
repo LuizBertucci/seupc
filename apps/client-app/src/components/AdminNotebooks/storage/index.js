@@ -12,6 +12,10 @@ export const useNotebooksStore = create(
           accessorKey: 'name',
           header: 'Nome',
         },
+        {
+          accessorKey: 'createdAt',
+          header: 'Data',
+        },
       ],
     },
     loaders: {},

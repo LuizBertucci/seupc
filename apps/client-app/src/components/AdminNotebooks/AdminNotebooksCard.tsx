@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { DataTable } from '../ui/dataTable';
 import { SimpleTable } from '../ui/simpleTable';
 
+import AdminNotebooksHeader from './AdminNotebooksHeader';
 import { requestGetNotebooks } from './hooks/request';
 import { useNotebooksStore } from './storage';
 
@@ -16,7 +17,6 @@ export default function AdminNotebooksCard({ type }: { type?: string }) {
     const getData = async () => {
       await requestGetNotebooks();
     };
-
     getData();
   }, []);
 
@@ -30,24 +30,11 @@ export default function AdminNotebooksCard({ type }: { type?: string }) {
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<div>Oi</div>}
+          rightMenu={<AdminNotebooksHeader rowSelection={rowSelection} />}
         />
       ) : (
         <DataTable
           title="notebooks"
-          columnsFilter={[
-            {
-              column: 'partType',
-              options: [
-                { label: 'HD', value: 'HD' },
-                { label: 'SSD', value: 'SSD' },
-                { label: 'Memória RAM', value: 'Ram Memory' },
-                { label: 'Processador', value: 'Processor' },
-                { label: 'Placa Gráfica', value: 'Video Card' },
-              ],
-              title: 'Partes',
-            },
-          ]}
           filterId="name"
           filterPlaceholder="Filtrar por nome"
           setRowSelection={setRowSelection}
@@ -55,7 +42,7 @@ export default function AdminNotebooksCard({ type }: { type?: string }) {
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<div>oi</div>}
+          rightMenu={<AdminNotebooksHeader rowSelection={rowSelection} />}
         />
       )}
     </div>

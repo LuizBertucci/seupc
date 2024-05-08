@@ -31,19 +31,19 @@ export default function AdminPartsForm({
   } = useForm<Parts>({ defaultValues: edit ? editValues : {} });
 
   const onSubmit: SubmitHandler<Parts> = async (data) => {
-      const parsedData = {
-        ...data,
-        point: Number(data.point),
-      };
+    const parsedData = {
+      ...data,
+      point: Number(data.point),
+    };
 
-      if (edit) {
-        await requestEditParts(parsedData, editIndex);
-      } else {
-        await requestAddParts(parsedData);
-      }
+    if (edit) {
+      await requestEditParts(parsedData, editIndex);
+    } else {
+      await requestAddParts(parsedData);
+    }
 
-      toast({ title: `Parte ${edit ? 'editada' : 'criada'} com sucesso!` });
-      setIsOpen(false);
+    toast({ title: `Parte ${edit ? 'editada' : 'criada'} com sucesso!` });
+    setIsOpen(false);
   };
 
   const options: Array<SelectOption> = [
