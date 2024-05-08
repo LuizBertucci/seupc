@@ -1,5 +1,5 @@
 import { addPartsTags, addTags, deleteTags, editTags, getTags } from '@/api/tags';
-import { AddPartsToTag, Tags } from '@/types/parts';
+import { CreateTagDTO, Tags, WriteTagDTO } from '@/types/parts';
 
 import { useTagsStore } from '../storage';
 
@@ -11,7 +11,7 @@ export const requestGetTags = async () => {
   await setDataTable(data.responseObject);
 };
 
-export const requestAddTags = async (value: Tags) => {
+export const requestAddTags = async (value: CreateTagDTO) => {
   const { addDataTable } = useTagsStore.getState().dispatch;
 
   const { data } = await addTags(value);
@@ -23,23 +23,16 @@ export const requestAddTags = async (value: Tags) => {
   return true;
 };
 
-export const requestAddPartsToTag = async (value: AddPartsToTag, index?: number): Promise<boolean>  => {
-  const partsIds: string[] = [];
-
-  for (const part of [value?.gpu, value?.hd, value?.processors, value?.ram, value?.ssd]) {
-      if (part) {
-          partsIds.push(part);
-      }
-}
+export const requestAddPartsToTag = async (partsIds: string[], index?: number): Promise<boolean>  => {
   if (!partsIds.length) return true;
 
   const { dataTable } = useTagsStore.getState().dados;
-  const {id: tagId} = await dataTable.find((data: Tags, i: number) => i === index);
+  const {id: tagId} = await dataTable.find((_data: Tags, i: number) => i === index);
   const { data } = await addPartsTags(partsIds.map((partId) => ({tagId, partId})));
   return data.success;
 }
 
-export const requestEditTags = async (value: Tags | undefined, index: number | undefined) => {
+export const requestEditTags = async (value: WriteTagDTO | undefined, index: number | undefined) => {
   const { editDataTable } = useTagsStore.getState().dispatch;
   const { dataTable } = useTagsStore.getState().dados;
 
