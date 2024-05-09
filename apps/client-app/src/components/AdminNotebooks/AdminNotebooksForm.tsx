@@ -1,6 +1,6 @@
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
-import { Controller, FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import { INotebook } from '@/api/notebooks';
 import { Button } from '@/components/ui/button';
@@ -9,33 +9,6 @@ import { Input } from '@/components/ui/input';
 
 import { Checkbox } from '../ui/checkbox';
 import { requestAddNotebooks } from './hooks/request';
-
-function CheckBox({
-  label,
-  register,
-  name,
-  errors,
-}: {
-  label: string;
-  register: UseFormRegister<any>;
-  name: string;
-  errors: FieldErrors;
-}) {
-  return (
-    <div className="flex self-start">
-      <input
-        type="checkbox"
-        id={name}
-        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-        {...register(name)}
-      />
-      <label htmlFor={name} className="ml-2 text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      {errors[name] && <p className="text-red-500 text-xs">{errors[name]?.message as string}</p>}
-    </div>
-  );
-}
 
 export default function AdminNotebooksForm({
   edit,
