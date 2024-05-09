@@ -28,7 +28,7 @@ const Checkbox = forwardRef<ElementRef<typeof CheckboxPrimitive.Root>, ICheckbox
       </CheckboxPrimitive.Root>
       {label && (
         <label className="pl-[15px] text-[15px] leading-none text-black" htmlFor={id}>
-          Accept terms and conditions.
+          {label}
         </label>
       )}
     </div>
