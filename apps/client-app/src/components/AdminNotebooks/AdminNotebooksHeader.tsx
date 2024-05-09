@@ -14,9 +14,7 @@ export default function AdminNotebooksHeader({ rowSelection }: { rowSelection: o
   const { setIsOpen } = useContext(ModalContext);
 
   const handleDelete = async () => {
-    // await useNotebooksStore(Object.keys(rowSelection)[0]);
     setIsOpen(false);
-    // setRowSelection({});
   };
 
   return (
