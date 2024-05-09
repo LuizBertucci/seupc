@@ -19,17 +19,19 @@ export const useNotebooksStore = create(
       ],
     },
     loaders: {},
-    setDataTable: (payload) =>
-      set((state) => {
-        state.dados.dataTable = payload;
-      }),
-    addDataTable: (payload) =>
-      set((state) => {
-        state.dados.dataTable = [...state.dados.dataTable, payload];
-      }),
-    editDataTable: (payload) =>
-      set((state) => {
-        state.dados.dataTable = payload;
-      }),
+    dispatch: {
+      setDataTable: (payload) =>
+        set((state) => {
+          state.dados.dataTable = payload;
+        }),
+      addDataTable: (payload) =>
+        set((state) => {
+          state.dados.dataTable = [...state.dados.dataTable, payload];
+        }),
+      editDataTable: (payload) =>
+        set((state) => {
+          state.dados.dataTable = payload;
+        }),
+    },
   }))
 );
