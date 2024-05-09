@@ -1,9 +1,9 @@
-import { INotebook, getNotebooks } from '@/api/notebooks';
+import { INotebook, addNotebooks, getNotebooks } from '@/api/notebooks';
 
 import { useNotebooksStore } from '../storage';
 
 export const requestGetNotebooks = async () => {
-  const { setDataTable } = useNotebooksStore.getState();
+  const { setDataTable } = useNotebooksStore.getState().dispatch;
 
   const { data } = await getNotebooks();
 
@@ -11,7 +11,14 @@ export const requestGetNotebooks = async () => {
 };
 
 export const requestAddNotebooks = async (value: INotebook) => {
-  const { addDataTable } = useNotebooksStore.getState();
+  const { addDataTable } = useNotebooksStore.getState().dispatch;
 
-  await addDataTable(value);
+  const { data } = await addNotebooks(value);
+
+  if (!data?.success) return false;
+
+  addDataTable(value);
+  await requestGetNotebooks();
+
+  return true;
 };
