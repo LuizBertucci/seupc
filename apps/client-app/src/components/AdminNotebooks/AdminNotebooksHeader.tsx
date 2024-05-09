@@ -54,7 +54,7 @@ export default function AdminNotebooksHeader({ rowSelection }: { rowSelection: o
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminNotebooksForm />}>
+      <Modal content={<AdminNotebooksForm />} className="max-w-[980px]">
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
