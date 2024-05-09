@@ -43,6 +43,7 @@ export default function AdminNotebooksHeader({ rowSelection }: { rowSelection: o
       </Modal>
 
       <Modal
+        className="max-w-[980px]"
         content={
           <AdminNotebooksForm
             edit

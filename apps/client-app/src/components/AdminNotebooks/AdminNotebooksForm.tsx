@@ -41,6 +41,7 @@ export default function AdminNotebooksForm({
       <form className="flex flex-col space-y-4 justify-center items-center w-full " onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
           <Input
+            className="border-2 border-gray-400"
             formError={errors?.name?.message}
             {...register('name', {
               required: 'Nome para o notebook obrigatório',
@@ -54,20 +55,24 @@ export default function AdminNotebooksForm({
           name="has_numeric_keypad"
           control={control}
           render={({ field: { onChange, onBlur, value, ref } }) => (
-            <Checkbox
-              label="Teclado numérico"
-              id="numeric_keyboard_label"
-              checked={value}
-              onCheckedChange={onChange}
-              ref={ref}
-              onBlur={onBlur}
-            />
+            <div className="self-start bg-gray-100 p-3 rounded-sm border-2 border-gray-400">
+              <Checkbox
+                label="Teclado numérico"
+                id="numeric_keyboard_label"
+                checked={value}
+                onCheckedChange={onChange}
+                ref={ref}
+                onBlur={onBlur}
+              />
+            </div>
           )}
         />
+
         <div className="flex gap-3 w-full flex-1">
           <div className="flex flex-col">
             <p>Marca</p>
             <Input
+              className="border-2 border-gray-400"
               formError={errors?.brand?.message}
               {...register('brand', {
                 required: 'Nome para a marca do notebook é obrigatória',
@@ -78,25 +83,38 @@ export default function AdminNotebooksForm({
 
           <div className="flex flex-col">
             <p>Resolução da Tela</p>
-            <Input {...register('screen_resolution')} />
+            <Input {...register('screen_resolution')} className="border-2 border-gray-400" />
           </div>
           <div className="flex flex-col">
             <p>Tamanho da Tela</p>
-            <Input {...register('screen_size')} />
+            <Input {...register('screen_size')} className="border-2 border-gray-400" />
           </div>
           <div className="flex flex-col">
             <p>S.O</p>
-            <Input {...register('operating_system')} />
+            <Input {...register('operating_system')} className="border-2 border-gray-400" />
           </div>
           <div className="flex flex-col">
             <p>Cor</p>
-            <Input {...register('color')} />
+            <Input {...register('color')} className="border-2 border-gray-400" />
           </div>
         </div>
 
-        {/* <Input placeholder="Bateria" {...register('battery')} />
-        <Input placeholder="ID do Fabricante" {...register('manufacturer_id')} />
-        <Input placeholder="Peso" {...register('weight')} /> */}
+        {!edit && (
+          <div className="flex gap-3 w-full flex-1">
+            <div className="flex flex-col">
+              <p>Bateria</p>
+              <Input {...register('battery')} className="border-2 border-gray-400" />
+            </div>
+            <div className="flex flex-col">
+              <p>ID do Fabricante</p>
+              <Input {...register('manufacturer_id')} className="border-2 border-gray-400" />
+            </div>
+            <div className="flex flex-col">
+              <p>Peso</p>
+              <Input {...register('weight')} className="border-2 border-gray-400" />
+            </div>
+          </div>
+        )}
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>
           {edit ? 'Salvar' : 'Criar'}
