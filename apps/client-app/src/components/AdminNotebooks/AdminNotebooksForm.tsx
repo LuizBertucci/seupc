@@ -1,12 +1,13 @@
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
-import { FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
+import { Controller, FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
 
 import { INotebook } from '@/api/notebooks';
 import { Button } from '@/components/ui/button';
 import { DialogHeader, ModalContext } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
+import { Checkbox } from '../ui/checkbox';
 import { requestAddNotebooks } from './hooks/request';
 
 function CheckBox({
@@ -49,6 +50,8 @@ export default function AdminNotebooksForm({
   const {
     register,
     handleSubmit,
+    watch,
+    control,
     formState: { errors },
   } = useForm<INotebook>({ defaultValues: edit ? editValues : {} });
 
@@ -85,7 +88,20 @@ export default function AdminNotebooksForm({
         <Input placeholder="Tamanho da Tela" {...register('screen_size')} />
         <Input placeholder="Resolução da Tela" {...register('screen_resolution')} />
         <Input placeholder="Bateria" {...register('battery')} />
-        <CheckBox label="Teclado numérico" register={register} name="has_numeric_keypad" errors={errors} />
+        <Controller
+          name="has_numeric_keypad"
+          control={control}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Checkbox
+              label="Teclado numérico"
+              id="numeric_keyboard_label"
+              checked={value}
+              onCheckedChange={onChange}
+              ref={ref}
+              onBlur={onBlur}
+            />
+          )}
+        />
         <Input placeholder="Sistema Operacional" {...register('operating_system')} />
         <Input placeholder="ID do Fabricante" {...register('manufacturer_id')} />
         <Input placeholder="Peso" {...register('weight')} />
