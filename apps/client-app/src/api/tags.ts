@@ -1,4 +1,4 @@
-import { Tags } from '@/types/parts';
+import { CreateTagDTO, Tags } from '@/types/parts';
 
 import { api } from './config';
 
@@ -9,10 +9,7 @@ interface IGetTagsResponse {
   statusCode: number;
 }
 
-interface IAddTagsParams {
-  name: string;
-  category: 'Games' | 'Programs' | 'Courses';
-}
+type IAddTagsParams = CreateTagDTO;
 
 export interface IEditTagsParams {
   name: string;

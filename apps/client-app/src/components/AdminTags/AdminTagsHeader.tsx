@@ -68,7 +68,7 @@ export default function AdminTagsHeader({
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminTagsForm />}>
+      <Modal content={<AdminTagsForm parts={parts}/>}>
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
