@@ -1,4 +1,3 @@
-import { arrayBind } from '@common/utils/arrayBinding';
 import { Notebook, NotebookPartTuple, NotebookRowSchema } from '@modules/notebook/notebookModel';
 import knex from '@src/index';
 
@@ -40,35 +39,35 @@ export const notebookRepository = {
   create: async (notebook: Notebook, partsIds?: string[]): Promise<Notebook> => {
     try {
       return knex.transaction(async (trx) => {
-        const { rows } = await trx.raw(
-          'INSERT INTO notebooks (id, name, brand, color, screen_size, screen_resolution, battery, has_numeric_keypad, has_stock, published, operating_system, manufacturer_id, weight, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *',
-          [
-            notebook.id,
-            notebook.name,
-            notebook.brand,
-            notebook.color,
-            notebook.screen_size,
-            notebook.screen_resolution,
-            notebook.battery,
-            notebook.has_numeric_keypad,
-            notebook.has_stock,
-            notebook.published,
-            notebook.operating_system,
-            notebook.manufacturer_id,
-            notebook.weight,
-            notebook.createdAt,
-            notebook.updatedAt,
-          ]
-        );
+        const [newNotebook] = await trx('notebooks')
+          .insert({
+            id: notebook.id,
+            name: notebook.name,
+            brand: notebook.brand,
+            color: notebook.color,
+            screen_size: notebook.screen_size,
+            screen_resolution: notebook.screen_resolution,
+            battery: notebook.battery,
+            has_numeric_keypad: notebook.has_numeric_keypad,
+            has_stock: notebook.has_stock,
+            published: notebook.published,
+            operating_system: notebook.operating_system,
+            manufacturer_id: notebook.manufacturer_id,
+            weight: notebook.weight,
+            created_at: notebook.createdAt,
+            updated_at: notebook.updatedAt,
+          })
+          .returning('*');
 
         if (partsIds?.length) {
-          const values = partsIds.map(() => `(?, ?)`).join(', ');
-          await trx.raw(
-            `INSERT INTO notebook_parts (notebook_id, part_id) VALUES ${values} ON CONFLICT DO NOTHING`,
-            partsIds.flatMap((partId) => [notebook.id, partId])
-          );
+          const partsData = partsIds.map((partId) => ({
+            notebook_id: notebook.id,
+            part_id: partId,
+          }));
+          await trx('notebook_parts').insert(partsData).onConflict().ignore();
         }
-        return toModel(rows[0]);
+
+        return newNotebook;
       });
     } catch (error) {
       throw error;
@@ -80,18 +79,21 @@ export const notebookRepository = {
       return;
     }
 
-    const values = data.map(() => `(?, ?)`).join(', ');
-    await knex.raw(
-      `INSERT INTO notebook_parts (notebook_id, part_id) VALUES ${values} ON CONFLICT DO NOTHING`,
-      data.flatMap(({ notebookId, partId }) => [notebookId, partId])
-    );
+    const partsData = data.map(({ notebookId, partId }) => ({
+      notebook_id: notebookId,
+      part_id: partId,
+    }));
+
+    await knex('notebook_parts').insert(partsData).onConflict().ignore();
   },
 
   findByIdsAsync: async (ids: string[]): Promise<Notebook[]> => {
     if (!ids.length) {
       return [];
     }
-    const { rows } = await knex.raw(`SELECT t.* FROM notebooks t WHERE t.id IN ${arrayBind(ids)}`, [...ids]);
-    return rows.map(toModel);
+
+    const notebooks = await knex('notebooks').select('*').whereIn('id', ids);
+
+    return notebooks.map(toModel);
   },
 };
