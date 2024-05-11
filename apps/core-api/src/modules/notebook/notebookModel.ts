@@ -71,6 +71,11 @@ export interface NotebookRowSchema {
   updated_at: string;
 }
 
+export interface NotebookPartTuple {
+  partId: string;
+  notebookId: string;
+}
+
 // Input Validation for 'GET notebook/:id' endpoint
 export const GetNotebookByIdRequest = z.object({
   params: z.object({ id: commonValidations.id }),
@@ -114,3 +119,9 @@ export const CreateNotebookRequest = z.object({
   manufacturer_id: z.string().optional(),
   weight: z.string().optional(),
 });
+
+export type AddPartsOnNotebooksRequest = z.infer<typeof AddPartsOnNotebooksRequest>;
+
+export const AddPartsOnNotebooksRequest = z.array(
+  z.object({ partId: z.string().uuid(), notebookId: z.string().uuid() })
+);

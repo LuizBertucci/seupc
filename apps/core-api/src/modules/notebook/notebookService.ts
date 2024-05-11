@@ -1,9 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { NotFoundError } from '@common/models/notFoundError';
+import { BatchNotFoundError, NotFoundError } from '@common/models/notFoundError';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
-import { CreateNotebookRequest, GetNotebookByIdResponse, Notebook } from '@modules/notebook/notebookModel';
+import {
+  CreateNotebookRequest,
+  GetNotebookByIdResponse,
+  Notebook,
+  NotebookPartTuple,
+} from '@modules/notebook/notebookModel';
 import { notebookRepository } from '@modules/notebook/notebookRepository';
+import { partService } from '@modules/part/partService';
 import { v4 as uuidv4 } from 'uuid';
 
 const createServiceResponse = (responseStatus: ResponseStatus, message: string, data: any, statusCode: StatusCodes) => {
@@ -76,5 +82,26 @@ export const notebookService = {
       updatedAt: new Date(),
     });
     return createServiceResponse(ResponseStatus.Success, 'Notebook criado', notebook.id, StatusCodes.CREATED);
+  },
+
+  addParts: async (data: NotebookPartTuple[]): Promise<ServiceResponse<NotebookPartTuple[]>> => {
+    const notebooks = await notebookRepository.findByIdsAsync(data.map((item) => item.notebookId));
+    if (notebooks.length !== data.length) {
+      throw new BatchNotFoundError();
+    }
+
+    const parts = await partService.findByIds(data.map(({ partId }) => partId));
+    if (parts.success && parts.responseObject?.length !== data.length) {
+      throw new BatchNotFoundError();
+    }
+
+    await notebookRepository.addParts(data);
+
+    return new ServiceResponse<NotebookPartTuple[]>(
+      ResponseStatus.Success,
+      'Notebooks associadas a parts',
+      data,
+      StatusCodes.OK
+    );
   },
 };
