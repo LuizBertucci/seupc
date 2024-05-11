@@ -6,6 +6,7 @@ import { partRegistry } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRegistry } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
 import { tagRegistry } from '@modules/tag/tagRouter';
 import { storeRegistry } from '@modules/commissionedStore/commissionedStoreRouter';
+import { clusterRegistry } from '@modules/clusterOfTags/clusterRouter';
 
 export function generateOpenAPIDocument() {
   const registry = new OpenAPIRegistry([
@@ -15,6 +16,7 @@ export function generateOpenAPIDocument() {
     partRegistry,
     otherRecommendationWebsiteRegistry,
     tagRegistry,
+    clusterRegistry,
   ]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 

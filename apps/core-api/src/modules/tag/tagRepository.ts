@@ -57,6 +57,7 @@ export const tagRepository = {
   },
   delete: async (id: string): Promise<void> => {
     await knex.transaction(async (trx) => {
+      await knex.raw('DELETE FROM cluster_of_tags_tags WHERE tag_id = ?', [id]).transacting(trx);
       await knex.raw('DELETE FROM tag_parts WHERE tag_id = ?', [id]).transacting(trx);
       await knex.raw('DELETE FROM tags WHERE id = ?', [id]).transacting(trx);
     });
@@ -71,11 +72,18 @@ export const tagRepository = {
       data.flatMap(({ tagId, partId }) => [tagId, partId])
     );
   },
-  findByIdsAsync: async (ids: string[]): Promise<Tag[]> => {
+  batchGet: async (ids: string[]): Promise<Tag[]> => {
     if (!ids.length) {
       return [];
     }
     const { rows } = await knex.raw(`SELECT t.* FROM tags t WHERE t.id IN ${arrayBind(ids)}`, [...ids]);
+    return rows.map(toModel);
+  },
+  getTagsByClusterId: async (clusterId: string): Promise<Tag[]> => {
+    const { rows } = await knex.raw(
+      `SELECT t.* FROM tags t left join cluster_of_tags_tags ctt on ctt.tag_id = t.id WHERE ctt.cluster_id = ?`,
+      [clusterId]
+    );
     return rows.map(toModel);
   },
 };

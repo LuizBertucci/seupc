@@ -16,7 +16,7 @@ const toDTO = (tag: Tag): GetTagByIdResponse => ({
 });
 
 export const tagService = {
-  findAll: async (): Promise<ServiceResponse<GetTagByIdResponse[] | null>> => {
+  getAll: async (): Promise<ServiceResponse<GetTagByIdResponse[] | null>> => {
     const tags = await tagRepository.findAllAsync();
     return new ServiceResponse<GetTagByIdResponse[]>(
       ResponseStatus.Success,
@@ -25,7 +25,7 @@ export const tagService = {
       StatusCodes.OK
     );
   },
-  findById: async (id: string): Promise<ServiceResponse<GetTagByIdResponse | null>> => {
+  get: async (id: string): Promise<ServiceResponse<GetTagByIdResponse | null>> => {
     const tag = await tagRepository.findByIdAsync(id);
     if (!tag) {
       throw new NotFoundError(id);
@@ -84,7 +84,7 @@ export const tagService = {
     return new ServiceResponse<string>(ResponseStatus.Success, 'Tag deletada', tag.id, StatusCodes.OK);
   },
   addParts: async (data: TagPartTuple[]): Promise<ServiceResponse<TagPartTuple[]>> => {
-    const tags = await tagRepository.findByIdsAsync(data.map(({ tagId }) => tagId));
+    const tags = await tagRepository.batchGet(data.map(({ tagId }) => tagId));
     if (tags.length !== data.length) {
       throw new BatchNotFoundError();
     }
@@ -96,5 +96,23 @@ export const tagService = {
     await tagRepository.addParts(data);
 
     return new ServiceResponse<TagPartTuple[]>(ResponseStatus.Success, 'Tags associadas a parts', data, StatusCodes.OK);
+  },
+  getTagsByClusterId: async (clusterId: string): Promise<ServiceResponse<GetTagByIdResponse[]>> => {
+    const tags = await tagRepository.getTagsByClusterId(clusterId);
+    return new ServiceResponse<GetTagByIdResponse[]>(
+      ResponseStatus.Success,
+      'Tags associadas a clusters',
+      tags.map(toDTO),
+      StatusCodes.OK
+    );
+  },
+  batchGet: async (ids: string[]): Promise<ServiceResponse<GetTagByIdResponse[]>> => {
+    const tags = await tagRepository.batchGet(ids);
+    return new ServiceResponse<GetTagByIdResponse[]>(
+      ResponseStatus.Success,
+      'Tags encontradas',
+      tags.map(toDTO),
+      StatusCodes.OK
+    );
   },
 };

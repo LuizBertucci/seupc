@@ -16,6 +16,7 @@ import { partRouter } from '@modules/part/partRouter';
 import { otherRecommendationWebsiteRouter } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteRouter';
 import { tagRouter } from '@modules/tag/tagRouter';
 import { storeRouter } from '@modules/commissionedStore/commissionedStoreRouter';
+import { clusterRouter } from '@modules/clusterOfTags/clusterRouter';
 
 const logger = pino({ name: 'server start' });
 const app: Express = express();
@@ -33,6 +34,7 @@ if (env.NODE_ENV !== 'test') {
 
 // Routes
 app.use('/commissioned-stores', storeRouter);
+app.use('/cluster-of-tags', clusterRouter);
 app.use('/health-check', healthCheckRouter);
 app.use('/notebooks', notebookRouter);
 app.use('/parts', partRouter);

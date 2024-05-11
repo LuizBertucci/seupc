@@ -29,7 +29,7 @@ export const tagRouter: Router = (() => {
 
   router.get('/', async (_req: Request, res: Response, next: NextFunction) =>
     tagService
-      .findAll()
+      .getAll()
       .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
       .catch(next)
   );
@@ -44,7 +44,7 @@ export const tagRouter: Router = (() => {
 
   router.get('/:id', validateRequest(GetTagByIdRequest), async (req: Request, res: Response, next: NextFunction) =>
     tagService
-      .findById(req.params.id as string)
+      .get(req.params.id as string)
       .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
       .catch(next)
   );

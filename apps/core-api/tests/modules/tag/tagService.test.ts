@@ -29,6 +29,19 @@ describe('Tag Service', () => {
     };
   });
 
+  describe('Get Tags by Cluster', () => {
+    it('should return a list of tags', async () => {
+      const clusterId = randomUUID();
+      jest.spyOn(tagRepository, 'getTagsByClusterId').mockResolvedValue([tag]);
+      expect(await tagService.getTagsByClusterId(clusterId)).toEqual({
+        message: 'Tags associadas a clusters',
+        responseObject: [tag],
+        statusCode: StatusCodes.OK,
+        success: true,
+      });
+    });
+  });
+
   describe('create', () => {
     it('should throw errors for invalid parts ids', async () => {
       const request: CreateTagRequest = {
