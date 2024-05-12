@@ -18,8 +18,29 @@ import { tagRouter } from '@modules/tag/tagRouter';
 import { storeRouter } from '@modules/commissionedStore/commissionedStoreRouter';
 import { clusterRouter } from '@modules/clusterOfTags/clusterRouter';
 
-const logger = pino({ name: 'server start' });
 const app: Express = express();
+
+const logger = pino({
+  name: 'core-api',
+  transport: {
+    targets: [
+      {
+        level: 'info',
+        target: 'pino-pretty',
+        options: {
+          colorizeObjects: true,
+          colorize: process.stdout.isTTY,
+          translateTimestamp: 'SYS:yyyy-mm-dd HH:MM:ss.l',
+          minimumLevel: 'info',
+          timestamp: 'SYS:yyyy-mm-dd HH:MM:ss.l',
+          levelFirst: true,
+          ignore: 'pid,hostname',
+          destination: 2,
+        },
+      },
+    ],
+  },
+});
 
 // Middlewares
 app.use(express.json());
@@ -29,7 +50,7 @@ app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
 
 if (env.NODE_ENV !== 'test') {
-  app.use(requestLogger());
+  app.use(requestLogger);
 }
 
 // Routes

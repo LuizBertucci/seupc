@@ -11,6 +11,7 @@ import {
 } from '@modules/commissionedStore/commissionedStoreModel';
 import { NotFoundError } from '@common/models/notFoundError';
 import { notebookService } from '@modules/notebook/notebookService';
+import { logger } from '@src/server';
 
 const toDTO = (commissionedStore: CommissionedStore): GetCommissionedStoreByIdResponse => ({
   id: commissionedStore.id,
@@ -24,6 +25,8 @@ const toDTO = (commissionedStore: CommissionedStore): GetCommissionedStoreByIdRe
 
 export const commissionedStoreService = {
   getAll: async (): Promise<ServiceResponse<GetCommissionedStoreByIdResponse[] | null>> => {
+    logger.info('Buscando todas as stores');
+
     const stores = await commissionedStoreRepository.getAll();
     return new ServiceResponse<GetCommissionedStoreByIdResponse[]>(
       ResponseStatus.Success,
