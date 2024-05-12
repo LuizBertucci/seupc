@@ -49,7 +49,9 @@ app.use(helmet());
 app.use(rateLimiter);
 app.use(compression({ filter: compressionMiddleware }));
 
-app.use(requestLogger);
+if (env.NODE_ENV !== 'test') {
+  app.use(requestLogger);
+}
 
 // Routes
 app.use('/commissioned-stores', storeRouter);
