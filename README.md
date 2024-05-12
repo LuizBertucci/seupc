@@ -154,6 +154,27 @@ Agora que o seu IP local foi adicionado às configurações de firewall do Banco
 
 Certifique-se de que a string de conexão do seu cliente inclui o host (endereço do servidor), porta, nome do banco de dados, nome de usuário e senha corretos.
 
+## Lista de credenciais
+
+1. Azure:
+
+   - Usuário: seupc@luizeduardolarahotmail.onmicrosoft.com
+   - Senha: V01ym2:zTtEo
+
+2. Container Registry:
+
+   - Usuário: crseupc
+   - Senha: 9Ps+ChV3EuZbeAO8nEVn6nFskCaR98NlsihKNFZESB+ACRDyD9us
+   - Server: crseupc.azurecr.io
+
+3. Banco de Dados:
+
+   - Usuário: seupc_admin
+   - Senha: KO38NcLqiX0YrH15eWWncOUx7E
+   - Host: postgresql-seupc-prd.postgres.database.azure.com
+   - Porta: 5432
+   - Nome DB: postgresql_seupc_prd
+
 ## Links Úteis
 
 - Admin: https://seupc-client-app.azurewebsites.net/admin
