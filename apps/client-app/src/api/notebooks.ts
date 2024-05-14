@@ -1,5 +1,10 @@
 import { api } from './config';
 
+export interface IAddPartsNotebooksParams {
+  notebookId: string;
+  partId: string;
+}
+
 export interface INotebook {
   id: string;
   name: string;
@@ -37,3 +42,6 @@ export const editNotebooks = async (params: INotebook | undefined, id: string) =
   api.put<IGetNotebooksResponse>(`/notebooks/${id}`, params);
 
 export const deleteNotebooks = async (id: string) => api.delete<IGetNotebooksResponse>(`/notebooks/${id}`);
+
+export const addPartNotebooks = async (params: IAddPartsNotebooksParams[]) =>
+  api.post<IGetNotebooksResponse>(`/notebooks/add-parts`, params);

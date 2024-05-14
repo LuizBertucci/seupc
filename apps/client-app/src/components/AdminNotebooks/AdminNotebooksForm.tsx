@@ -1,5 +1,5 @@
 import { faAdd, faSave } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import { INotebook } from '@/api/notebooks';
@@ -7,16 +7,29 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, ModalContext } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
+import { AddParts, PartTypeEnum, Parts, SelectOption } from '@/types/parts';
 import { Checkbox } from '../ui/checkbox';
-import { requestAddNotebooks } from './hooks/request';
+import { SelectSingle } from '../ui/select';
+import { requestAddNotebooks, requestAddPartsToNotebook } from './hooks/request';
+
+interface IPartsSelectionOption {
+  processors: SelectOption[];
+  ram: SelectOption[];
+  hd: SelectOption[];
+  ssd: SelectOption[];
+  gpu: SelectOption[];
+}
 
 export default function AdminNotebooksForm({
   edit,
+  editIndex,
   editValues,
+  parts,
 }: {
   edit?: boolean;
   editValues?: INotebook;
   editIndex?: number;
+  parts?: Parts[];
 }) {
   const { setIsOpen } = useContext(ModalContext);
 
@@ -28,8 +41,53 @@ export default function AdminNotebooksForm({
     formState: { errors },
   } = useForm<INotebook>({ defaultValues: edit ? editValues : {} });
 
-  const onSubmit: SubmitHandler<INotebook> = async (data: INotebook) => {
-    await requestAddNotebooks(data);
+  const emptyPartsSelection = (): IPartsSelectionOption => {
+    return {
+      processors: [],
+      ram: [],
+      hd: [],
+      ssd: [],
+      gpu: [],
+    };
+  };
+
+  const [{ processors, ram, hd, ssd, gpu }, setPartSelection] = useState<IPartsSelectionOption>(emptyPartsSelection());
+
+  useEffect(() => {
+    const newPartSelection = emptyPartsSelection();
+    for (const part of parts ?? []) {
+      const data = { label: part.name, value: part.id };
+      switch (part.partType) {
+        case PartTypeEnum.HD:
+          newPartSelection.hd.push(data);
+          break;
+        case PartTypeEnum.Processor:
+          newPartSelection.processors.push(data);
+          break;
+        case PartTypeEnum.RamMemory:
+          newPartSelection.ram.push(data);
+          break;
+        case PartTypeEnum.SSD:
+          newPartSelection.ssd.push(data);
+          break;
+        case PartTypeEnum.VideoCard:
+          newPartSelection.gpu.push(data);
+      }
+    }
+    setPartSelection(newPartSelection);
+  }, [parts]);
+
+  const onSubmit: SubmitHandler<INotebook> = async (data: INotebook & AddParts) => {
+    const partsIds: string[] = [];
+
+    for (const part of [data?.gpu, data?.hd, data?.processors, data?.ram, data?.ssd]) {
+      if (part) {
+        partsIds.push(part);
+      }
+    }
+
+    Promise.all([requestAddNotebooks(data), requestAddPartsToNotebook(partsIds, editIndex)]);
+
     setIsOpen(false);
   };
 
@@ -114,6 +172,19 @@ export default function AdminNotebooksForm({
               <Input {...register('weight')} className="border-2 border-gray-400" />
             </div>
           </div>
+        )}
+
+        <div style={{ alignSelf: 'self-start', marginLeft: '5px' }}>
+          <h2>Associar Parts</h2>
+        </div>
+        {processors.length > 0 && (
+          <SelectSingle options={processors} formControl={control} formName="processors" placeholder="Processador" />
+        )}
+        {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="ram" placeholder="RAM" />}
+        {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="hd" placeholder="HD" />}
+        {ssd.length > 0 && <SelectSingle options={ssd} formControl={control} formName="ssd" placeholder="SSD" />}
+        {gpu.length > 0 && (
+          <SelectSingle options={gpu} formControl={control} formName="gpu" placeholder="Placa de vídeo" />
         )}
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>

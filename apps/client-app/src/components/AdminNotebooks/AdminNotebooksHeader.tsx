@@ -5,11 +5,13 @@ import ActionButton from '@/components/ui/actionButton';
 import { Button } from '@/components/ui/button';
 import { DialogHeader, Modal, ModalContext } from '@/components/ui/dialog';
 
+import { usePartStore } from '../AdminParts/storage';
 import AdminNotebooksForm from './AdminNotebooksForm';
 import { useNotebooksStore } from './storage';
 
 export default function AdminNotebooksHeader({ rowSelection }: { rowSelection: object }) {
   const { dataTable } = useNotebooksStore((state) => state.dados);
+  const { dataTable: parts } = usePartStore((state) => state.dados);
 
   const { setIsOpen } = useContext(ModalContext);
 
@@ -49,13 +51,14 @@ export default function AdminNotebooksHeader({ rowSelection }: { rowSelection: o
             edit
             editValues={dataTable?.[Object.keys(rowSelection)[0]]}
             editIndex={Number(Object.keys(rowSelection)[0])}
+            parts={parts}
           />
         }
       >
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminNotebooksForm />} className="max-w-[980px]">
+      <Modal content={<AdminNotebooksForm parts={parts} />} className="max-w-[980px]">
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
