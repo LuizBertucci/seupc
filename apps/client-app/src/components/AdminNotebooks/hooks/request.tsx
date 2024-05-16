@@ -1,4 +1,4 @@
-import { INotebook, addNotebooks, addPartNotebooks, getNotebooks } from '@/api/notebooks';
+import { IAddNotebookResponse, INotebook, addNotebooks, addPartNotebooks, getNotebooks } from '@/api/notebooks';
 
 import { useNotebooksStore } from '../storage';
 
@@ -15,22 +15,34 @@ export const requestAddNotebooks = async (value: INotebook) => {
 
   const { data } = await addNotebooks(value);
 
-  if (!data?.success) return false;
+  if (!data?.success) return {} as IAddNotebookResponse;
 
   addDataTable(value);
   await requestGetNotebooks();
 
-  return true;
+  return data;
 };
 
-export const requestAddPartsToNotebook = async (partsIds: string[], index?: number): Promise<boolean> => {
+export const requestAddPartsToNotebook = async (partsIds: string[], dataNotebook?: INotebook, editedIndex?: number) => {
   if (!partsIds.length) return true;
 
   const { dataTable } = useNotebooksStore.getState().dados;
 
-  const { id: notebookId } = await dataTable.getState().dados;
+  if (editedIndex !== undefined) {
+    const { id: notebookId } = await dataTable.find((_data: INotebook, i: number) => i === editedIndex);
 
-  const { data } = await addPartNotebooks(partsIds.map((partId) => ({ notebookId, partId })));
+    const { data } = await addPartNotebooks(partsIds.map((partId) => ({ notebookId, partId })));
 
-  return data.success;
+    return data.success;
+  }
+
+  if (dataNotebook) {
+    const notebookData: IAddNotebookResponse = await requestAddNotebooks(dataNotebook);
+
+    const { data } = await addPartNotebooks(
+      partsIds.map((partId) => ({ notebookId: notebookData.responseObject, partId }))
+    );
+
+    return data.success;
+  }
 };

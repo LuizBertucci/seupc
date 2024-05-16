@@ -86,7 +86,7 @@ export default function AdminNotebooksForm({
       }
     }
 
-    Promise.all([requestAddNotebooks(data), requestAddPartsToNotebook(partsIds, editIndex)]);
+    Promise.all([requestAddNotebooks(data), requestAddPartsToNotebook(partsIds, data, editIndex)]);
 
     setIsOpen(false);
   };
@@ -177,15 +177,25 @@ export default function AdminNotebooksForm({
         <div style={{ alignSelf: 'self-start', marginLeft: '5px' }}>
           <h2>Associar Parts</h2>
         </div>
-        {processors.length > 0 && (
-          <SelectSingle options={processors} formControl={control} formName="processors" placeholder="Processador" />
-        )}
-        {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="ram" placeholder="RAM" />}
-        {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="hd" placeholder="HD" />}
-        {ssd.length > 0 && <SelectSingle options={ssd} formControl={control} formName="ssd" placeholder="SSD" />}
-        {gpu.length > 0 && (
-          <SelectSingle options={gpu} formControl={control} formName="gpu" placeholder="Placa de vídeo" />
-        )}
+
+        <div className="flex gap-3 w-full flex-1">
+          <>
+            {processors.length > 0 && (
+              <SelectSingle
+                options={processors}
+                formControl={control}
+                formName="processors"
+                placeholder="Processador"
+              />
+            )}
+            {ram.length > 0 && <SelectSingle options={ram} formControl={control} formName="ram" placeholder="RAM" />}
+            {hd.length > 0 && <SelectSingle options={hd} formControl={control} formName="hd" placeholder="HD" />}
+            {ssd.length > 0 && <SelectSingle options={ssd} formControl={control} formName="ssd" placeholder="SSD" />}
+            {gpu.length > 0 && (
+              <SelectSingle options={gpu} formControl={control} formName="gpu" placeholder="Placa de vídeo" />
+            )}
+          </>
+        </div>
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>
           {edit ? 'Salvar' : 'Criar'}
