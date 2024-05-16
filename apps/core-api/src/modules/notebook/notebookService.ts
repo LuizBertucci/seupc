@@ -62,25 +62,29 @@ export const notebookService = {
       operating_system = '',
       manufacturer_id = '',
       weight = '',
+      partsIds = [],
     } = request;
 
-    const notebook = await notebookRepository.create({
-      id: uuidv4(),
-      name,
-      brand,
-      color,
-      screen_size,
-      screen_resolution,
-      battery,
-      has_numeric_keypad,
-      has_stock,
-      published,
-      operating_system,
-      manufacturer_id,
-      weight,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const notebook = await notebookRepository.create(
+      {
+        id: uuidv4(),
+        name,
+        brand,
+        color,
+        screen_size,
+        screen_resolution,
+        battery,
+        has_numeric_keypad,
+        has_stock,
+        published,
+        operating_system,
+        manufacturer_id,
+        weight,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      partsIds
+    );
     return createServiceResponse(ResponseStatus.Success, 'Notebook criado', notebook.id, StatusCodes.CREATED);
   },
 

@@ -118,6 +118,7 @@ export const CreateNotebookRequest = z.object({
   operating_system: z.string().optional(),
   manufacturer_id: z.string().optional(),
   weight: z.string().optional(),
+  partsIds: z.array(z.string().uuid()).optional(),
 });
 
 export type AddPartsOnNotebooksRequest = z.infer<typeof AddPartsOnNotebooksRequest>;
