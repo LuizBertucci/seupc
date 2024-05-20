@@ -17,6 +17,7 @@ export interface INotebook {
   operating_system?: string;
   manufacturer_id?: string;
   weight?: string;
+  partsIds?: string[];
   created_at: string;
   updated_at: string;
 }

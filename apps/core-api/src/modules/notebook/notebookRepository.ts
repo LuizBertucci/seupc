@@ -64,7 +64,7 @@ export const notebookRepository = {
             notebook_id: notebook.id,
             part_id: partId,
           }));
-          await trx('notebook_parts').insert(partsData).onConflict().ignore();
+          await trx('notebook_parts').insert(partsData);
         }
 
         return newNotebook;

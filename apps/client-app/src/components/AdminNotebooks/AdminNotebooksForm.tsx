@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { AddParts, PartTypeEnum, Parts, SelectOption } from '@/types/parts';
 import { Checkbox } from '../ui/checkbox';
 import { SelectSingle } from '../ui/select';
-import { requestAddNotebooks, requestAddPartsToNotebook } from './hooks/request';
+import { requestAddNotebooks } from './hooks/request';
 
 interface IPartsSelectionOption {
   processors: SelectOption[];
@@ -77,7 +77,7 @@ export default function AdminNotebooksForm({
     setPartSelection(newPartSelection);
   }, [parts]);
 
-  const onSubmit: SubmitHandler<INotebook> = async (data: INotebook & AddParts) => {
+  const onSubmit: SubmitHandler<INotebook & AddParts> = async (data: INotebook & AddParts) => {
     const partsIds: string[] = [];
 
     for (const part of [data?.gpu, data?.hd, data?.processors, data?.ram, data?.ssd]) {
@@ -86,7 +86,11 @@ export default function AdminNotebooksForm({
       }
     }
 
-    Promise.all([requestAddNotebooks(data), requestAddPartsToNotebook(partsIds, data, editIndex)]);
+    const formattedData = {
+      ...data,
+      partsIds,
+    };
+    await requestAddNotebooks(formattedData);
 
     setIsOpen(false);
   };

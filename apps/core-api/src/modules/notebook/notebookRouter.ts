@@ -57,7 +57,7 @@ export const notebookRouter: Router = (() => {
       body: {
         content: {
           'application/json': {
-            schema: z.object({ title: z.string() }),
+            schema: CreateNotebookRequest,
           },
         },
       },
