@@ -28,6 +28,19 @@ describe('partService', () => {
     };
   });
 
+  describe('Get Parts by Tag', () => {
+    it('should return a list of parts', async () => {
+      const tagId = randomUUID();
+      jest.spyOn(partRepository, 'getPartsByTagId').mockResolvedValue([part]);
+      expect(await partService.getPartsByTagId(tagId)).toEqual({
+        message: 'Parts associadas a tag',
+        responseObject: [part],
+        statusCode: StatusCodes.OK,
+        success: true,
+      });
+    });
+  });
+
   describe('findAll', () => {
     it('return all Parts', async () => {
       jest.spyOn(partRepository, 'findAllAsync').mockResolvedValue([part]);

@@ -8,7 +8,7 @@
     "migrate:rollback": "knex migrate:rollback --knexfile src/knexfile.ts",
     "ts:check": "tsc --noEmit",
     "predev": "docker-compose up --build -d || docker compose up --build -d; sleep 2",
-    "dev": "NODE_ENV=development || set NODE_ENV=development | tsx watch --clear-screen=false src/index.ts | knex migrate:latest --knexfile src/knexfile.ts",
+    "dev": "NODE_ENV=development | tsx watch --clear-screen=false src/index.ts | knex migrate:latest --knexfile src/knexfile.ts",
     "build": "rimraf dist && tsc",
     "start": "tsx src/index.ts | knex migrate:latest --knexfile src/knexfile.ts",
     "format": "prettier --write 'src/**/*.{ts,js,json}' 'tests/**/*.{ts,js,json}'",

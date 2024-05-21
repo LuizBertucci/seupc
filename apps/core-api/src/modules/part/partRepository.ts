@@ -12,6 +12,13 @@ const toModel = (row: PartRowSchema): Part => ({
 });
 
 export const partRepository = {
+  getPartsByTagId: async (tagId: string): Promise<Part[]> => {
+    const { rows } = await knex.raw(
+      `SELECT p.* FROM parts p left join tag_parts tp on tp.part_id = p.id WHERE tp.tag_id = ?`,
+      [tagId]
+    );
+    return rows.map(toModel);
+  },
   findByNameAsync: async (name: string): Promise<Part | null> => {
     const { rows } = await knex.raw('SELECT p.* FROM parts p WHERE LOWER(p.name) = LOWER(?)', [name]);
 
@@ -40,7 +47,7 @@ export const partRepository = {
       [part.id, part.name, part.createdAt, part.updatedAt, part.partType, part.point]
     );
 
-    return toModel(rows);
+    return toModel(rows[0]);
   },
   update: async (part: Part): Promise<Part> => {
     const { rows } = await knex.raw('UPDATE parts SET name = ?, updated_at =?, point =? WHERE id =? RETURNING *', [
