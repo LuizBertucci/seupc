@@ -94,4 +94,13 @@ export const partService = {
       StatusCodes.OK
     );
   },
+  getPartsByTagId: async (tagId: string): Promise<ServiceResponse<GetPartByIdResponse[]>> => {
+    const parts = await partRepository.getPartsByTagId(tagId);
+    return new ServiceResponse<GetPartByIdResponse[]>(
+      ResponseStatus.Success,
+      'Parts associadas a tag',
+      parts.map(toDTO),
+      StatusCodes.OK
+    );
+  },
 };

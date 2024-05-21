@@ -12,6 +12,8 @@ import {
   UpdateTagRequest,
 } from '@modules/tag/tagModel';
 import { tagService } from '@modules/tag/tagService';
+import { GetPartByIdResponse } from '@modules/part/partModel';
+import { partService } from '@modules/part/partService';
 
 export const tagRegistry = new OpenAPIRegistry();
 
@@ -142,6 +144,26 @@ export const tagRouter: Router = (() => {
     async (req: Request, res: Response, next: NextFunction) =>
       tagService
         .addParts(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next)
+  );
+
+  tagRegistry.registerPath({
+    method: 'get',
+    path: '/tags/{id}/parts',
+    tags: ['Tag', 'Part'],
+    request: {
+      params: GetTagByIdRequest.shape.params,
+    },
+    responses: createApiResponse(z.array(GetPartByIdResponse), 'Success'),
+  });
+
+  router.get(
+    '/:id/parts',
+    validateRequest(GetTagByIdRequest),
+    async (req: Request, res: Response, next: NextFunction) =>
+      partService
+        .getPartsByTagId(req.params.id as string)
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next)
   );
