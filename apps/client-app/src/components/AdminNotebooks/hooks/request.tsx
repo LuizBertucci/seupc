@@ -1,5 +1,7 @@
 import { IAddNotebookResponse, INotebook, addNotebooks, addPartNotebooks, getNotebooks } from '@/api/notebooks';
 
+import { AddOWR } from '@/types/otherRecommendationWebsite/orw';
+import { AddParts } from '@/types/parts';
 import { useNotebooksStore } from '../storage';
 
 export const requestGetNotebooks = async () => {
@@ -10,7 +12,7 @@ export const requestGetNotebooks = async () => {
   await setDataTable(data.responseObject);
 };
 
-export const requestAddNotebooks = async (value: INotebook) => {
+export const requestAddNotebooks = async (value: INotebook & AddParts & AddOWR) => {
   const { addDataTable } = useNotebooksStore.getState().dispatch;
 
   const { data } = await addNotebooks(value);

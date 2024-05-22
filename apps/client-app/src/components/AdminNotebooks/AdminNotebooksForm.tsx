@@ -87,7 +87,13 @@ export default function AdminNotebooksForm({
         partsIds.push(part);
       }
     }
-    await requestAddNotebooks(data);
+
+    const notebookData = {
+      ...data,
+      partsIds,
+    };
+
+    await requestAddNotebooks(notebookData);
 
     setIsOpen(false);
   };
@@ -202,11 +208,7 @@ export default function AdminNotebooksForm({
           <h2>Outros sites de recomendação</h2>
           <div className="flex gap-3 w-full flex-1">
             <div className="flex flex-col">
-              <Input
-                {...register('otherRecommendationWebsite')}
-                className="border-2 border-gray-400"
-                placeholder="URL"
-              />
+              <Input {...register('recommendationLink')} className="border-2 border-gray-400" placeholder="URL" />
             </div>
           </div>
         </div>

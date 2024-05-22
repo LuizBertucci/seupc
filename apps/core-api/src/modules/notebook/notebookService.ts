@@ -63,7 +63,7 @@ export const notebookService = {
       manufacturer_id = '',
       weight = '',
       partsIds = [],
-      otherRecommmendationWebsite,
+      recommendationLink,
     } = request;
 
     const notebook = await notebookRepository.create(
@@ -84,7 +84,7 @@ export const notebookService = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      otherRecommmendationWebsite,
+      recommendationLink,
       partsIds
     );
     return createServiceResponse(ResponseStatus.Success, 'Notebook criado', notebook.id, StatusCodes.CREATED);

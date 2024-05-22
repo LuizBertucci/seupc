@@ -20,6 +20,27 @@ const toModel = (row: NotebookRowSchema): Notebook => ({
   updatedAt: new Date(row.updated_at),
 });
 
+const getWebsiteNameFromLink = (link: string): string => {
+  const patterns = {
+    [ORWName.ZOOM]: /zoom/i,
+    [ORWName.BUSCAPE]: /buscape/i,
+    [ORWName.TEC_MUNDO]: /tecmundo/i,
+    [ORWName.JA_COTEI]: /jacotei/i,
+    [ORWName.BONDFARO]: /bondfaro/i,
+    [ORWName.CLIQUE_E_CONOMIZE]: /cliqueeconomize/i,
+    [ORWName.PROMOBIT]: /promobit/i,
+    [ORWName.GOOGLE_SHOPPING]: /google(?:shopping)?/i,
+  };
+
+  for (const [name, pattern] of Object.entries(patterns)) {
+    if (pattern.test(link)) {
+      return name;
+    }
+  }
+
+  return 'Unknown';
+};
+
 export const notebookRepository = {
   findAllAsync: async (): Promise<Notebook[]> => {
     const rows = await knex('notebooks').select('*');
@@ -37,7 +58,7 @@ export const notebookRepository = {
     return toModel(row);
   },
 
-  create: async (notebook: Notebook, otherRecommendationWebsite: ORWName, partsIds?: string[]): Promise<Notebook> => {
+  create: async (notebook: Notebook, recommendationLink: string, partsIds?: string[]): Promise<Notebook> => {
     try {
       return knex.transaction(async (trx) => {
         const [newNotebook] = await trx('notebooks')
@@ -60,32 +81,12 @@ export const notebookRepository = {
           })
           .returning('*');
 
-        const websiteName = {
-          [ORWName.ZOOM]: 'Zoom',
-          [ORWName.BONDFARO]: 'Bondfaro',
-          [ORWName.BUSCAPE]: 'Buscape',
-          [ORWName.CLIQUE_E_CONOMIZE]: 'Clique e economize',
-          [ORWName.GOOGLE_SHOPPING]: 'Google shopping',
-          [ORWName.JA_COTEI]: 'Já cotei',
-          [ORWName.PROMOBIT]: 'Promobit',
-          [ORWName.TEC_MUNDO]: 'TecMundo',
-        };
-
-        const websiteLink = {
-          [ORWName.ZOOM]: 'https://www.zoom.com.br',
-          [ORWName.BONDFARO]: 'https://www.bondfaro.com.br',
-          [ORWName.BUSCAPE]: 'https://www.buscape.com.br',
-          [ORWName.CLIQUE_E_CONOMIZE]: 'https://www.cliqueeconomize.com.br',
-          [ORWName.GOOGLE_SHOPPING]: 'https://shopping.google.com',
-          [ORWName.JA_COTEI]: 'https://www.jacotei.com.br',
-          [ORWName.PROMOBIT]: 'https://www.promobit.com.br',
-          [ORWName.TEC_MUNDO]: 'https://www.tecmundo.com.br',
-        };
+        const name = getWebsiteNameFromLink(recommendationLink);
 
         if (notebook.id) {
           const data = {
-            name: websiteName[otherRecommendationWebsite],
-            link: websiteLink[otherRecommendationWebsite],
+            name,
+            link: recommendationLink,
             notebook_id: notebook.id,
           };
           await trx('others_recommendations_websites').insert(data);

@@ -2,7 +2,6 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 import { commonValidations } from '@common/utils/commonValidation';
-import { ORWName } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
 
 extendZodWithOpenApi(z);
 
@@ -120,7 +119,7 @@ export const CreateNotebookRequest = z.object({
   manufacturer_id: z.string().optional(),
   weight: z.string().optional(),
   partsIds: z.array(z.string().uuid()).optional(),
-  otherRecommmendationWebsite: z.nativeEnum(ORWName),
+  recommendationLink: z.string(),
 });
 
 export type AddPartsOnNotebooksRequest = z.infer<typeof AddPartsOnNotebooksRequest>;
