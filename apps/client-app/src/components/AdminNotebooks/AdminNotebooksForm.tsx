@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, ModalContext } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
+import { AddOWR } from '@/types/otherRecommendationWebsite/orw';
 import { AddParts, PartTypeEnum, Parts, SelectOption } from '@/types/parts';
 import { Checkbox } from '../ui/checkbox';
 import { SelectSingle } from '../ui/select';
@@ -22,7 +23,6 @@ interface IPartsSelectionOption {
 
 export default function AdminNotebooksForm({
   edit,
-  editIndex,
   editValues,
   parts,
 }: {
@@ -39,7 +39,9 @@ export default function AdminNotebooksForm({
     watch,
     control,
     formState: { errors },
-  } = useForm<INotebook>({ defaultValues: edit ? editValues : {} });
+  } = useForm<INotebook>({
+    defaultValues: edit ? editValues : {},
+  });
 
   const emptyPartsSelection = (): IPartsSelectionOption => {
     return {
@@ -77,7 +79,7 @@ export default function AdminNotebooksForm({
     setPartSelection(newPartSelection);
   }, [parts]);
 
-  const onSubmit: SubmitHandler<INotebook & AddParts> = async (data: INotebook & AddParts) => {
+  const onSubmit: SubmitHandler<INotebook & AddParts & AddOWR> = async (data: INotebook & AddParts & AddOWR) => {
     const partsIds: string[] = [];
 
     for (const part of [data?.gpu, data?.hd, data?.processors, data?.ram, data?.ssd]) {
@@ -85,12 +87,7 @@ export default function AdminNotebooksForm({
         partsIds.push(part);
       }
     }
-
-    const formattedData = {
-      ...data,
-      partsIds,
-    };
-    await requestAddNotebooks(formattedData);
+    await requestAddNotebooks(data);
 
     setIsOpen(false);
   };
@@ -199,6 +196,19 @@ export default function AdminNotebooksForm({
               <SelectSingle options={gpu} formControl={control} formName="gpu" placeholder="Placa de vídeo" />
             )}
           </>
+        </div>
+
+        <div className="flex flex-col gap-3 w-full flex-1">
+          <h2>Outros sites de recomendação</h2>
+          <div className="flex gap-3 w-full flex-1">
+            <div className="flex flex-col">
+              <Input
+                {...register('otherRecommendationWebsite')}
+                className="border-2 border-gray-400"
+                placeholder="URL"
+              />
+            </div>
+          </div>
         </div>
 
         <Button type="submit" className="self-end" closeModal errors={errors} icon={edit ? faSave : faAdd}>

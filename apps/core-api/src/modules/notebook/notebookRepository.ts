@@ -1,4 +1,5 @@
 import { Notebook, NotebookPartTuple, NotebookRowSchema } from '@modules/notebook/notebookModel';
+import { ORWName } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
 import knex from '@src/index';
 
 const toModel = (row: NotebookRowSchema): Notebook => ({
@@ -36,7 +37,7 @@ export const notebookRepository = {
     return toModel(row);
   },
 
-  create: async (notebook: Notebook, partsIds?: string[]): Promise<Notebook> => {
+  create: async (notebook: Notebook, otherRecommendationWebsite: ORWName, partsIds?: string[]): Promise<Notebook> => {
     try {
       return knex.transaction(async (trx) => {
         const [newNotebook] = await trx('notebooks')
@@ -58,6 +59,37 @@ export const notebookRepository = {
             updated_at: notebook.updatedAt,
           })
           .returning('*');
+
+        const websiteName = {
+          [ORWName.ZOOM]: 'Zoom',
+          [ORWName.BONDFARO]: 'Bondfaro',
+          [ORWName.BUSCAPE]: 'Buscape',
+          [ORWName.CLIQUE_E_CONOMIZE]: 'Clique e economize',
+          [ORWName.GOOGLE_SHOPPING]: 'Google shopping',
+          [ORWName.JA_COTEI]: 'Já cotei',
+          [ORWName.PROMOBIT]: 'Promobit',
+          [ORWName.TEC_MUNDO]: 'TecMundo',
+        };
+
+        const websiteLink = {
+          [ORWName.ZOOM]: 'https://www.zoom.com.br',
+          [ORWName.BONDFARO]: 'https://www.bondfaro.com.br',
+          [ORWName.BUSCAPE]: 'https://www.buscape.com.br',
+          [ORWName.CLIQUE_E_CONOMIZE]: 'https://www.cliqueeconomize.com.br',
+          [ORWName.GOOGLE_SHOPPING]: 'https://shopping.google.com',
+          [ORWName.JA_COTEI]: 'https://www.jacotei.com.br',
+          [ORWName.PROMOBIT]: 'https://www.promobit.com.br',
+          [ORWName.TEC_MUNDO]: 'https://www.tecmundo.com.br',
+        };
+
+        if (notebook.id) {
+          const data = {
+            name: websiteName[otherRecommendationWebsite],
+            link: websiteLink[otherRecommendationWebsite],
+            notebook_id: notebook.id,
+          };
+          await trx('others_recommendations_websites').insert(data);
+        }
 
         if (partsIds?.length) {
           const partsData = partsIds.map((partId) => ({

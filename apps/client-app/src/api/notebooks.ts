@@ -1,4 +1,5 @@
 import { api } from './config';
+import { ORWName } from './otherRecommendationWebsite';
 
 export interface IAddPartsNotebooksParams {
   notebookId: string;
@@ -18,6 +19,7 @@ export interface INotebook {
   manufacturer_id?: string;
   weight?: string;
   partsIds?: string[];
+  otherRecommendationWebsite: ORWName;
   created_at: string;
   updated_at: string;
 }
