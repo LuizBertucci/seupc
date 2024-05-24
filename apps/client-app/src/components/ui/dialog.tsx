@@ -98,11 +98,11 @@ const DialogDescription = forwardRef<
   ElementRef<typeof DialogPrimitive.Description>,
   ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+  <DialogPrimitive.Description ref={ref} className={cn('text-sm text-muted-foreground w-full', className)} {...props} />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
-function Modal({ children, content }: { children: ReactNode; content: ReactNode }) {
+function Modal({ children, content, className }: { children: ReactNode; content: ReactNode; className?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -110,7 +110,7 @@ function Modal({ children, content }: { children: ReactNode; content: ReactNode 
       {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
       <ModalContext.Provider value={{ setIsOpen }}>
         <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent>{content}</DialogContent>
+        <DialogContent className={className}>{content}</DialogContent>
       </ModalContext.Provider>
     </Dialog>
   );

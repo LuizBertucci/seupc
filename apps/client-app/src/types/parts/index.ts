@@ -5,15 +5,20 @@ export enum PartTypeEnum {
   RamMemory = 'Ram Memory',
   HD = 'HD',
   SSD = 'SSD',
-  VideoCard = 'Video Card'
+  VideoCard = 'Video Card',
 }
 
-type PartType = PartTypeEnum.HD | PartTypeEnum.SSD | PartTypeEnum.Processor | PartTypeEnum.RamMemory | PartTypeEnum.VideoCard;
+type PartType =
+  | PartTypeEnum.HD
+  | PartTypeEnum.SSD
+  | PartTypeEnum.Processor
+  | PartTypeEnum.RamMemory
+  | PartTypeEnum.VideoCard;
 
 export enum TagCategoryEnum {
   Games = 'Games',
   Programs = 'Programs',
-  Courses = 'Courses'
+  Courses = 'Courses',
 }
 
 type TagCategory = TagCategoryEnum.Games | TagCategoryEnum.Programs | TagCategoryEnum.Courses;
@@ -40,17 +45,17 @@ export interface WriteTagDTO {
   name: string;
 }
 
-export type CreateTagDTO = WriteTagDTO & { partsIds: string[] }
+export type CreateTagDTO = WriteTagDTO & { partsIds: string[] };
 
-export type AddPartsToTag = {
+export type AddParts = {
   processors?: string;
   ram?: string;
   hd?: string;
   ssd?: string;
   gpu?: string;
-}
+};
 
-export type TagFormValue = WriteTagDTO & AddPartsToTag;
+export type TagFormValue = WriteTagDTO & AddParts;
 
 export type CategoryTags = {
   category: string;

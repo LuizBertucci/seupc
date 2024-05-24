@@ -6,7 +6,12 @@ import { createApiResponse } from '@api-docs/openAPIResponseBuilders';
 import { handleServiceResponse, validateRequest } from '@common/utils/httpHandlers';
 import { notebookService } from '@modules/notebook/notebookService';
 
-import { CreateNotebookRequest, GetNotebookByIdRequest, GetNotebookByIdResponse } from './notebookModel';
+import {
+  AddPartsOnNotebooksRequest,
+  CreateNotebookRequest,
+  GetNotebookByIdRequest,
+  GetNotebookByIdResponse,
+} from './notebookModel';
 
 export const notebookRegistry = new OpenAPIRegistry();
 
@@ -52,7 +57,7 @@ export const notebookRouter: Router = (() => {
       body: {
         content: {
           'application/json': {
-            schema: z.object({ title: z.string() }),
+            schema: CreateNotebookRequest,
           },
         },
       },
@@ -69,6 +74,32 @@ export const notebookRouter: Router = (() => {
         .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
         .catch(next);
     }
+  );
+
+  notebookRegistry.registerPath({
+    method: 'post',
+    path: '/notebooks/add-parts',
+    tags: ['Notebook', 'Part'],
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: AddPartsOnNotebooksRequest,
+          },
+        },
+      },
+    },
+    responses: createApiResponse(z.string(), 'Success'),
+  });
+
+  router.post(
+    '/add-parts',
+    validateRequest(z.object({ body: AddPartsOnNotebooksRequest })),
+    async (req: Request, res: Response, next: NextFunction) =>
+      notebookService
+        .addParts(req.body)
+        .then((serviceResponse) => handleServiceResponse(serviceResponse, res))
+        .catch(next)
   );
 
   return router;

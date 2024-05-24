@@ -1,8 +1,8 @@
-import knex from '@src/index';
 import {
   OtherRecommendationWebsite,
   OtherRecommendationWebsiteRowSchema,
 } from '@modules/otherRecommendationWebsite/otherRecommendationWebsiteModel';
+import knex from '@src/index';
 
 const toModel = (row: OtherRecommendationWebsiteRowSchema): OtherRecommendationWebsite => ({
   id: row.id,
@@ -15,48 +15,49 @@ const toModel = (row: OtherRecommendationWebsiteRowSchema): OtherRecommendationW
 
 export const otherRecommendationWebsiteRepository = {
   findAllAsync: async (): Promise<OtherRecommendationWebsite[]> => {
-    const { rows } = await knex.raw('SELECT orw.* FROM others_recommendations_websites orw');
-
+    const rows = await knex('others_recommendations_websites').select('*');
     return rows.map(toModel);
   },
-  findByIdAsync: async (id: string): Promise<OtherRecommendationWebsite | null> => {
-    const { rows } = await knex.raw('SELECT orw.* FROM others_recommendations_websites orw WHERE orw.id = ?', [id]);
 
-    if (rows.length === 0) {
+  findByIdAsync: async (id: string): Promise<OtherRecommendationWebsite | null> => {
+    const row = await knex('others_recommendations_websites').where({ id }).first();
+
+    if (!row) {
       return null;
     }
 
-    return toModel(rows[0]);
+    return toModel(row);
   },
+
   create: async (recommendationWebsite: OtherRecommendationWebsite): Promise<OtherRecommendationWebsite> => {
-    const { rows } = await knex.raw(
-      'INSERT INTO others_recommendations_websites (id, name, created_at, updated_at, link, notebook_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
-      [
-        recommendationWebsite.id,
-        recommendationWebsite.name,
-        recommendationWebsite.createdAt,
-        recommendationWebsite.updatedAt,
-        recommendationWebsite.link,
-        recommendationWebsite.notebookId,
-      ]
-    );
+    const [row] = await knex('others_recommendations_websites')
+      .insert({
+        id: recommendationWebsite.id,
+        name: recommendationWebsite.name,
+        created_at: recommendationWebsite.createdAt,
+        updated_at: recommendationWebsite.updatedAt,
+        link: recommendationWebsite.link,
+        notebook_id: recommendationWebsite.notebookId,
+      })
+      .returning('*');
 
-    return toModel(rows);
+    return toModel(row);
   },
+
   update: async (recommendationWebsite: OtherRecommendationWebsite): Promise<OtherRecommendationWebsite> => {
-    const { rows } = await knex.raw(
-      'UPDATE others_recommendations_websites SET name = ?, updated_at =?, link =? WHERE id =? RETURNING *',
-      [
-        recommendationWebsite.name,
-        recommendationWebsite.updatedAt,
-        recommendationWebsite.link,
-        recommendationWebsite.id,
-      ]
-    );
+    const [row] = await knex('others_recommendations_websites')
+      .where({ id: recommendationWebsite.id })
+      .update({
+        name: recommendationWebsite.name,
+        updated_at: recommendationWebsite.updatedAt,
+        link: recommendationWebsite.link,
+      })
+      .returning('*');
 
-    return toModel(rows);
+    return toModel(row);
   },
+
   delete: async (id: string): Promise<void> => {
-    await knex.raw('DELETE FROM others_recommendations_websites orw WHERE orw.id = ?', [id]);
+    await knex('others_recommendations_websites').where({ id }).del();
   },
 };

@@ -44,6 +44,8 @@ interface NotebookSchema {
   screen_resolution?: string;
   battery?: string;
   has_numeric_keypad?: boolean;
+  has_stock: boolean;
+  published: boolean;
   operating_system?: string;
   manufacturer_id?: string;
   weight?: string;
@@ -60,11 +62,18 @@ export interface NotebookRowSchema {
   screen_resolution?: string;
   battery?: string;
   has_numeric_keypad?: boolean;
+  has_stock: boolean;
+  published: boolean;
   operating_system?: string;
   manufacturer_id?: string;
   weight?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface NotebookPartTuple {
+  partId: string;
+  notebookId: string;
 }
 
 // Input Validation for 'GET notebook/:id' endpoint
@@ -84,6 +93,8 @@ export const GetNotebookByIdResponse = z.object({
   screen_resolution: z.string().optional(),
   battery: z.string().optional(),
   has_numeric_keypad: z.boolean().optional(),
+  has_stock: z.boolean().optional(),
+  published: z.boolean().optional(),
   operating_system: z.string().optional(),
   manufacturer_id: z.string().optional(),
   weight: z.string().optional(),
@@ -102,7 +113,17 @@ export const CreateNotebookRequest = z.object({
   screen_resolution: z.string().optional(),
   battery: z.string().optional(),
   has_numeric_keypad: z.boolean().optional(),
+  has_stock: z.boolean().optional(),
+  published: z.boolean().optional(),
   operating_system: z.string().optional(),
   manufacturer_id: z.string().optional(),
   weight: z.string().optional(),
+  partsIds: z.array(z.string().uuid()).optional(),
+  recommendationLink: z.string(),
 });
+
+export type AddPartsOnNotebooksRequest = z.infer<typeof AddPartsOnNotebooksRequest>;
+
+export const AddPartsOnNotebooksRequest = z.array(
+  z.object({ partId: z.string().uuid(), notebookId: z.string().uuid() })
+);

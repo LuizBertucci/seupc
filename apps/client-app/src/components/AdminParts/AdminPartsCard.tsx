@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 
 import { DataTable } from '@/components/ui/dataTable';
 import { SimpleTable } from '@/components/ui/simpleTable';
-import { useToast } from '@/components/ui/use-toast';
 
 import AdminPartsHeader from './AdminPartsHeader';
 import { requestGetParts } from './hooks/request';
@@ -13,16 +12,13 @@ import { usePartStore } from './storage';
 function AdminPartsCard({ type, className }: { type?: string; className?: string }) {
   const { dataTable, columns } = usePartStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
-  const { toast } = useToast();
 
   useEffect(() => {
     const getData = async () => {
       await requestGetParts();
-      toast({ title: 'Dados encontrados com sucesso!' });
     };
 
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
