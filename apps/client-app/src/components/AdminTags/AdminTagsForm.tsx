@@ -58,7 +58,6 @@ export default function AdminTagsForm({
 
     if (edit && editValues?.parts && editValues?.parts?.length > 0) {
       for (const part of editValues.parts) {
-        const data = { label: part.name, value: part.id };
         switch (part.partType) {
           case PartTypeEnum.HD:
             setValue('hd' as any, part.id);
