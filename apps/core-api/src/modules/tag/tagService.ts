@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { BatchNotFoundError, NotFoundError } from '@common/models/notFoundError';
 import { ResponseStatus, ServiceResponse } from '@common/models/serviceResponse';
-import { v4 as uuidv4 } from 'uuid';
+import { partService } from '@modules/part/partService';
 import { CreateTagRequest, GetTagByIdResponse, Tag, TagPartTuple, UpdateTagRequest } from '@modules/tag/tagModel';
 import { tagRepository } from '@modules/tag/tagRepository';
-import { partService } from '@modules/part/partService';
-import { BatchNotFoundError, NotFoundError } from '@common/models/notFoundError';
+import { v4 as uuidv4 } from 'uuid';
 
 const toDTO = (tag: Tag): GetTagByIdResponse => ({
   id: tag.id,
@@ -13,6 +13,7 @@ const toDTO = (tag: Tag): GetTagByIdResponse => ({
   name: tag.name,
   createdAt: tag.createdAt,
   updatedAt: tag.updatedAt,
+  parts: tag.parts ?? [],
 });
 
 export const tagService = {

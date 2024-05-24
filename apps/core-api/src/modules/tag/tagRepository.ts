@@ -1,18 +1,55 @@
-import knex from '@src/index';
-import { Tag, TagPartTuple, TagRowSchema } from '@modules/tag/tagModel';
 import { arrayBind } from '@common/utils/arrayBinding';
+import { Tag, TagPartTuple, TagRowSchema } from '@modules/tag/tagModel';
+import knex from '@src/index';
+import { logger } from '@src/server';
 
-const toModel = (row: TagRowSchema): Tag => ({
-  id: row.id,
-  name: row.name,
-  createdAt: new Date(row.created_at),
-  updatedAt: new Date(row.updated_at),
-  category: row.category,
-});
+const toModel = (row: TagRowSchema): Tag => {
+  logger.info('Row data', row);
+  return {
+    id: row.id,
+    name: row.name,
+    createdAt: new Date(row.created_at),
+    updatedAt: new Date(row.updated_at),
+    category: row.category,
+    parts: row.parts
+      ? row.parts.map((part) => {
+          logger.info({ createdAt: part.createdAt });
+          return {
+            id: part.id,
+            name: part.name,
+            point: part.point,
+            createdAt: new Date(part.createdAt),
+            partType: part.partType,
+            updatedAt: new Date(part.updatedAt),
+          };
+        })
+      : [],
+  };
+};
 
 export const tagRepository = {
   findAllAsync: async (): Promise<Tag[]> => {
-    const { rows } = await knex.raw('SELECT t.* FROM tags t');
+    const { rows } = await knex.raw(`
+      SELECT
+        t.*,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', p.id,
+              'name', p.name,
+              'part_type', p.part_type,
+              'point', p.point,
+              'created_at', p.created_at,
+              'updated_at', p.updated_at
+            ) ORDER BY p.id
+          ) FILTER (WHERE p.id IS NOT NULL),
+          '[]'
+        ) AS parts
+      FROM tags t
+      LEFT JOIN tag_parts tp ON t.id = tp.tag_id
+      LEFT JOIN parts p ON tp.part_id = p.id
+      GROUP BY t.id
+    `);
 
     return rows.map(toModel);
   },

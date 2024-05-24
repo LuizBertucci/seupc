@@ -2,6 +2,7 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 import { commonValidations } from '@common/utils/commonValidation';
+import { Part, PartType } from '@modules/part/partModel';
 
 extendZodWithOpenApi(z);
 
@@ -19,6 +20,7 @@ interface TagSchema {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+  parts?: Part[];
 }
 
 export interface TagRowSchema {
@@ -27,6 +29,7 @@ export interface TagRowSchema {
   name: string;
   created_at: string;
   updated_at: string;
+  parts?: Part[];
 }
 
 export interface TagPartTuple {
@@ -46,6 +49,18 @@ export const GetTagByIdResponse = z.object({
   name: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  parts: z.array(
+    z
+      .object({
+        id: z.string().uuid(),
+        partType: z.nativeEnum(PartType),
+        point: z.number(),
+        name: z.string(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+      })
+      .optional()
+  ),
 });
 
 export type CreateTagRequest = z.infer<typeof CreateTagRequest>;

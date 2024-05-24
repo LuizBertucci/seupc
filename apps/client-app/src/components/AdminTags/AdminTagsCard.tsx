@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 
 import { SimpleTable } from '@/components/ui/simpleTable';
-import { useToast } from '@/components/ui/use-toast';
 
 import { DataTable } from '../ui/dataTable';
 
@@ -14,12 +13,10 @@ import { useTagsStore } from './storage';
 export default function AdminTagsCard({ type, className }: { type?: string; className?: string }) {
   const { dataTable, columns } = useTagsStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
-  const { toast } = useToast();
 
   useEffect(() => {
     const getData = async () => {
       await requestGetTags();
-      toast({ title: 'Tags encontradas com sucesso!' });
     };
 
     getData();

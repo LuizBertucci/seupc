@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, Modal, ModalContext } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
 
+import { usePartStore } from '../AdminParts/storage';
 import AdminTagsForm from './AdminTagsForm';
 import { requestDeleteTags } from './hooks/request';
 import { useTagsStore } from './storage';
-import { usePartStore } from '../AdminParts/storage';
 
 export default function AdminTagsHeader({
   rowSelection,
@@ -20,6 +20,8 @@ export default function AdminTagsHeader({
 }) {
   const { dataTable } = useTagsStore((state) => state.dados);
   const { dataTable: parts } = usePartStore((state) => state.dados);
+
+  console.log({ dataTableSelected: dataTable?.[Object.keys(rowSelection)[0]] });
 
   const { setIsOpen } = useContext(ModalContext);
 
@@ -68,7 +70,7 @@ export default function AdminTagsHeader({
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminTagsForm parts={parts}/>}>
+      <Modal content={<AdminTagsForm parts={parts} />}>
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>
