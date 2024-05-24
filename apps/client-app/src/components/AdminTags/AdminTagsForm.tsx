@@ -48,12 +48,37 @@ export default function AdminTagsForm({
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: { errors },
   } = useForm<Tags>({ defaultValues: edit ? editValues : {} });
 
   useEffect(() => {
     const newPartSelection = emptyPartsSelection();
+
+    if (edit && editValues?.parts && editValues?.parts?.length > 0) {
+      for (const part of editValues.parts) {
+        const data = { label: part.name, value: part.id };
+        switch (part.partType) {
+          case PartTypeEnum.HD:
+            setValue('hd' as any, part.id);
+            break;
+          case PartTypeEnum.Processor:
+            setValue('processors' as any, part.id);
+            break;
+          case PartTypeEnum.RamMemory:
+            setValue('ram' as any, part.id);
+            break;
+          case PartTypeEnum.SSD:
+            setValue('ssd' as any, part.id);
+            break;
+          case PartTypeEnum.VideoCard:
+            setValue('gpu' as any, part.id);
+            break;
+        }
+      }
+    }
+
     for (const part of parts ?? []) {
       const data = { label: part.name, value: part.id };
       switch (part.partType) {
@@ -73,8 +98,9 @@ export default function AdminTagsForm({
           newPartSelection.gpu.push(data);
       }
     }
+
     setPartSelection(newPartSelection);
-  }, [parts]);
+  }, [parts, edit, editValues]);
 
   const onSubmit: SubmitHandler<TagFormValue> = async (data: TagFormValue) => {
     const partsIds: string[] = [];

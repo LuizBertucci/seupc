@@ -21,8 +21,6 @@ export default function AdminTagsHeader({
   const { dataTable } = useTagsStore((state) => state.dados);
   const { dataTable: parts } = usePartStore((state) => state.dados);
 
-  console.log({ dataTableSelected: dataTable?.[Object.keys(rowSelection)[0]] });
-
   const { setIsOpen } = useContext(ModalContext);
 
   const handleDelete = async () => {

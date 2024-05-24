@@ -38,6 +38,7 @@ export type Tags = {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+  parts?: Parts[];
 };
 
 export interface WriteTagDTO {
