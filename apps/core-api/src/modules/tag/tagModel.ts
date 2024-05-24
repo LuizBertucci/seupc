@@ -2,7 +2,7 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 import { commonValidations } from '@common/utils/commonValidation';
-import { Part, PartType } from '@modules/part/partModel';
+import { Part, PartRowSchema, PartType } from '@modules/part/partModel';
 
 extendZodWithOpenApi(z);
 
@@ -29,7 +29,7 @@ export interface TagRowSchema {
   name: string;
   created_at: string;
   updated_at: string;
-  parts?: Part[];
+  parts?: PartRowSchema[];
 }
 
 export interface TagPartTuple {

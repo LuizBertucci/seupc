@@ -1,4 +1,5 @@
 import { arrayBind } from '@common/utils/arrayBinding';
+import { Part, PartRowSchema } from '@modules/part/partModel';
 import { Tag, TagPartTuple, TagRowSchema } from '@modules/tag/tagModel';
 import knex from '@src/index';
 import { logger } from '@src/server';
@@ -11,21 +12,18 @@ const toModel = (row: TagRowSchema): Tag => {
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at),
     category: row.category,
-    parts: row.parts
-      ? row.parts.map((part) => {
-          logger.info({ createdAt: part.createdAt });
-          return {
-            id: part.id,
-            name: part.name,
-            point: part.point,
-            createdAt: new Date(part.createdAt),
-            partType: part.partType,
-            updatedAt: new Date(part.updatedAt),
-          };
-        })
-      : [],
+    parts: row.parts ? row.parts.map(toPartModel) : [],
   };
 };
+
+const toPartModel = (row: PartRowSchema): Part => ({
+  id: row.id,
+  partType: row.part_type,
+  point: row.point,
+  name: row.name,
+  createdAt: new Date(row.created_at),
+  updatedAt: new Date(row.updated_at),
+});
 
 export const tagRepository = {
   findAllAsync: async (): Promise<Tag[]> => {
