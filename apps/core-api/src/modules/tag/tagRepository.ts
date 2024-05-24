@@ -36,7 +36,7 @@ export const tagRepository = {
         if (partsIds?.length) {
           const values = partsIds.map(() => `(?, ?)`).join(', ');
           await trx.raw(
-            `INSERT INTO tag_parts (tag_id, part_id) VALUES ${values} ON CONFLICT DO NOTHING`,
+            `INSERT INTO tag_parts (tag_id, part_id) VALUES ${values}`,
             partsIds.flatMap((partId) => [tag.id, partId])
           );
         }

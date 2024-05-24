@@ -84,12 +84,14 @@ export const tagService = {
     return new ServiceResponse<string>(ResponseStatus.Success, 'Tag deletada', tag.id, StatusCodes.OK);
   },
   addParts: async (data: TagPartTuple[]): Promise<ServiceResponse<TagPartTuple[]>> => {
-    const tags = await tagRepository.batchGet(data.map(({ tagId }) => tagId));
-    if (tags.length !== data.length) {
+    const tagsIds = data.map(({ tagId }) => tagId);
+    const tags = await tagRepository.batchGet(tagsIds);
+    if (tags.length !== new Set(tagsIds).size) {
       throw new BatchNotFoundError();
     }
-    const parts = await partService.findByIds(data.map(({ partId }) => partId));
-    if (parts.success && parts.responseObject?.length !== data.length) {
+    const partsIds = data.map(({ partId }) => partId);
+    const parts = await partService.findByIds(partsIds);
+    if (parts.success && parts.responseObject?.length !== new Set(partsIds).size) {
       throw new BatchNotFoundError();
     }
 
