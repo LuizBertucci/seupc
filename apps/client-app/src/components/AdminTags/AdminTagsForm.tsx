@@ -9,7 +9,7 @@ import { SelectSingle } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { PartTypeEnum, Parts, SelectOption, TagFormValue, Tags } from '@/types/parts';
 
-import { requestAddPartsToTag, requestAddTags, requestEditTags } from './hooks/request';
+import { requestAddTags, requestEditTags } from './hooks/request';
 
 interface PartsSelectionOption {
   processors: SelectOption[];
@@ -111,7 +111,7 @@ export default function AdminTagsForm({
     }
 
     if (edit) {
-      await Promise.all([requestEditTags(data, editIndex), requestAddPartsToTag(partsIds, editIndex)]);
+      await Promise.all([requestEditTags({ ...data, partsIds }, editIndex)]);
     } else {
       await requestAddTags({ name: data.name, category: data.category, partsIds });
     }
