@@ -107,31 +107,22 @@ export const tagRepository = {
   },
   update: async (tag: Tag, partsIds?: string[]): Promise<Tag> => {
     try {
-      return knex.transaction(async (trx) => {
-        const { rows } = await knex.raw('UPDATE tags SET name = ?, updated_at =? WHERE id =? RETURNING *', [
-          tag.name,
-          tag.updatedAt,
-          tag.id,
-        ]);
+      return await knex.transaction(async (trx) => {
+        const [updatedTag] = await trx('tags')
+          .where('id', tag.id)
+          .update({ name: tag.name, updated_at: tag.updatedAt })
+          .returning('*');
 
         if (partsIds) {
-          const { rows: newParts } = await trx.raw(
-            'SELECT id, part_type FROM parts WHERE id IN (' + partsIds.map(() => '?').join(', ') + ')',
-            partsIds
-          );
+          const newParts = await trx('parts').whereIn('id', partsIds).select('id', 'part_type');
 
-          const newPartsMap = new Map(
-            newParts.map((part: { id: string; part_type: string }) => [part.part_type, part.id])
-          );
+          const existingParts = await trx('parts')
+            .join('tag_parts', 'parts.id', 'tag_parts.part_id')
+            .where('tag_parts.tag_id', tag.id)
+            .select('parts.id', 'parts.part_type');
 
-          const { rows: existingParts } = await trx.raw(
-            'SELECT p.id, p.part_type FROM parts p JOIN tag_parts tp ON p.id = tp.part_id WHERE tp.tag_id = ?',
-            [tag.id]
-          );
-
-          const existingPartsMap = new Map(
-            existingParts.map((part: { id: string; part_type: string }) => [part.part_type, part.id])
-          );
+          const newPartsMap = new Map(newParts.map((part) => [part.part_type, part.id]));
+          const existingPartsMap = new Map(existingParts.map((part) => [part.part_type, part.id]));
 
           const partsToDelete = [];
           const partsToInsert = [];
@@ -140,23 +131,19 @@ export const tagRepository = {
             if (existingPartsMap.has(partType)) {
               partsToDelete.push(existingPartsMap.get(partType));
             }
-            partsToInsert.push([tag.id, newPartId]);
+            partsToInsert.push({ tag_id: tag.id, part_id: newPartId });
           }
 
           if (partsToDelete.length) {
-            await trx.raw(
-              'DELETE FROM tag_parts WHERE tag_id = ? AND part_id IN (' + partsToDelete.map(() => '?').join(', ') + ')',
-              [tag.id, ...partsToDelete]
-            );
+            await trx('tag_parts').where('tag_id', tag.id).whereIn('part_id', partsToDelete).del();
           }
 
           if (partsToInsert.length) {
-            const values = partsToInsert.map(() => '(?, ?)').join(', ');
-            await trx.raw('INSERT INTO tag_parts (tag_id, part_id) VALUES ' + values, partsToInsert.flat());
+            await trx('tag_parts').insert(partsToInsert);
           }
         }
 
-        return toModel(rows[0]);
+        return toModel(updatedTag);
       });
     } catch (error) {
       throw error;
