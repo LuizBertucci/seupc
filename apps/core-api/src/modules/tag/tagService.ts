@@ -67,10 +67,17 @@ export const tagService = {
       throw new NotFoundError(id);
     }
 
+    if (request.partsIds) {
+      const { responseObject: parts } = await partService.findByIds(request.partsIds);
+      if (parts.length !== request.partsIds.length) {
+        throw new BatchNotFoundError();
+      }
+    }
+
     tag.name = request.name;
     tag.updatedAt = new Date();
 
-    await tagRepository.update(tag);
+    await tagRepository.update(tag, request.partsIds);
 
     return new ServiceResponse<string>(ResponseStatus.Success, 'Tag alterada', tag.id, StatusCodes.OK);
   },

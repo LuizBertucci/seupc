@@ -52,7 +52,31 @@ export const tagRepository = {
     return rows.map(toModel);
   },
   findByIdAsync: async (id: string): Promise<Tag | null> => {
-    const { rows } = await knex.raw('SELECT t.* FROM tags t WHERE t.id = ?', [id]);
+    const { rows } = await knex.raw(
+      `
+    SELECT
+      t.*,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', p.id,
+            'name', p.name,
+            'part_type', p.part_type,
+            'point', p.point,
+            'created_at', p.created_at,
+            'updated_at', p.updated_at
+          ) ORDER BY p.id
+        ) FILTER (WHERE p.id IS NOT NULL),
+        '[]'
+      ) AS parts
+    FROM tags t
+    LEFT JOIN tag_parts tp ON t.id = tp.tag_id
+    LEFT JOIN parts p ON tp.part_id = p.id
+    WHERE t.id = ?
+    GROUP BY t.id
+  `,
+      [id]
+    );
 
     if (rows.length === 0) {
       return null;
@@ -81,14 +105,62 @@ export const tagRepository = {
       throw error;
     }
   },
-  update: async (tag: Tag): Promise<Tag> => {
-    const { rows } = await knex.raw('UPDATE tags SET name = ?, updated_at =? WHERE id =? RETURNING *', [
-      tag.name,
-      tag.updatedAt,
-      tag.id,
-    ]);
+  update: async (tag: Tag, partsIds?: string[]): Promise<Tag> => {
+    try {
+      return knex.transaction(async (trx) => {
+        const { rows } = await knex.raw('UPDATE tags SET name = ?, updated_at =? WHERE id =? RETURNING *', [
+          tag.name,
+          tag.updatedAt,
+          tag.id,
+        ]);
 
-    return toModel(rows);
+        if (partsIds) {
+          const { rows: newParts } = await trx.raw(
+            'SELECT id, part_type FROM parts WHERE id IN (' + partsIds.map(() => '?').join(', ') + ')',
+            partsIds
+          );
+
+          const newPartsMap = new Map(
+            newParts.map((part: { id: string; part_type: string }) => [part.part_type, part.id])
+          );
+
+          const { rows: existingParts } = await trx.raw(
+            'SELECT p.id, p.part_type FROM parts p JOIN tag_parts tp ON p.id = tp.part_id WHERE tp.tag_id = ?',
+            [tag.id]
+          );
+
+          const existingPartsMap = new Map(
+            existingParts.map((part: { id: string; part_type: string }) => [part.part_type, part.id])
+          );
+
+          const partsToDelete = [];
+          const partsToInsert = [];
+
+          for (const [partType, newPartId] of newPartsMap.entries()) {
+            if (existingPartsMap.has(partType)) {
+              partsToDelete.push(existingPartsMap.get(partType));
+            }
+            partsToInsert.push([tag.id, newPartId]);
+          }
+
+          if (partsToDelete.length) {
+            await trx.raw(
+              'DELETE FROM tag_parts WHERE tag_id = ? AND part_id IN (' + partsToDelete.map(() => '?').join(', ') + ')',
+              [tag.id, ...partsToDelete]
+            );
+          }
+
+          if (partsToInsert.length) {
+            const values = partsToInsert.map(() => '(?, ?)').join(', ');
+            await trx.raw('INSERT INTO tag_parts (tag_id, part_id) VALUES ' + values, partsToInsert.flat());
+          }
+        }
+
+        return toModel(rows[0]);
+      });
+    } catch (error) {
+      throw error;
+    }
   },
   delete: async (id: string): Promise<void> => {
     await knex.transaction(async (trx) => {

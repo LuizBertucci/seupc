@@ -75,6 +75,7 @@ export type UpdateTagRequest = z.infer<typeof UpdateTagRequest>;
 
 export const UpdateTagRequest = z.object({
   name: z.string().min(1),
+  partsIds: z.array(z.string().uuid()).optional(),
 });
 
 export type AddPartsOnTagsRequest = z.infer<typeof AddPartsOnTagsRequest>;
