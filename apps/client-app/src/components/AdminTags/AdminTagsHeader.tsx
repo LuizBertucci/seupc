@@ -14,11 +14,9 @@ import { useTagsStore } from './storage';
 export default function AdminTagsHeader({
   rowSelection,
   setRowSelection,
-  onRefresh,
 }: {
   rowSelection: object;
   setRowSelection: any;
-  onRefresh: () => void;
 }) {
   const { dataTable } = useTagsStore((state) => state.dados);
   const { dataTable: parts } = usePartStore((state) => state.dados);
@@ -60,7 +58,6 @@ export default function AdminTagsHeader({
       <Modal
         content={
           <AdminTagsForm
-            onRefresh={onRefresh}
             edit
             editValues={dataTable?.[Object.keys(rowSelection)[0]]}
             editIndex={Number(Object.keys(rowSelection)[0])}
@@ -71,7 +68,7 @@ export default function AdminTagsHeader({
         <ActionButton icon={faPen} disabled={Object.keys(rowSelection).length !== 1} />
       </Modal>
 
-      <Modal content={<AdminTagsForm parts={parts} onRefresh={onRefresh} />}>
+      <Modal content={<AdminTagsForm parts={parts} />}>
         <Button disabled={Object.keys(rowSelection).length > 0} className="gap-2" icon={faAdd} size="sm">
           ADICIONAR
         </Button>

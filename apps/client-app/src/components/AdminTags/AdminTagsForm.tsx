@@ -9,6 +9,7 @@ import { SelectSingle } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { PartTypeEnum, Parts, SelectOption, TagFormValue, Tags } from '@/types/parts';
 
+import { useRefresh } from '@/context/useRefres';
 import { requestAddTags, requestEditTags } from './hooks/request';
 
 interface PartsSelectionOption {
@@ -24,13 +25,11 @@ export default function AdminTagsForm({
   editValues,
   editIndex,
   parts,
-  onRefresh,
 }: {
   edit?: boolean;
   editValues?: Tags;
   editIndex?: number;
   parts?: Parts[];
-  onRefresh: () => void;
 }) {
   function emptyPartsSelection(): PartsSelectionOption {
     return {
@@ -46,6 +45,7 @@ export default function AdminTagsForm({
 
   const { toast } = useToast();
   const { setIsOpen } = useContext(ModalContext);
+  const { onRefresh } = useRefresh();
 
   const {
     register,

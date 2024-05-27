@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { SimpleTable } from '@/components/ui/simpleTable';
 
 import { DataTable } from '../ui/dataTable';
 
+import { useRefresh } from '@/context/useRefres';
 import AdminTagsHeader from './AdminTagsHeader';
 import { requestGetTags } from './hooks/request';
 import { useTagsStore } from './storage';
@@ -13,8 +14,8 @@ import { useTagsStore } from './storage';
 export default function AdminTagsCard({ type, className }: { type?: string; className?: string }) {
   const { dataTable, columns } = useTagsStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
-  const [refresh, setRefresh] = useState(false);
 
+  const { refresh } = useRefresh();
   useEffect(() => {
     const getData = async () => {
       await requestGetTags();
@@ -23,10 +24,6 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
-
-  const handleRefresh = useCallback(() => {
-    setRefresh((prev) => !prev);
-  }, []);
 
   return (
     <div className={className}>
@@ -37,9 +34,7 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
           rowSelection={rowSelection}
           columns={columns || []}
           data={dataTable || []}
-          rightMenu={
-            <AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} onRefresh={handleRefresh} />
-          }
+          rightMenu={<AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
           className="w-full"
         />
       ) : (
@@ -52,9 +47,7 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={
-            <AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} onRefresh={handleRefresh} />
-          }
+          rightMenu={<AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
         />
       )}
     </div>
