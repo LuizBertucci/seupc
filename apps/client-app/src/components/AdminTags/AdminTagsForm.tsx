@@ -24,11 +24,13 @@ export default function AdminTagsForm({
   editValues,
   editIndex,
   parts,
+  onRefresh,
 }: {
   edit?: boolean;
   editValues?: Tags;
   editIndex?: number;
   parts?: Parts[];
+  onRefresh: () => void;
 }) {
   function emptyPartsSelection(): PartsSelectionOption {
     return {
@@ -118,6 +120,7 @@ export default function AdminTagsForm({
 
     toast({ title: `Tag ${edit ? 'editada' : 'criada'} com sucesso!` });
     setIsOpen(false);
+    onRefresh();
   };
 
   const options: Array<SelectOption> = [

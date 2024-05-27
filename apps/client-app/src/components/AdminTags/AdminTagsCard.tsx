@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { SimpleTable } from '@/components/ui/simpleTable';
 
@@ -13,6 +13,7 @@ import { useTagsStore } from './storage';
 export default function AdminTagsCard({ type, className }: { type?: string; className?: string }) {
   const { dataTable, columns } = useTagsStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -21,6 +22,10 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
 
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refresh]);
+
+  const handleRefresh = useCallback(() => {
+    setRefresh((prev) => !prev);
   }, []);
 
   return (
@@ -32,7 +37,9 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
           rowSelection={rowSelection}
           columns={columns || []}
           data={dataTable || []}
-          rightMenu={<AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={
+            <AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} onRefresh={handleRefresh} />
+          }
           className="w-full"
         />
       ) : (
@@ -45,7 +52,9 @@ export default function AdminTagsCard({ type, className }: { type?: string; clas
           columns={columns || []}
           data={dataTable || []}
           className="w-full"
-          rightMenu={<AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} />}
+          rightMenu={
+            <AdminTagsHeader setRowSelection={setRowSelection} rowSelection={rowSelection} onRefresh={handleRefresh} />
+          }
         />
       )}
     </div>
