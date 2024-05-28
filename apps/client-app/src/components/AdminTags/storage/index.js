@@ -20,7 +20,11 @@ export const useTagsStore = create(
           accessorKey: 'createdAt',
           header: 'Data de criação',
           cell: (params) => {
+
             const date = new Date(params.cell.getValue());
+            if (isNaN(date)) {
+              return 'Data inválida';
+            }
             return new Intl.DateTimeFormat('pt-BR',
             {
               day: '2-digit',
