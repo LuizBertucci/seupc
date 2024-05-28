@@ -16,6 +16,20 @@ export const useTagsStore = create(
           accessorKey: 'category',
           header: 'Categoria',
         },
+        {
+          accessorKey: 'createdAt',
+          header: 'Data de criação',
+          cell: (params) => {
+
+            const date = new Date(params.cell.getValue())
+            const day = String(date.getDate()).padStart(2, '0');
+            const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+            const month = monthNames[date.getMonth()];
+            const year = String(date.getFullYear());
+
+            return `${day} ${month} ${year}`
+          }
+        }
       ],
     },
     loaders: {},
