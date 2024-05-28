@@ -9,7 +9,8 @@ import { SelectSingle } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { PartTypeEnum, Parts, SelectOption, TagFormValue, Tags } from '@/types/parts';
 
-import { requestAddPartsToTag, requestAddTags, requestEditTags } from './hooks/request';
+import { useRefresh } from '@/context/useRefres';
+import { requestAddTags, requestEditTags } from './hooks/request';
 
 interface PartsSelectionOption {
   processors: SelectOption[];
@@ -44,16 +45,41 @@ export default function AdminTagsForm({
 
   const { toast } = useToast();
   const { setIsOpen } = useContext(ModalContext);
+  const { onRefresh } = useRefresh();
 
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: { errors },
   } = useForm<Tags>({ defaultValues: edit ? editValues : {} });
 
   useEffect(() => {
     const newPartSelection = emptyPartsSelection();
+
+    if (edit && editValues?.parts && editValues?.parts?.length > 0) {
+      for (const part of editValues.parts) {
+        switch (part.partType) {
+          case PartTypeEnum.HD:
+            setValue('hd' as any, part.id);
+            break;
+          case PartTypeEnum.Processor:
+            setValue('processors' as any, part.id);
+            break;
+          case PartTypeEnum.RamMemory:
+            setValue('ram' as any, part.id);
+            break;
+          case PartTypeEnum.SSD:
+            setValue('ssd' as any, part.id);
+            break;
+          case PartTypeEnum.VideoCard:
+            setValue('gpu' as any, part.id);
+            break;
+        }
+      }
+    }
+
     for (const part of parts ?? []) {
       const data = { label: part.name, value: part.id };
       switch (part.partType) {
@@ -73,8 +99,9 @@ export default function AdminTagsForm({
           newPartSelection.gpu.push(data);
       }
     }
+
     setPartSelection(newPartSelection);
-  }, [parts]);
+  }, [parts, edit, editValues]);
 
   const onSubmit: SubmitHandler<TagFormValue> = async (data: TagFormValue) => {
     const partsIds: string[] = [];
@@ -86,13 +113,14 @@ export default function AdminTagsForm({
     }
 
     if (edit) {
-      await Promise.all([requestEditTags(data, editIndex), requestAddPartsToTag(partsIds, editIndex)]);
+      await Promise.all([requestEditTags({ ...data, partsIds }, editIndex)]);
     } else {
       await requestAddTags({ name: data.name, category: data.category, partsIds });
     }
 
     toast({ title: `Tag ${edit ? 'editada' : 'criada'} com sucesso!` });
     setIsOpen(false);
+    onRefresh();
   };
 
   const options: Array<SelectOption> = [

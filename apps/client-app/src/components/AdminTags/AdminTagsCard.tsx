@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 
 import { SimpleTable } from '@/components/ui/simpleTable';
-import { useToast } from '@/components/ui/use-toast';
 
 import { DataTable } from '../ui/dataTable';
 
+import { useRefresh } from '@/context/useRefres';
 import AdminTagsHeader from './AdminTagsHeader';
 import { requestGetTags } from './hooks/request';
 import { useTagsStore } from './storage';
@@ -14,17 +14,16 @@ import { useTagsStore } from './storage';
 export default function AdminTagsCard({ type, className }: { type?: string; className?: string }) {
   const { dataTable, columns } = useTagsStore((state) => state.dados);
   const [rowSelection, setRowSelection] = useState({});
-  const { toast } = useToast();
 
+  const { refresh } = useRefresh();
   useEffect(() => {
     const getData = async () => {
       await requestGetTags();
-      toast({ title: 'Tags encontradas com sucesso!' });
     };
 
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refresh]);
 
   return (
     <div className={className}>

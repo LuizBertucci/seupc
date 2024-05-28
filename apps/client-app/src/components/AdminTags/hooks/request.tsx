@@ -23,30 +23,33 @@ export const requestAddTags = async (value: CreateTagDTO) => {
   return true;
 };
 
-export const requestAddPartsToTag = async (partsIds: string[], index?: number): Promise<boolean>  => {
+export const requestAddPartsToTag = async (partsIds: string[], index?: number): Promise<boolean> => {
   if (!partsIds.length) return true;
 
   const { dataTable } = useTagsStore.getState().dados;
-  const {id: tagId} = await dataTable.find((_data: Tags, i: number) => i === index);
-  const { data } = await addPartsTags(partsIds.map((partId) => ({tagId, partId})));
+  const { id: tagId } = await dataTable.find((_data: Tags, i: number) => i === index);
+  const { data } = await addPartsTags(partsIds.map((partId) => ({ tagId, partId })));
   return data.success;
-}
+};
 
-export const requestEditTags = async (value: WriteTagDTO | undefined, index: number | undefined) => {
+export const requestEditTags = async (
+  value: (WriteTagDTO & { partsIds: string[] }) | undefined,
+  index: number | undefined
+) => {
   const { editDataTable } = useTagsStore.getState().dispatch;
   const { dataTable } = useTagsStore.getState().dados;
 
-  const editData = dataTable.map((part: Tags, i: number | undefined) => {
+  const editData = dataTable.map((tag: Tags, i: number | undefined) => {
     if (index === i) {
       return value;
     }
 
-    return part;
+    return tag;
   });
 
-  const getPartId: Tags = await dataTable.find((data: Tags, i: number) => i === index);
+  const getTag: Tags = await dataTable.find((data: Tags, i: number) => i === index);
 
-  const { data } = await editTags(value, getPartId.id);
+  const { data } = await editTags(value, getTag.id);
 
   if (!data?.success) return false;
 

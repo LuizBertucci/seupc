@@ -16,6 +16,24 @@ export const useTagsStore = create(
           accessorKey: 'category',
           header: 'Categoria',
         },
+        {
+          accessorKey: 'createdAt',
+          header: 'Data de criação',
+          cell: (params) => {
+
+            const date = new Date(params.cell.getValue());
+            if (isNaN(date)) {
+              return 'Data inválida';
+            }
+            return new Intl.DateTimeFormat('pt-BR',
+            {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric'
+            })
+            .format(date);
+          }
+        }
       ],
     },
     loaders: {},
