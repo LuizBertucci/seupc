@@ -20,14 +20,14 @@ export const useTagsStore = create(
           accessorKey: 'createdAt',
           header: 'Data de criação',
           cell: (params) => {
-
-            const date = new Date(params.cell.getValue())
-            const day = String(date.getDate()).padStart(2, '0');
-            const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-            const month = monthNames[date.getMonth()];
-            const year = String(date.getFullYear());
-
-            return `${day} ${month} ${year}`
+            const date = new Date(params.cell.getValue());
+            return new Intl.DateTimeFormat('pt-BR',
+            {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric'
+            })
+            .format(date);
           }
         }
       ],
