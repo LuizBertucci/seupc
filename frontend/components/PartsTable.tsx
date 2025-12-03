@@ -28,21 +28,25 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete }) => {
               <td className="px-6 py-4 font-medium text-gray-900">{p.name}</td>
               <td className="px-6 py-4">{p.part_type}</td>
               <td className="px-6 py-4">{p.point}</td>
-              <td className="px-6 py-4 text-right flex justify-end gap-2">
-                <button
-                  onClick={() => onEdit(p)}
-                  className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                  title="Editar"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => onDelete(p.id)}
-                  className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                  title="Excluir"
-                >
-                  <Trash2 size={18} />
-                </button>
+              <td className="px-6 py-4 text-right">
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => onEdit(p)}
+                    className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                    title="Editar"
+                    aria-label="Editar"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => onDelete(p.id)}
+                    className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                    title="Excluir"
+                    aria-label="Excluir"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

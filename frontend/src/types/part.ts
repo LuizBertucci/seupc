@@ -1,6 +1,6 @@
 export enum PartType {
   PROCESSOR = 'Processor',
-  RAM_MEMORY = 'Ram Memory',
+  RAM_MEMORY = 'RAM Memory',
   HD = 'HD',
   SSD = 'SSD',
   VIDEO_CARD = 'Video Card',
@@ -17,7 +17,7 @@ export interface Part {
 
 export interface CreatePartDTO {
   name: string;
-  partType: PartType;
+  part_type: PartType;
   point: number;
 }
 

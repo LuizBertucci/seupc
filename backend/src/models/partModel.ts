@@ -23,14 +23,14 @@ type Part = z.infer<typeof PartSchema>;
 const CreatePartSchema = z.object({
   name: z.string().min(1),
   partType: z.nativeEnum(PartType),
-  point: z.number().gt(0),
+  point: z.number().int().positive(),
 });
 
 type CreatePartDTO = z.infer<typeof CreatePartSchema>;
 
 const UpdatePartSchema = z.object({
   name: z.string().min(1).optional(),
-  point: z.number().gt(0).optional(),
+  point: z.number().int().positive().optional(),
 });
 
 type UpdatePartDTO = z.infer<typeof UpdatePartSchema>;

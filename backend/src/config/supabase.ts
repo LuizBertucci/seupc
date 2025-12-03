@@ -20,11 +20,7 @@ if (fs.existsSync(backendEnvPath)) {
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Debug logs (ocultando parte da chave por segurança)
-console.log('Supabase Config Check:');
-console.log('URL:', supabaseUrl);
-console.log('Key Length:', supabaseKey ? supabaseKey.length : 0);
-console.log('Key Start:', supabaseKey ? supabaseKey.substring(0, 10) + '...' : 'MISSING');
+
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Credenciais do Supabase não configuradas (SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY faltando)');

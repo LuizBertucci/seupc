@@ -4,6 +4,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 const getAll = async (): Promise<Part[]> => {
   const res = await fetch(`${API_URL}/parts`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to fetch parts: ${res.status} ${errorText}`);
+  }
   const data = await res.json();
   if (!data.success) throw new Error(data.message);
   return data.data;
