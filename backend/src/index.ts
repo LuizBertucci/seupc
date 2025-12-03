@@ -21,10 +21,16 @@ app.use(express.urlencoded({ extended: true }));
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use(limiter);
 
+import partRoutes from './routes/partRoutes';
+
 // Rota de health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+// Rotas da API
+app.use('/parts', partRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Backend rodando → http://localhost:${PORT}`);

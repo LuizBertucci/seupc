@@ -18,12 +18,12 @@ Recreate the [Parts CRUD feature](https://web-backend-10xdev.azurewebsites.net/a
 ### 2. Backend (Express + Supabase)
 
 -   **Configuration**: Setup `backend/src/config/supabase.ts` to initialize `@supabase/supabase-js`.
--   **Module Structure** (`backend/src/modules/part/`):
-    -   `partModel.ts`: Define Zod schemas and TypeScript interfaces (reusing existing definitions).
-    -   `partRepository.ts`: Implement data access using `supabase.from('parts')` methods (replacing Knex queries).
-    -   `partService.ts`: Implement business logic and validation calls.
-    -   `partController.ts`: Handle HTTP requests/responses.
--   **Routing**: Register routes in `backend/src/routes/partRoutes.ts` and mount in `index.ts`.
+-   **Folder Structure** (Mimic alavanca-dash):
+    -   `backend/src/controllers/partController.ts`: Handle HTTP requests/responses.
+    -   `backend/src/services/partService.ts`: Implement business logic and validation calls.
+    -   `backend/src/models/partModel.ts`: Define Zod schemas, TypeScript interfaces AND data access (Active Record style).
+    -   `backend/src/routes/partRoutes.ts`: Register routes.
+-   **Routing**: Mount routes in `index.ts`.
 
 ### 3. Frontend (Next.js + Tailwind)
 
@@ -31,7 +31,8 @@ Recreate the [Parts CRUD feature](https://web-backend-10xdev.azurewebsites.net/a
 -   **UI Components** (`frontend/components/parts/`):
     -   `PartsTable.tsx`: Display parts list using Tailwind tables.
     -   `PartForm.tsx`: Create/Edit form using `react-hook-form` and Tailwind styling.
--   **Page**: Create `frontend/app/parts/page.tsx` to orchestrate the components and data fetching.
+-   **Pages**:
+    -   `frontend/app/admin/page.tsx`: Admin dashboard containing the `PartsTable` and management features.
 
 ## Assumptions
 
@@ -40,9 +41,9 @@ Recreate the [Parts CRUD feature](https://web-backend-10xdev.azurewebsites.net/a
 
 ### To-dos
 
-- [ ] Create SQL schema for 'parts' table
+- [x] Create SQL schema for 'parts' table
 - [ ] Initialize Supabase Client in Backend
-- [ ] Implement Backend Part Module (Model, Repo, Service, Controller)
+- [ ] Implement Backend Part Module (Model, Service, Controller)
 - [ ] Mount Part Routes in Express App
 - [ ] Implement Frontend API Service
 - [ ] Implement Frontend UI Components (Table, Form)
