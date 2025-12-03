@@ -19,6 +19,7 @@ coverage/
 *.swp
 *.swo
 *~
+.cursor/scratchpad.md
 
 # OS
 .DS_Store

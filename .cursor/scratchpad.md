@@ -1,46 +1,43 @@
 # Project: Setup Project (Backend + Frontend + Supabase)
 
 ## Background and Motivation
-The user is following a specific guide to set up a full-stack project with Node.js/Express backend and Next.js frontend, integrated with Supabase. The goal is to complete the setup according to the guide provided.
+The user wants to "recreate" a Hardware Parts CRUD feature (originally Node/Knex/React) using the current project stack: Node/Express/Supabase (Backend) and Next.js/Tailwind/Radix (Frontend).
+The user also requested a **Monorepo structure** (root `package.json`), but we encountered an issue where the Frontend (`next dev`) exits immediately.
 
 ## Key Challenges and Analysis
-- Need to ensure all dependencies match the guide exactly.
-- Several configuration files (.env, tsconfig, lib files) need to be created manually.
-- The project is split into `backend` and `frontend` directories.
-- Need to verify hidden files like `.gitignore` and `.env`.
+-   **Frontend Stability**: `npm run dev` in `frontend` exits immediately. Potential causes: Node version (v22), Next.js version mismatch, or missing environment variables.
+-   **Monorepo**: We need to re-apply the Monorepo structure once the individual parts are stable.
+-   **Stack Translation**:
+    -   **DB Access**: Replace `Knex` with `@supabase/supabase-js`.
+    -   **Styling**: Replace custom CSS with Tailwind.
 
 ## High-level Task Breakdown
 
-1.  **Audit & Gap Analysis** (Completed)
-    *   Checked `package.json` for both backend and frontend.
-    *   Checked existence of key configuration files.
-    *   Identified missing dependencies and files.
+1.  **Fix Frontend**
+    -   Investigate why `next dev` crashes/exits.
+    -   Verify dependencies and compatibility.
+    -   Ensure `frontend` runs standalone.
 
-2.  **Frontend Completion**
-    *   Install missing dependencies: `react-day-picker`, `@supabase/supabase-js`, `@supabase/ssr`.
-    *   Create `lib` directory and `supabase.ts` client.
-    *   Create `.env` file with templates.
+2.  **Monorepo Setup**
+    -   Re-create root `package.json` with workspaces.
+    -   Configure `concurrently` for unified development.
 
-3.  **Backend Completion**
-    *   Create `.env` file.
-    *   Create `src/routes` directory structure.
+3.  **Database & Backend**
+    -   Create `parts` table SQL.
+    -   Implement Backend `Part` module (Model, Repo, Service, Controller).
 
-4.  **Root Configuration**
-    *   Create/Verify `.gitignore`.
-    *   Create `docker-compose.yml` for local infrastructure simulation.
+4.  **Frontend Implementation**
+    -   Implement API Service and UI Components.
+    -   Create `/parts` Page.
 
 ## Project Status Board
 
-- [x] Backend: `npm init`, dependencies, `tsconfig.json`, `src/index.ts`
-- [x] Frontend: `create-next-app`, UI libs (Radix, Tailwind, Lucide)
-- [ ] Frontend: Install `react-day-picker`, `@supabase/supabase-js`, `@supabase/ssr`
-- [ ] Frontend: Create `lib/supabase.ts`
-- [ ] Frontend: Create `.env`
-- [ ] Backend: Create `.env`
-- [ ] Backend: Create `src/routes` folder
-- [ ] Root: Create `.gitignore`
-- [ ] Root: Create `docker-compose.yml`
+-   [ ] **Frontend**: Fix `next dev` startup issue.
+-   [ ] **Monorepo**: Setup root `package.json`.
+-   [ ] **Database**: Create `parts` table SQL.
+-   [ ] **Backend**: Config Supabase Client.
+-   [ ] **Backend**: Implement `Part` Module.
+-   [ ] **Frontend**: Implement Components & Page.
 
 ## Executor's Feedback or Assistance Requests
-- None at the moment. Ready to proceed with installations and file creations.
-
+-   Detected that `next dev` exits immediately. Investigating `frontend` environment.
