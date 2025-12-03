@@ -9,7 +9,7 @@ import { Part, PartType } from '@/src/types/part';
 // Defina o schema primeiro
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  partType: z.nativeEnum(PartType),
+  part_type: z.nativeEnum(PartType, { message: 'Selecione um tipo válido' }),
   point: z.coerce.number().positive('Pontuação deve ser maior que 0'),
 });
 
@@ -29,7 +29,7 @@ const PartForm: React.FC<Props> = ({ defaultValues, onSubmit, onCancel }) => {
     defaultValues: {
       name: '',
       point: 0,
-      partType: PartType.PROCESSOR,
+      part_type: PartType.PROCESSOR,
     }
   });
 
@@ -37,14 +37,14 @@ const PartForm: React.FC<Props> = ({ defaultValues, onSubmit, onCancel }) => {
     if (defaultValues) {
       reset({
         name: defaultValues.name,
-        partType: defaultValues.part_type,
+        part_type: defaultValues.part_type,
         point: defaultValues.point,
       });
     } else {
       reset({
          name: '',
          point: 0,
-         partType: PartType.PROCESSOR,
+         part_type: PartType.PROCESSOR,
       });
     }
   }, [defaultValues, reset]);
@@ -69,7 +69,7 @@ const PartForm: React.FC<Props> = ({ defaultValues, onSubmit, onCancel }) => {
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
         <select
-          {...register('partType')}
+          {...register('part_type')}
           className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           {Object.values(PartType).map((type) => (
@@ -78,7 +78,7 @@ const PartForm: React.FC<Props> = ({ defaultValues, onSubmit, onCancel }) => {
             </option>
           ))}
         </select>
-        {errors.partType && <p className="mt-1 text-xs text-red-500">{errors.partType.message}</p>}
+        {errors.part_type && <p className="mt-1 text-xs text-red-500">{errors.part_type.message}</p>}
       </div>
 
       <div>
