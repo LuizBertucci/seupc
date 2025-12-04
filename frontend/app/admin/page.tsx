@@ -5,7 +5,6 @@ import { Part, CreatePartDTO, UpdatePartDTO } from '@/src/types/part';
 import { partService } from '@/src/services/partService';
 import { PartsTable } from '@/components/PartsTable';
 import { PartModal } from '@/components/PartModal';
-import { Plus } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminPage() {
