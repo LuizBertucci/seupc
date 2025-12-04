@@ -2,17 +2,28 @@
 
 import React from 'react';
 import { Part } from '@/src/types/part';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit, Plus } from 'lucide-react';
 
 type Props = {
   items: Part[];
   onEdit: (part: Part) => void;
   onDelete: (id: string) => void;
+  onCreate: () => void;
 };
 
-const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete }) => {
+const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full lg:w-1/2">
+      <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
+        <h3 className="font-semibold text-gray-700">Lista de Peças</h3>
+        <button
+          onClick={onCreate}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
+        >
+          <Plus size={18} />
+          Nova Peça
+        </button>
+      </div>
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="bg-gray-50 text-xs uppercase text-gray-700">
           <tr>

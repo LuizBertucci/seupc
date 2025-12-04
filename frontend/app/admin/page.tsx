@@ -93,13 +93,6 @@ export default function AdminPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">Gerenciar Peças</h1>
-            <button
-              onClick={openCreate}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              <Plus size={18} />
-              Nova Peça
-            </button>
           </div>
 
           {loading ? (
@@ -109,6 +102,7 @@ export default function AdminPage() {
               items={parts}
               onEdit={openEdit}
               onDelete={handleDelete}
+              onCreate={openCreate}
             />
           )}
         </div>
