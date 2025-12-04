@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Part, CreatePartDTO, UpdatePartDTO } from '@/src/types/part';
 import { partService } from '@/src/services/partService';
 import { PartsTable } from '@/components/PartsTable';
-import { PartForm } from '@/components/PartForm';
+import { PartModal } from '@/components/PartModal';
 import { Plus } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -87,10 +87,10 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <Toaster position="top-right" />
-      <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-3">
+      <div className="max-w-6xl mx-auto">
         
-        {/* Left Column: List */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* List Section */}
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">Gerenciar Peças</h1>
             <button
@@ -113,25 +113,13 @@ export default function AdminPage() {
           )}
         </div>
 
-        {/* Right Column: Form (Sticky) */}
-        <div className="lg:col-span-1">
-          {isFormOpen ? (
-            <div className="bg-white p-6 rounded-lg shadow-md sticky top-8">
-              <h2 className="text-lg font-semibold mb-4">
-                {editingPart ? 'Editar Peça' : 'Nova Peça'}
-              </h2>
-              <PartForm
-                defaultValues={editingPart || undefined}
-                onSubmit={editingPart ? handleUpdate : handleCreate}
-                onCancel={closeForm}
-              />
-            </div>
-          ) : (
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500 border border-dashed border-gray-300 h-64 flex flex-col items-center justify-center">
-              <p>Selecione uma peça para editar ou crie uma nova.</p>
-            </div>
-          )}
-        </div>
+        {/* Modal Form */}
+        <PartModal
+          isOpen={isFormOpen}
+          onClose={closeForm}
+          editingPart={editingPart}
+          onSubmit={editingPart ? handleUpdate : handleCreate}
+        />
 
       </div>
     </div>
