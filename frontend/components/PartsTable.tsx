@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Part } from '@/src/types/part';
-import { Trash2, Edit, Plus, Search } from 'lucide-react';
+import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
   items: Part[];
@@ -13,11 +13,22 @@ type Props = {
 
 const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const filteredItems = items.filter((part) =>
     part.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     part.part_type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full lg:w-1/2">
@@ -30,7 +41,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearch}
               className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
             />
           </div>
@@ -53,7 +64,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {filteredItems.map((p) => (
+          {currentItems.map((p) => (
             <tr key={p.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 font-medium text-gray-900">{p.name}</td>
               <td className="px-6 py-4">{p.part_type}</td>
@@ -89,6 +100,35 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
           )}
         </tbody>
       </table>
+      
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
+          <div className="text-sm text-gray-500">
+            Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredItems.length)} de {filteredItems.length} peças
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+              title="Página anterior"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <span className="flex items-center px-2 text-sm font-medium text-gray-700">
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+              title="Próxima página"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
