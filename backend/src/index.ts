@@ -22,6 +22,7 @@ const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use(limiter);
 
 import partRoutes from './routes/partRoutes';
+import tagRoutes from './routes/tagRoutes';
 
 // Rota de health check
 app.get('/health', (_req, res) => {
@@ -30,6 +31,7 @@ app.get('/health', (_req, res) => {
 
 // Rotas da API
 app.use('/parts', partRoutes);
+app.use('/tags', tagRoutes);
 
 
 app.listen(PORT, () => {

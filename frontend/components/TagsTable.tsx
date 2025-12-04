@@ -1,0 +1,139 @@
+"use client";
+
+import React, { useState } from 'react';
+import { Tag } from '@/src/types/tag';
+import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+
+type Props = {
+  items: Tag[];
+  onEdit: (tag: Tag) => void;
+  onDelete: (id: string) => void;
+  onCreate: () => void;
+};
+
+const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const filteredItems = items.filter((tag) =>
+    tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
+      <div className="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h3 className="font-semibold text-gray-900 text-lg">Gerenciar Tags</h3>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="pl-7 pr-2 py-1 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+            />
+          </div>
+          <button
+            onClick={onCreate}
+            className="flex items-center gap-1 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors text-xs font-medium"
+          >
+            <Plus size={14} />
+            <span className="hidden sm:inline">Nova</span>
+          </button>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="bg-gray-50 text-xs uppercase text-gray-700">
+            <tr className="border-b border-gray-200">
+              <th className="px-2 py-2 text-xs text-left w-[20%]">Nome</th>
+              <th className="px-2 py-2 text-xs text-left w-[20%]">CPU</th>
+              <th className="px-2 py-2 text-xs text-left w-[20%]">RAM</th>
+              <th className="px-2 py-2 text-xs text-left w-[20%]">GPU</th>
+              <th className="px-2 py-2 text-xs text-right w-[20%]">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {currentItems.map((tag) => (
+              <tr key={tag.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
+                <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[100px]">{tag.name}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.processor?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.ram_memory?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.video_card?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs text-right">
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => onEdit(tag)}
+                      className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                      title="Editar"
+                      aria-label="Editar"
+                    >
+                      <Edit size={18} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(tag.id)}
+                      className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                      title="Excluir"
+                      aria-label="Excluir"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {filteredItems.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500 block w-full">
+                  {searchTerm ? 'Nenhuma tag encontrada para a busca.' : 'Nenhuma tag cadastrada.'}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
+          <div className="text-sm text-gray-500">
+            Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredItems.length)} de {filteredItems.length} tags
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+              title="Página anterior"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <span className="flex items-center px-2 text-sm font-medium text-gray-700">
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+              title="Próxima página"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export { TagsTable };

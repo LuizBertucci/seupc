@@ -31,9 +31,9 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full lg:w-1/2">
+    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
-        <h3 className="font-semibold text-gray-700">Lista de Peças</h3>
+        <h3 className="font-semibold text-gray-700">Gerenciar Parts</h3>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -57,19 +57,19 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="bg-gray-50 text-xs uppercase text-gray-700">
           <tr>
-            <th className="px-6 py-3">Nome</th>
-            <th className="px-6 py-3">Tipo</th>
-            <th className="px-6 py-3">Pontuação</th>
-            <th className="px-6 py-3 text-right">Ações</th>
+            <th className="px-2 py-2 text-xs w-[40%]">Nome</th>
+            <th className="px-2 py-2 text-xs w-[30%]">Tipo</th>
+            <th className="px-2 py-2 text-xs w-[15%] text-center">Pontos</th>
+            <th className="px-2 py-2 text-xs w-[15%] text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {currentItems.map((p) => (
             <tr key={p.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 font-medium text-gray-900">{p.name}</td>
-              <td className="px-6 py-4">{p.part_type}</td>
-              <td className="px-6 py-4">{p.point}</td>
-              <td className="px-6 py-4 text-right">
+              <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[120px]">{p.name}</td>
+              <td className="px-2 py-2 text-xs truncate max-w-[80px]">{p.part_type}</td>
+              <td className="px-2 py-2 text-xs text-center">{p.point}</td>
+              <td className="px-2 py-2 text-xs text-right">
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => onEdit(p)}

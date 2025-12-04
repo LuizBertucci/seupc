@@ -1,4 +1,9 @@
-<!-- b792f1d1-12f0-470c-93a7-8f7305bb006c 0b561d82-4e6a-4396-bd5a-3c943ac21773 -->
+---
+name: "Plan: Implement Tags Feature"
+overview: ""
+todos: []
+---
+
 # Plan: Implement Tags Feature
 
 ## 1. Database Setup
