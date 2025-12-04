@@ -3,7 +3,7 @@ import { supabase } from '../config/supabase';
 
 enum PartType {
   PROCESSOR = 'Processor',
-  RAM_MEMORY = 'Ram Memory',
+  RAM_MEMORY = 'RAM Memory',
   HD = 'HD',
   SSD = 'SSD',
   VIDEO_CARD = 'Video Card',
@@ -22,7 +22,7 @@ type Part = z.infer<typeof PartSchema>;
 
 const CreatePartSchema = z.object({
   name: z.string().min(1),
-  partType: z.nativeEnum(PartType),
+  part_type: z.nativeEnum(PartType),
   point: z.number().int().positive(),
 });
 
@@ -74,7 +74,7 @@ const PartModel = {
       .from('parts')
       .insert({
         name: part.name,
-        part_type: part.partType,
+        part_type: part.part_type,
         point: part.point,
       })
       .select()
