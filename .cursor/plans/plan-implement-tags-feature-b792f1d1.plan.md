@@ -1,7 +1,28 @@
 ---
 name: "Plan: Implement Tags Feature"
 overview: ""
-todos: []
+todos:
+  - id: e03ba78e-6486-4cdc-a39f-39924abb6809
+    content: "Backend: Create Tag Model"
+    status: pending
+  - id: fdf6a43a-900f-4b01-8683-5c48686903a6
+    content: "Backend: Create Tag Controller"
+    status: pending
+  - id: 7b0f9366-133d-490e-91f1-4889a603c4e3
+    content: "Backend: Create Tag Routes and Register"
+    status: pending
+  - id: a1a66b66-f1f1-4db6-8fd2-af837faa9413
+    content: "Frontend: Create Tag Types"
+    status: pending
+  - id: 1a91fdb4-f297-4c4e-8cef-70de84460a9a
+    content: "Frontend: Create Tag Service"
+    status: pending
+  - id: b27eb36e-dfb1-403e-8f5f-96f695d4db86
+    content: "Frontend: Create Tag Components (Table & Modal)"
+    status: pending
+  - id: bab6ad8e-0043-47a3-afa0-2919474918b1
+    content: "Frontend: Update Admin Page"
+    status: pending
 ---
 
 # Plan: Implement Tags Feature

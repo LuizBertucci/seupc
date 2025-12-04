@@ -32,25 +32,25 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
-      <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
-        <h3 className="font-semibold text-gray-700">Gerenciar Parts</h3>
+      <div className="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h3 className="font-semibold text-gray-900 text-lg">Gerenciar Peças</h3>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
             <input
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
               onChange={handleSearch}
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+              className="pl-7 pr-2 py-1 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
             />
           </div>
           <button
             onClick={onCreate}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="flex items-center gap-1 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors text-xs font-medium"
           >
-            <Plus size={18} />
-            <span className="hidden sm:inline">Nova Peça</span>
+            <Plus size={14} />
+            <span className="hidden sm:inline">Nova</span>
           </button>
         </div>
       </div>

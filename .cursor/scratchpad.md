@@ -42,6 +42,18 @@ The user wants to "recreate" a Hardware Parts CRUD feature (originally Node/Knex
 -   [ ] **Frontend**: Create Types and API Service.
 -   [ ] **Frontend**: Implement `PartsTable` and `PartForm` (Tailwind).
 -   [ ] **Frontend**: Implement `/parts` Page.
+-   [x] **Git**: Clear stuck rebase on `feat/parts`.
+-   [x] **Sidebar**: Install shadcn sidebar components.
+-   [x] **Sidebar**: Create `AppSidebar` with `/admin` link.
+-   [x] **Sidebar**: Update `app/layout.tsx` to include sidebar.
 
 ## Executor's Feedback or Assistance Requests
 -   Need to confirm if the user wants to stick to the separate Backend API or move logic to Next.js Server Actions. (Assuming Backend API based on project structure).
+
+## Current Status / Progress Tracking
+-   Rebase aborted successfully; `git status` clean on `feat/parts`.
+-   Sidebar components installed by user.
+-   Sidebar UI added (`components/ui/sidebar.tsx`, `components/app-sidebar.tsx`) and wired in `app/layout.tsx`.
+
+## Lessons
+-   Missing `git-rebase-todo` prevents `git rebase --continue`; aborting can clear when working tree is clean.
