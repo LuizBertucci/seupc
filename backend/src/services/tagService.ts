@@ -4,6 +4,10 @@ const getAllTags = async () => {
   return await TagModel.findAll();
 };
 
+const searchTags = async (query: string, limit?: number) => {
+  return await TagModel.searchByQuery(query, limit);
+};
+
 const getTagById = async (id: string) => {
   const tag = await TagModel.findById(id);
   if (!tag) {
@@ -44,6 +48,7 @@ const deleteTag = async (id: string) => {
 
 export const tagService = {
   getAllTags,
+  searchTags,
   getTagById,
   createTag,
   updateTag,

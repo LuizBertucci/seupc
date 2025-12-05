@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Tag } from '@/src/types/tag';
+import { tagService } from '@/src/services/tagService';
 import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
@@ -14,11 +15,19 @@ type Props = {
 const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState<Tag[] | null>(null);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [errorSearch, setErrorSearch] = useState<string | null>(null);
   const itemsPerPage = 10;
 
-  const filteredItems = items.filter((tag) =>
-    tag.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = useMemo(() => {
+    const base = results ?? items;
+    const term = searchTerm.trim().toLowerCase();
+    if (!term || results) return base;
+    return base.filter((tag) =>
+      tag.name.toLowerCase().includes(term)
+    );
+  }, [items, results, searchTerm]);
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -28,6 +37,43 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    const term = searchTerm.trim();
+    let cancelled = false;
+
+    if (!term) {
+      setResults(null);
+      setErrorSearch(null);
+      setLoadingSearch(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setLoadingSearch(true);
+        setErrorSearch(null);
+        const data = await tagService.search(term, 50);
+        if (!cancelled) {
+          setResults(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setErrorSearch('Erro ao buscar tags.');
+          setResults([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingSearch(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [searchTerm]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
@@ -97,10 +143,14 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
                 </td>
               </tr>
             ))}
-            {filteredItems.length === 0 && (
+          {filteredItems.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-gray-500 block w-full">
-                  {searchTerm ? 'Nenhuma tag encontrada para a busca.' : 'Nenhuma tag cadastrada.'}
+                  {errorSearch
+                    ? errorSearch
+                    : searchTerm
+                      ? (loadingSearch ? 'Buscando...' : 'Nenhuma tag encontrada para a busca.')
+                      : 'Nenhuma tag cadastrada.'}
                 </td>
               </tr>
             )}

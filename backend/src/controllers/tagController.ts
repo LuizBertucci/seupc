@@ -61,8 +61,33 @@ const remove = async (req: Request, res: Response) => {
   }
 };
 
+const search = async (req: Request, res: Response) => {
+  try {
+    const SearchSchema = z.object({
+      q: z.string().min(1),
+      limit: z.string().optional(),
+    });
+
+    const parsed = SearchSchema.safeParse(req.query);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, errors: parsed.error.issues });
+    }
+
+    const limitNumber = parsed.data.limit ? Number(parsed.data.limit) : undefined;
+    if (limitNumber !== undefined && (Number.isNaN(limitNumber) || limitNumber < 1)) {
+      return res.status(400).json({ success: false, message: 'Invalid limit' });
+    }
+
+    const tags = await tagService.searchTags(parsed.data.q, limitNumber);
+    res.json({ success: true, data: tags });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const tagController = {
   getAll,
+  search,
   getById,
   create,
   update,

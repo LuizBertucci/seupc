@@ -20,6 +20,18 @@ const getById = async (id: string): Promise<Tag> => {
   return data.data;
 };
 
+const search = async (q: string, limit = 50): Promise<Tag[]> => {
+  const params = new URLSearchParams({ q, limit: String(limit) });
+  const res = await fetch(`${API_URL}/tags/search?${params.toString()}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to search tags: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data;
+};
+
 const create = async (tag: CreateTagDTO): Promise<Tag> => {
   const res = await fetch(`${API_URL}/tags`, {
     method: 'POST',
@@ -55,6 +67,7 @@ const remove = async (id: string): Promise<void> => {
 export const tagService = {
   getAll,
   getById,
+  search,
   create,
   update,
   delete: remove,

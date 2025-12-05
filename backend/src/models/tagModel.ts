@@ -48,6 +48,30 @@ const TagModel = {
     return data;
   },
 
+  searchByQuery: async (query: string, limit = 20) => {
+    const trimmed = query.trim();
+    if (!trimmed) return [];
+
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+
+    const { data, error } = await supabase
+      .from('tags')
+      .select(`
+        *,
+        processor:parts!processor_id(name),
+        ram_memory:parts!ram_memory_id(name),
+        hd:parts!hd_id(name),
+        ssd:parts!ssd_id(name),
+        video_card:parts!video_card_id(name)
+      `)
+      .ilike('name', `%${trimmed}%`)
+      .order('name', { ascending: true })
+      .limit(safeLimit);
+
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  },
+
   findById: async (id: string) => {
     const { data, error } = await supabase
       .from('tags')
