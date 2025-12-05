@@ -48,6 +48,20 @@ const TagModel = {
     return data;
   },
 
+  countByQuery: async (query: string | undefined) => {
+    let queryBuilder = supabase
+      .from('tags')
+      .select('id', { count: 'exact', head: true });
+
+    if (query && query.trim()) {
+      queryBuilder = queryBuilder.ilike('name', `%${query.trim()}%`);
+    }
+
+    const { count, error } = await queryBuilder;
+    if (error) throw new Error(error.message);
+    return count ?? 0;
+  },
+
   searchByQuery: async (query: string, limit = 20) => {
     const trimmed = query.trim();
     if (!trimmed) return [];

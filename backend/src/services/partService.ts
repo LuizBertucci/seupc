@@ -8,6 +8,10 @@ const getPartsByType = async (type: PartType) => {
   return await PartModel.findByType(type);
 };
 
+const countParts = async (type: PartType | undefined, query: string | undefined) => {
+  return await PartModel.countByQuery(type, query);
+};
+
 const searchParts = async (type: PartType | undefined, query: string, limit?: number) => {
   return await PartModel.searchByTypeAndQuery(type, query, limit);
 };
@@ -53,6 +57,7 @@ const deletePart = async (id: string) => {
 export const partService = {
   getAllParts,
   getPartsByType,
+  countParts,
   searchParts,
   getPartById,
   createPart,

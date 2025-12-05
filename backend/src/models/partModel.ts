@@ -81,6 +81,23 @@ const PartModel = {
     return (data ?? []) as Part[];
   },
 
+  countByQuery: async (type: PartType | undefined, query: string | undefined) => {
+    let queryBuilder = supabase
+      .from('parts')
+      .select('id', { count: 'exact', head: true });
+
+    if (type) {
+      queryBuilder = queryBuilder.eq('part_type', type);
+    }
+    if (query && query.trim()) {
+      queryBuilder = queryBuilder.ilike('name', `%${query.trim()}%`);
+    }
+
+    const { count, error } = await queryBuilder;
+    if (error) throw new Error(error.message);
+    return count ?? 0;
+  },
+
   findById: async (id: string) => {
     const { data, error } = await supabase
       .from('parts')

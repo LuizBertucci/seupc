@@ -61,6 +61,16 @@ const remove = async (req: Request, res: Response) => {
   }
 };
 
+const count = async (req: Request, res: Response) => {
+  try {
+    const q = (req.query.q as string | undefined) || undefined;
+    const total = await tagService.countTags(q);
+    res.json({ success: true, data: { total } });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const search = async (req: Request, res: Response) => {
   try {
     const SearchSchema = z.object({
@@ -87,6 +97,7 @@ const search = async (req: Request, res: Response) => {
 
 export const tagController = {
   getAll,
+  count,
   search,
   getById,
   create,

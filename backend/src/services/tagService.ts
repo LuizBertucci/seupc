@@ -4,6 +4,10 @@ const getAllTags = async () => {
   return await TagModel.findAll();
 };
 
+const countTags = async (query: string | undefined) => {
+  return await TagModel.countByQuery(query);
+};
+
 const searchTags = async (query: string, limit?: number) => {
   return await TagModel.searchByQuery(query, limit);
 };
@@ -48,6 +52,7 @@ const deleteTag = async (id: string) => {
 
 export const tagService = {
   getAllTags,
+  countTags,
   searchTags,
   getTagById,
   createTag,

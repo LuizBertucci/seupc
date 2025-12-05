@@ -32,6 +32,21 @@ const getById = async (id: string): Promise<Part> => {
   return data.data;
 };
 
+const count = async (q?: string, type?: PartType): Promise<number> => {
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (type) params.set('type', type);
+  const url = params.toString() ? `${API_URL}/parts/count?${params.toString()}` : `${API_URL}/parts/count`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to count parts: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data.total;
+};
+
 const search = async (type: PartType | undefined, q: string, limit = 20): Promise<Part[]> => {
   const params = new URLSearchParams({ q, limit: String(limit) });
   if (type) params.set('type', type);
@@ -79,6 +94,7 @@ const remove = async (id: string): Promise<void> => {
 export const partService = {
   getAll,
   getByType,
+  count,
   search,
   getById,
   create,

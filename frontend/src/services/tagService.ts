@@ -20,6 +20,20 @@ const getById = async (id: string): Promise<Tag> => {
   return data.data;
 };
 
+const count = async (q?: string): Promise<number> => {
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  const url = params.toString() ? `${API_URL}/tags/count?${params.toString()}` : `${API_URL}/tags/count`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to count tags: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data.total;
+};
+
 const search = async (q: string, limit = 50): Promise<Tag[]> => {
   const params = new URLSearchParams({ q, limit: String(limit) });
   const res = await fetch(`${API_URL}/tags/search?${params.toString()}`);
@@ -67,6 +81,7 @@ const remove = async (id: string): Promise<void> => {
 export const tagService = {
   getAll,
   getById,
+  count,
   search,
   create,
   update,

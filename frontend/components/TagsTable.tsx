@@ -18,6 +18,7 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   const [results, setResults] = useState<Tag[] | null>(null);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [errorSearch, setErrorSearch] = useState<string | null>(null);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const itemsPerPage = 10;
 
   const filteredItems = useMemo(() => {
@@ -66,6 +67,25 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
         if (!cancelled) {
           setLoadingSearch(false);
         }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const term = searchTerm.trim();
+    let cancelled = false;
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const total = await tagService.count(term || undefined);
+        if (!cancelled) setTotalCount(total);
+      } catch {
+        if (!cancelled) setTotalCount(null);
       }
     }, 300);
 
@@ -161,7 +181,7 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
       {totalPages > 1 && (
         <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
           <div className="text-sm text-gray-500">
-            Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredItems.length)} de {filteredItems.length} tags
+            Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredItems.length)} de {totalCount ?? filteredItems.length} tags
           </div>
           <div className="flex gap-2">
             <button

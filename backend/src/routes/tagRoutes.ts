@@ -4,6 +4,7 @@ import { tagController } from '../controllers/tagController';
 const router = Router();
 
 router.get('/', tagController.getAll);
+router.get('/count', tagController.count);
 router.get('/search', tagController.search);
 router.get('/:id', tagController.getById);
 router.post('/', tagController.create);
