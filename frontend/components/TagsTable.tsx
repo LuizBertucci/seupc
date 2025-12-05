@@ -107,20 +107,20 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700">
             <tr className="border-b border-gray-200">
-              <th className="px-2 py-2 text-xs text-left w-[20%]">Nome</th>
-              <th className="px-2 py-2 text-xs text-left w-[20%]">CPU</th>
-              <th className="px-2 py-2 text-xs text-left w-[20%]">RAM</th>
-              <th className="px-2 py-2 text-xs text-left w-[20%]">GPU</th>
-              <th className="px-2 py-2 text-xs text-right w-[20%]">Ações</th>
+              <th className="px-2 py-2 text-xs text-left w-[30%]">Nome</th>
+              <th className="px-2 py-2 text-xs text-left w-[18%]">CPU</th>
+              <th className="px-2 py-2 text-xs text-left w-[18%]">RAM</th>
+              <th className="px-2 py-2 text-xs text-left w-[18%]">GPU</th>
+              <th className="px-2 py-2 text-xs text-right w-[16%]">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {currentItems.map((tag) => (
               <tr key={tag.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[100px]">{tag.name}</td>
-                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.processor?.name || '-'}</td>
-                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.ram_memory?.name || '-'}</td>
-                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.video_card?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[200px]">{tag.name}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.processor?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.ram_memory?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.video_card?.name || '-'}</td>
                 <td className="px-2 py-2 text-xs text-right">
                   <div className="flex justify-end gap-2">
                     <button
