@@ -8,7 +8,7 @@ const getPartsByType = async (type: PartType) => {
   return await PartModel.findByType(type);
 };
 
-const searchParts = async (type: PartType, query: string, limit?: number) => {
+const searchParts = async (type: PartType | undefined, query: string, limit?: number) => {
   return await PartModel.searchByTypeAndQuery(type, query, limit);
 };
 

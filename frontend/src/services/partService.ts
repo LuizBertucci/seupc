@@ -32,8 +32,9 @@ const getById = async (id: string): Promise<Part> => {
   return data.data;
 };
 
-const search = async (type: PartType, q: string, limit = 20): Promise<Part[]> => {
-  const params = new URLSearchParams({ type, q, limit: String(limit) });
+const search = async (type: PartType | undefined, q: string, limit = 20): Promise<Part[]> => {
+  const params = new URLSearchParams({ q, limit: String(limit) });
+  if (type) params.set('type', type);
   const res = await fetch(`${API_URL}/parts/search?${params.toString()}`);
   if (!res.ok) {
     const errorText = await res.text();

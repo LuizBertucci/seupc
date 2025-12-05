@@ -58,22 +58,27 @@ const PartModel = {
     return data as Part[];
   },
 
-  searchByTypeAndQuery: async (type: PartType, query: string, limit = 20) => {
+  searchByTypeAndQuery: async (type: PartType | undefined, query: string, limit = 20) => {
     const trimmed = query.trim();
     if (!trimmed) return [];
 
     const safeLimit = Math.min(Math.max(limit, 1), 50);
 
-    const { data, error } = await supabase
+    let queryBuilder = supabase
       .from('parts')
       .select('*')
-      .eq('part_type', type)
-      .ilike('name', `%${trimmed}%`)
+      .ilike('name', `%${trimmed}%`);
+
+    if (type) {
+      queryBuilder = queryBuilder.eq('part_type', type);
+    }
+
+    const { data, error } = await queryBuilder
       .order('name', { ascending: true })
       .limit(safeLimit);
 
     if (error) throw new Error(error.message);
-    return data as Part[];
+    return (data ?? []) as Part[];
   },
 
   findById: async (id: string) => {

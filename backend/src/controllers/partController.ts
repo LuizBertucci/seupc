@@ -74,7 +74,7 @@ const remove = async (req: Request, res: Response) => {
 const search = async (req: Request, res: Response) => {
   try {
     const SearchSchema = z.object({
-      type: z.nativeEnum(PartType),
+      type: z.nativeEnum(PartType).optional(),
       q: z.string().min(1),
       limit: z.string().optional(),
     });

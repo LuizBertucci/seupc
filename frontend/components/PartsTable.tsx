@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Part } from '@/src/types/part';
+import { partService } from '@/src/services/partService';
 import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
@@ -14,12 +15,20 @@ type Props = {
 const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState<Part[] | null>(null);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [errorSearch, setErrorSearch] = useState<string | null>(null);
   const itemsPerPage = 10;
 
-  const filteredItems = items.filter((part) =>
-    part.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    part.part_type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = useMemo(() => {
+    const base = results ?? items;
+    const term = searchTerm.trim().toLowerCase();
+    if (!term || results) return base;
+    return base.filter((part) =>
+      part.name.toLowerCase().includes(term) ||
+      part.part_type.toLowerCase().includes(term)
+    );
+  }, [items, results, searchTerm]);
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -29,6 +38,43 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    const term = searchTerm.trim();
+    let cancelled = false;
+
+    if (!term) {
+      setResults(null);
+      setErrorSearch(null);
+      setLoadingSearch(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setLoadingSearch(true);
+        setErrorSearch(null);
+        const data = await partService.search(undefined, term, 50);
+        if (!cancelled) {
+          setResults(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setErrorSearch('Erro ao buscar peças.');
+          setResults([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingSearch(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [searchTerm]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
@@ -98,7 +144,11 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
           {filteredItems.length === 0 && (
             <tr>
               <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
-                {searchTerm ? 'Nenhuma peça encontrada para a busca.' : 'Nenhuma peça cadastrada.'}
+                {errorSearch
+                  ? errorSearch
+                  : searchTerm
+                    ? (loadingSearch ? 'Buscando...' : 'Nenhuma peça encontrada para a busca.')
+                    : 'Nenhuma peça cadastrada.'}
               </td>
             </tr>
           )}
