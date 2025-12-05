@@ -22,7 +22,7 @@ type Props = {
   onSubmit: (data: FormData) => Promise<void>;
 };
 
-export const PartModal: React.FC<Props> = ({ isOpen, onClose, editingPart, onSubmit }) => {
+export const PartForm: React.FC<Props> = ({ isOpen, onClose, editingPart, onSubmit }) => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema) as unknown as Resolver<FormData>,
     defaultValues: {

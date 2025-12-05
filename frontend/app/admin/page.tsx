@@ -6,9 +6,9 @@ import { Tag, CreateTagDTO, UpdateTagDTO } from '@/src/types/tag';
 import { partService } from '@/src/services/partService';
 import { tagService } from '@/src/services/tagService';
 import { PartsTable } from '@/components/PartsTable';
-import { PartModal } from '@/components/PartModal';
+import { PartForm } from '@/components/PartForm';
 import { TagsTable } from '@/components/TagsTable';
-import { TagModal } from '@/components/TagModal';
+import { TagForm } from '@/components/TagForm';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminPage() {
@@ -200,15 +200,15 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Modals */}
-        <PartModal
+        {/* Forms */}
+        <PartForm
           isOpen={isPartFormOpen}
           onClose={closePartForm}
           editingPart={editingPart}
           onSubmit={editingPart ? handleUpdatePart : handleCreatePart}
         />
 
-        <TagModal
+        <TagForm
           isOpen={isTagFormOpen}
           onClose={closeTagForm}
           editingTag={editingTag}

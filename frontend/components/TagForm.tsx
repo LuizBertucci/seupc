@@ -27,7 +27,7 @@ type Props = {
   onSubmit: (data: FormData) => Promise<void>;
 };
 
-export const TagModal: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit }) => {
+export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit }) => {
   const [parts, setParts] = useState<Part[]>([]);
   const [loadingParts, setLoadingParts] = useState(false);
   const [processorSearchTerm, setProcessorSearchTerm] = useState('');
