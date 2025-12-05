@@ -1,10 +1,20 @@
 import { Request, Response } from 'express';
 import { partService } from '../services/partService';
-import { CreatePartSchema, UpdatePartSchema } from '../models/partModel';
+import { CreatePartSchema, UpdatePartSchema, PartType } from '../models/partModel';
 import { z } from 'zod';
 
-const getAll = async (_req: Request, res: Response) => {
+const getAll = async (req: Request, res: Response) => {
   try {
+    const type = req.query.type as PartType | undefined;
+
+    if (type) {
+      if (!Object.values(PartType).includes(type)) {
+        return res.status(400).json({ success: false, message: 'Invalid type' });
+      }
+      const parts = await partService.getPartsByType(type);
+      return res.json({ success: true, data: parts });
+    }
+
     const parts = await partService.getAllParts();
     res.json({ success: true, data: parts });
   } catch (error: any) {
@@ -61,8 +71,34 @@ const remove = async (req: Request, res: Response) => {
   }
 };
 
+const search = async (req: Request, res: Response) => {
+  try {
+    const SearchSchema = z.object({
+      type: z.nativeEnum(PartType),
+      q: z.string().min(1),
+      limit: z.string().optional(),
+    });
+
+    const parsed = SearchSchema.safeParse(req.query);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, errors: parsed.error.issues });
+    }
+
+    const limitNumber = parsed.data.limit ? Number(parsed.data.limit) : undefined;
+    if (limitNumber !== undefined && (Number.isNaN(limitNumber) || limitNumber < 1)) {
+      return res.status(400).json({ success: false, message: 'Invalid limit' });
+    }
+
+    const parts = await partService.searchParts(parsed.data.type, parsed.data.q, limitNumber);
+    res.json({ success: true, data: parts });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const partController = {
   getAll,
+  search,
   getById,
   create,
   update,

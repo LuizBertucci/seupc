@@ -30,8 +30,13 @@ type Props = {
 export const TagModal: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit }) => {
   const [parts, setParts] = useState<Part[]>([]);
   const [loadingParts, setLoadingParts] = useState(false);
+  const [processorSearchTerm, setProcessorSearchTerm] = useState('');
+  const [selectedProcessorName, setSelectedProcessorName] = useState('');
+  const [processorResults, setProcessorResults] = useState<Part[]>([]);
+  const [processorSearchLoading, setProcessorSearchLoading] = useState(false);
+  const [processorSearchError, setProcessorSearchError] = useState<string | null>(null);
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema) as unknown as Resolver<FormData>,
     defaultValues: {
       name: '',
@@ -43,12 +48,20 @@ export const TagModal: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmi
     }
   });
 
+  const processorId = watch('processor_id');
+
   useEffect(() => {
     const fetchParts = async () => {
       try {
         setLoadingParts(true);
-        const data = await partService.getAll();
-        setParts(data);
+        const [ram, video, hd, ssd] = await Promise.all([
+          partService.getByType(PartType.RAM_MEMORY),
+          partService.getByType(PartType.VIDEO_CARD),
+          partService.getByType(PartType.HD),
+          partService.getByType(PartType.SSD),
+        ]);
+
+        setParts([...ram, ...video, ...hd, ...ssd]);
       } catch (error) {
         console.error('Error fetching parts:', error);
       } finally {
@@ -84,6 +97,84 @@ export const TagModal: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmi
       }
     }
   }, [isOpen, editingTag, reset]);
+
+  // Carrega o nome do processador selecionado (modo edição) e mantém form sincronizado
+  useEffect(() => {
+    const loadSelectedProcessor = async () => {
+      if (!isOpen) return;
+
+      const currentId = editingTag?.processor_id;
+      if (currentId) {
+        try {
+          const processor = await partService.getById(currentId);
+          setProcessorSearchTerm(processor.name);
+          setSelectedProcessorName(processor.name);
+          setValue('processor_id', currentId);
+        } catch (error) {
+          console.error('Error fetching processor by id:', error);
+        }
+      } else {
+        setSelectedProcessorName('');
+        setProcessorSearchTerm('');
+      }
+    };
+
+    loadSelectedProcessor();
+  }, [isOpen, editingTag, setValue]);
+
+  // Busca de processadores com debounce
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const term = processorSearchTerm.trim();
+    const selectedName = selectedProcessorName.trim();
+
+    // Se já há processador selecionado e o usuário não alterou o texto, não busca
+    if (processorId && term === selectedName) {
+      setProcessorResults([]);
+      setProcessorSearchError(null);
+      return;
+    }
+
+    if (!term) {
+      setProcessorResults([]);
+      setProcessorSearchError(null);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setProcessorSearchLoading(true);
+        setProcessorSearchError(null);
+        const results = await partService.search(PartType.PROCESSOR, term, 20);
+        setProcessorResults(results);
+      } catch (error) {
+        console.error('Error searching processors:', error);
+        setProcessorSearchError('Erro ao buscar processadores.');
+        setProcessorResults([]);
+      } finally {
+        setProcessorSearchLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [processorSearchTerm, processorId, selectedProcessorName, isOpen]);
+
+  const handleSelectProcessor = (part: Part) => {
+    setValue('processor_id', part.id);
+    setProcessorSearchTerm(part.name);
+    setSelectedProcessorName(part.name);
+    setProcessorResults([]);
+  };
+
+  const handleClearProcessor = () => {
+    setValue('processor_id', '');
+    setSelectedProcessorName('');
+    setProcessorSearchTerm('');
+    setProcessorResults([]);
+  };
 
   const onFormSubmit: SubmitHandler<FormData> = (data) => {
     // Convert empty strings to null
@@ -127,18 +218,59 @@ export const TagModal: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmi
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Processador</label>
-                <select
-                  {...register('processor_id')}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={loadingParts}
-                >
-                  <option value="">Selecione...</option>
-                  {getPartsByType(PartType.PROCESSOR).map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
+                <input type="hidden" {...register('processor_id')} />
+                <div className="space-y-2">
+                  <div className="relative">
+                    <input
+                      value={processorSearchTerm}
+                      onChange={(e) => setProcessorSearchTerm(e.target.value)}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      placeholder="Buscar processador (ex: i5-4020)"
+                    />
+                    {processorId && (
+                      <button
+                        type="button"
+                        onClick={handleClearProcessor}
+                        className="absolute inset-y-0 right-2 my-auto h-6 w-6 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center"
+                        aria-label="Limpar processador"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative">
+                    {(processorSearchTerm.trim().length > 0 && processorSearchTerm.trim() !== selectedProcessorName.trim()) && (processorSearchLoading || processorSearchError || (processorResults.length > 0) || (processorResults.length === 0 && !processorSearchLoading && !processorSearchError)) && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        {processorSearchLoading && (
+                          <div className="px-3 py-2 text-xs text-gray-500">Buscando...</div>
+                        )}
+                        {processorSearchError && (
+                          <div className="px-3 py-2 text-xs text-red-500">{processorSearchError}</div>
+                        )}
+                        {!processorSearchLoading && !processorSearchError && processorResults.length > 0 && (
+                          <ul className="divide-y">
+                            {processorResults.map((p) => (
+                              <li key={p.id}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleSelectProcessor(p)}
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                                >
+                                  {p.name}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {!processorSearchLoading && !processorSearchError && processorResults.length === 0 && processorSearchTerm.trim().length > 0 && (
+                          <div className="px-3 py-2 text-xs text-gray-500">Nenhum processador encontrado.</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div>

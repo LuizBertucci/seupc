@@ -47,6 +47,35 @@ const PartModel = {
     return data as Part[];
   },
 
+  findByType: async (type: PartType) => {
+    const { data, error } = await supabase
+      .from('parts')
+      .select('*')
+      .eq('part_type', type)
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data as Part[];
+  },
+
+  searchByTypeAndQuery: async (type: PartType, query: string, limit = 20) => {
+    const trimmed = query.trim();
+    if (!trimmed) return [];
+
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+
+    const { data, error } = await supabase
+      .from('parts')
+      .select('*')
+      .eq('part_type', type)
+      .ilike('name', `%${trimmed}%`)
+      .order('name', { ascending: true })
+      .limit(safeLimit);
+
+    if (error) throw new Error(error.message);
+    return data as Part[];
+  },
+
   findById: async (id: string) => {
     const { data, error } = await supabase
       .from('parts')

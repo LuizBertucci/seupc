@@ -1,7 +1,15 @@
-import { PartModel, CreatePartDTO, UpdatePartDTO } from '../models/partModel';
+import { PartModel, CreatePartDTO, UpdatePartDTO, PartType } from '../models/partModel';
 
 const getAllParts = async () => {
   return await PartModel.findAll();
+};
+
+const getPartsByType = async (type: PartType) => {
+  return await PartModel.findByType(type);
+};
+
+const searchParts = async (type: PartType, query: string, limit?: number) => {
+  return await PartModel.searchByTypeAndQuery(type, query, limit);
 };
 
 const getPartById = async (id: string) => {
@@ -44,6 +52,8 @@ const deletePart = async (id: string) => {
 
 export const partService = {
   getAllParts,
+  getPartsByType,
+  searchParts,
   getPartById,
   createPart,
   updatePart,

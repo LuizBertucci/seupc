@@ -1,4 +1,4 @@
-import { Part, CreatePartDTO, UpdatePartDTO } from '../types/part';
+import { Part, CreatePartDTO, UpdatePartDTO, PartType } from '../types/part';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -13,8 +13,32 @@ const getAll = async (): Promise<Part[]> => {
   return data.data;
 };
 
+const getByType = async (type: PartType): Promise<Part[]> => {
+  const params = new URLSearchParams({ type });
+  const res = await fetch(`${API_URL}/parts?${params.toString()}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to fetch parts by type: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data;
+};
+
 const getById = async (id: string): Promise<Part> => {
   const res = await fetch(`${API_URL}/parts/${id}`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data;
+};
+
+const search = async (type: PartType, q: string, limit = 20): Promise<Part[]> => {
+  const params = new URLSearchParams({ type, q, limit: String(limit) });
+  const res = await fetch(`${API_URL}/parts/search?${params.toString()}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to search parts: ${res.status} ${errorText}`);
+  }
   const data = await res.json();
   if (!data.success) throw new Error(data.message);
   return data.data;
@@ -53,6 +77,8 @@ const remove = async (id: string): Promise<void> => {
 
 export const partService = {
   getAll,
+  getByType,
+  search,
   getById,
   create,
   update,
