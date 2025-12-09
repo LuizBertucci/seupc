@@ -74,7 +74,6 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
 
         // Ensure selected parts (in edit mode) are present even if not returned in the base queries
         const neededIds = [
-          editingTag?.processor_id,
           editingTag?.ram_memory_id,
           editingTag?.hd_id,
           editingTag?.ssd_id,

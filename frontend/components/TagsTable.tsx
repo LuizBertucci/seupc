@@ -133,7 +133,7 @@ const TagsTable: React.FC<Props> = ({ onEdit, onCreate, refreshKey }) => {
             ))}
           {items.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500 block w-full">
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                   {emptyMessage}
                 </td>
               </tr>
