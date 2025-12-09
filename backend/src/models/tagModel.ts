@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import { supabase } from '../config/supabase';
 
+const CategoryEnum = z.enum(['Jogos', 'Programas']);
+
 const TagSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
-  category: z.string().optional(),
+  category: CategoryEnum.optional(),
   processor_id: z.string().uuid().nullable(),
   ram_memory_id: z.string().uuid().nullable(),
   hd_id: z.string().uuid().nullable(),
@@ -18,7 +20,7 @@ type Tag = z.infer<typeof TagSchema>;
 
 const CreateTagSchema = z.object({
   name: z.string().min(1),
-  category: z.string().optional(),
+  category: CategoryEnum.optional(),
   processor_id: z.string().uuid().nullable().optional(),
   ram_memory_id: z.string().uuid().nullable().optional(),
   hd_id: z.string().uuid().nullable().optional(),
@@ -44,7 +46,8 @@ const TagModel = {
         ssd:parts!ssd_id(name),
         video_card:parts!video_card_id(name)
       `)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(20);
     
     if (error) throw new Error(error.message);
     return data;
@@ -172,7 +175,8 @@ export {
   TagSchema,
   CreateTagSchema,
   UpdateTagSchema,
-  TagModel
+  TagModel,
+  CategoryEnum
 };
 
 export type {

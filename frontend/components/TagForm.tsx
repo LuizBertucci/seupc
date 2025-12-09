@@ -11,7 +11,10 @@ import { partService } from '@/src/services/partService';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  category: z.string().optional(),
+  category: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.enum(['Jogos', 'Programas']).optional()
+  ),
   processor_id: z.string().nullable(),
   ram_memory_id: z.string().nullable(),
   hd_id: z.string().nullable(),
@@ -42,7 +45,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
     resolver: zodResolver(schema) as unknown as Resolver<FormData>,
     defaultValues: {
       name: '',
-      category: '',
+      category: undefined,
       processor_id: '',
       ram_memory_id: '',
       hd_id: '',
@@ -54,9 +57,12 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
   const processorId = watch('processor_id');
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchParts = async () => {
       try {
         setLoadingParts(true);
+
         const [ram, video, hd, ssd] = await Promise.all([
           partService.getByType(PartType.RAM_MEMORY),
           partService.getByType(PartType.VIDEO_CARD),
@@ -64,25 +70,65 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
           partService.getByType(PartType.SSD),
         ]);
 
-        setParts([...ram, ...video, ...hd, ...ssd]);
+        let combined = [...ram, ...video, ...hd, ...ssd];
+
+        // Ensure selected parts (in edit mode) are present even if not returned in the base queries
+        const neededIds = [
+          editingTag?.processor_id,
+          editingTag?.ram_memory_id,
+          editingTag?.hd_id,
+          editingTag?.ssd_id,
+          editingTag?.video_card_id,
+        ].filter(Boolean) as string[];
+
+        const missingIds = neededIds.filter(
+          (id) => !combined.some((p) => p.id === id)
+        );
+
+        if (missingIds.length) {
+          const fetchedMissing = await Promise.all(
+            missingIds.map(async (id) => {
+              try {
+                return await partService.getById(id);
+              } catch (err) {
+                console.error(`Error fetching part by id ${id}:`, err);
+                return null;
+              }
+            })
+          );
+          combined = [
+            ...combined,
+            ...fetchedMissing.filter((p): p is Part => Boolean(p)),
+          ];
+        }
+
+        if (!cancelled) {
+          setParts(combined);
+        }
       } catch (error) {
         console.error('Error fetching parts:', error);
       } finally {
-        setLoadingParts(false);
+        if (!cancelled) {
+          setLoadingParts(false);
+        }
       }
     };
 
     if (isOpen) {
       fetchParts();
     }
-  }, [isOpen]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, editingTag]);
 
   useEffect(() => {
     if (isOpen) {
       if (editingTag) {
         reset({
           name: editingTag.name,
-          category: editingTag.category || '',
+          category: editingTag.category || undefined,
           processor_id: editingTag.processor_id || '',
           ram_memory_id: editingTag.ram_memory_id || '',
           hd_id: editingTag.hd_id || '',
@@ -92,7 +138,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
       } else {
         reset({
           name: '',
-          category: '',
+          category: undefined,
           processor_id: '',
           ram_memory_id: '',
           hd_id: '',
@@ -101,7 +147,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
         });
       }
     }
-  }, [isOpen, editingTag, reset]);
+  }, [isOpen, editingTag, reset, parts]); // Add parts as dependency to ensure form resets after parts are loaded
 
   // Carrega o nome do processador selecionado (modo edição) e mantém form sincronizado
   useEffect(() => {
@@ -185,6 +231,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
     // Convert empty strings to null
     const processedData = {
       ...data,
+      category: data.category ?? undefined,
       processor_id: data.processor_id || null,
       ram_memory_id: data.ram_memory_id || null,
       hd_id: data.hd_id || null,
@@ -212,24 +259,29 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
         
         <div className="p-6">
           <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-              <input
-                {...register('name')}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                placeholder="Ex: Setup Gamer Básico"
-              />
-              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                <input
+                  {...register('name')}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  placeholder="Ex: Setup Gamer Básico"
+                />
+                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
-              <input
-                {...register('category')}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                placeholder="Ex: Gamer, Escritório..."
-              />
-              {errors.category && <p className="mt-1 text-xs text-red-500">{errors.category.message}</p>}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <select
+                  {...register('category')}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Jogos">Jogos</option>
+                  <option value="Programas">Programas</option>
+                </select>
+                {errors.category && <p className="mt-1 text-xs text-red-500">{errors.category.message}</p>}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -300,6 +352,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
+                {errors.ram_memory_id && <p className="mt-1 text-xs text-red-500">{errors.ram_memory_id.message}</p>}
               </div>
 
               <div>
@@ -314,6 +367,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
+                {errors.video_card_id && <p className="mt-1 text-xs text-red-500">{errors.video_card_id.message}</p>}
               </div>
 
               <div>
@@ -328,6 +382,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
+                {errors.hd_id && <p className="mt-1 text-xs text-red-500">{errors.hd_id.message}</p>}
               </div>
 
               <div>
@@ -342,6 +397,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
+                {errors.ssd_id && <p className="mt-1 text-xs text-red-500">{errors.ssd_id.message}</p>}
               </div>
             </div>
 

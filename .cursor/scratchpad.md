@@ -56,6 +56,9 @@ New request: in `frontend/components/TagModal.tsx`, the processor field (current
 -   [ ] **Frontend**: Implement `/parts` Page.
 -   [x] **TagModal**: Decide processor search approach (client vs API).
 -   [x] **TagModal**: Implement searchable processor field + states.
+-   [x] **Backend**: Limit default fetch to 20 items for Parts and Tags to prevent 429 errors (temporary fix for pagination).
+-   [x] **PartModel**: Applied `.limit(20)` to `findAll` and `findByType`.
+-   [x] **TagModel**: Applied `.limit(20)` to `findAll`.
 -   [ ] **TagModal**: Add tests/QA for processor search field.
 -   [x] **Git**: Clear stuck rebase on `feat/parts`.
 -   [x] **Sidebar**: Install shadcn sidebar components.

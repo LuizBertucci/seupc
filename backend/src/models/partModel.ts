@@ -41,7 +41,8 @@ const PartModel = {
     const { data, error } = await supabase
       .from('parts')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(20);
     
     if (error) throw new Error(error.message);
     return data as Part[];
