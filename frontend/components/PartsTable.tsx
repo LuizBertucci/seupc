@@ -96,7 +96,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
   }, [searchTerm]);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-2xl mx-auto">
+    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-xl mx-auto">
       <div className="p-3 bg-white border-b border-gray-200">
         <div className="grid grid-cols-3 items-center gap-3">
           <h3 className="font-semibold text-gray-900 text-lg col-span-1">Gerenciar Peças</h3>

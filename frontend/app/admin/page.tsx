@@ -174,9 +174,9 @@ export default function AdminPage() {
       <Toaster position="top-right" />
       <div className="max-w-8xl mx-auto space-y-12">
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Parts Section */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             {loadingParts ? (
               <div className="text-center py-12 text-gray-500">Carregando peças...</div>
             ) : (
@@ -189,7 +189,7 @@ export default function AdminPage() {
           </div>
 
           {/* Tags Section */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:col-span-3">
             {loadingTags ? (
               <div className="text-center py-12 text-gray-500">Carregando tags...</div>
             ) : (
