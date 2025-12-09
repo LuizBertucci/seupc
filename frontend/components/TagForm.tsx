@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { Tag } from '@/src/types/tag';
 import { Part, PartType } from '@/src/types/part';
 import { partService } from '@/src/services/partService';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
+  category: z.string().optional(),
   processor_id: z.string().nullable(),
   ram_memory_id: z.string().nullable(),
   hd_id: z.string().nullable(),
@@ -25,9 +26,10 @@ type Props = {
   onClose: () => void;
   editingTag: Tag | null;
   onSubmit: (data: FormData) => Promise<void>;
+  onDelete: (id: string) => void;
 };
 
-export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit }) => {
+export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit, onDelete }) => {
   const [parts, setParts] = useState<Part[]>([]);
   const [loadingParts, setLoadingParts] = useState(false);
   const [processorSearchTerm, setProcessorSearchTerm] = useState('');
@@ -40,6 +42,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
     resolver: zodResolver(schema) as unknown as Resolver<FormData>,
     defaultValues: {
       name: '',
+      category: '',
       processor_id: '',
       ram_memory_id: '',
       hd_id: '',
@@ -79,6 +82,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
       if (editingTag) {
         reset({
           name: editingTag.name,
+          category: editingTag.category || '',
           processor_id: editingTag.processor_id || '',
           ram_memory_id: editingTag.ram_memory_id || '',
           hd_id: editingTag.hd_id || '',
@@ -88,6 +92,7 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
       } else {
         reset({
           name: '',
+          category: '',
           processor_id: '',
           ram_memory_id: '',
           hd_id: '',
@@ -217,6 +222,16 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+              <input
+                {...register('category')}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                placeholder="Ex: Gamer, Escritório..."
+              />
+              {errors.category && <p className="mt-1 text-xs text-red-500">{errors.category.message}</p>}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Processador</label>
@@ -330,21 +345,35 @@ export const TagForm: React.FC<Props> = ({ isOpen, onClose, editingTag, onSubmit
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
-              </button>
+            <div className="flex justify-between items-center pt-4">
+              {editingTag ? (
+                <button
+                  type="button"
+                  onClick={() => onDelete(editingTag.id)}
+                  className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 flex items-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  Excluir
+                </button>
+              ) : (
+                <div></div>
+              )}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
             </div>
           </form>
         </div>

@@ -128,6 +128,8 @@ export default function AdminPage() {
     try {
       await tagService.delete(id);
       toast.success('Tag excluída');
+      setEditingTag(null);
+      setIsTagFormOpen(false);
       fetchTags();
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao excluir tag';
@@ -194,7 +196,6 @@ export default function AdminPage() {
               <TagsTable
                 items={tags}
                 onEdit={openEditTag}
-                onDelete={handleDeleteTag}
                 onCreate={openCreateTag}
               />
             )}
@@ -215,6 +216,7 @@ export default function AdminPage() {
           onClose={closeTagForm}
           editingTag={editingTag}
           onSubmit={editingTag ? handleUpdateTag : handleCreateTag}
+          onDelete={handleDeleteTag}
         />
 
       </div>

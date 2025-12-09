@@ -3,16 +3,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Tag } from '@/src/types/tag';
 import { tagService } from '@/src/services/tagService';
-import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
   items: Tag[];
   onEdit: (tag: Tag) => void;
-  onDelete: (id: string) => void;
   onCreate: () => void;
 };
 
-const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
+const TagsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [results, setResults] = useState<Tag[] | null>(null);
@@ -128,39 +127,24 @@ const TagsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
           <thead className="bg-gray-50 text-xs uppercase text-gray-700">
             <tr className="border-b border-gray-200">
               <th className="px-2 py-2 text-xs text-left w-[30%]">Nome</th>
+              <th className="px-2 py-2 text-xs text-left w-[15%]">Categoria</th>
               <th className="px-2 py-2 text-xs text-left w-[18%]">CPU</th>
               <th className="px-2 py-2 text-xs text-left w-[18%]">RAM</th>
-              <th className="px-2 py-2 text-xs text-left w-[18%]">GPU</th>
-              <th className="px-2 py-2 text-xs text-right w-[16%]">Ações</th>
+              <th className="px-2 py-2 text-xs text-left w-[19%]">GPU</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {currentItems.map((tag) => (
-              <tr key={tag.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
+              <tr 
+                key={tag.id} 
+                className="hover:bg-gray-50 border-b border-gray-100 last:border-0 cursor-pointer"
+                onClick={() => onEdit(tag)}
+              >
                 <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[200px]">{tag.name}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.category || '-'}</td>
                 <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.processor?.name || '-'}</td>
                 <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.ram_memory?.name || '-'}</td>
                 <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.video_card?.name || '-'}</td>
-                <td className="px-2 py-2 text-xs text-right">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => onEdit(tag)}
-                      className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                      title="Editar"
-                      aria-label="Editar"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => onDelete(tag.id)}
-                      className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                      title="Excluir"
-                      aria-label="Excluir"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
           {filteredItems.length === 0 && (

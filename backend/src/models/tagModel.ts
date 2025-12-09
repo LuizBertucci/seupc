@@ -4,6 +4,7 @@ import { supabase } from '../config/supabase';
 const TagSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
+  category: z.string().optional(),
   processor_id: z.string().uuid().nullable(),
   ram_memory_id: z.string().uuid().nullable(),
   hd_id: z.string().uuid().nullable(),
@@ -17,6 +18,7 @@ type Tag = z.infer<typeof TagSchema>;
 
 const CreateTagSchema = z.object({
   name: z.string().min(1),
+  category: z.string().optional(),
   processor_id: z.string().uuid().nullable().optional(),
   ram_memory_id: z.string().uuid().nullable().optional(),
   hd_id: z.string().uuid().nullable().optional(),
@@ -120,6 +122,7 @@ const TagModel = {
       .from('tags')
       .insert({
         name: tag.name,
+        category: tag.category,
         processor_id: tag.processor_id,
         ram_memory_id: tag.ram_memory_id,
         hd_id: tag.hd_id,
@@ -136,6 +139,7 @@ const TagModel = {
   update: async (id: string, tag: UpdateTagDTO) => {
     const updates: any = { updated_at: new Date().toISOString() };
     if (tag.name !== undefined) updates.name = tag.name;
+    if (tag.category !== undefined) updates.category = tag.category;
     if (tag.processor_id !== undefined) updates.processor_id = tag.processor_id;
     if (tag.ram_memory_id !== undefined) updates.ram_memory_id = tag.ram_memory_id;
     if (tag.hd_id !== undefined) updates.hd_id = tag.hd_id;

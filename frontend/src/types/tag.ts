@@ -1,6 +1,7 @@
 export interface Tag {
   id: string;
   name: string;
+  category?: string;
   processor_id?: string | null;
   ram_memory_id?: string | null;
   hd_id?: string | null;
@@ -19,6 +20,7 @@ export interface Tag {
 
 export interface CreateTagDTO {
   name: string;
+  category?: string;
   processor_id?: string | null;
   ram_memory_id?: string | null;
   hd_id?: string | null;
