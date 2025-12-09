@@ -39,10 +39,6 @@ const TagsTable: React.FC<Props> = ({ onEdit, onCreate, refreshKey }) => {
   };
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [refreshKey]);
-
-  useEffect(() => {
     const term = searchTerm.trim();
     let cancelled = false;
 
