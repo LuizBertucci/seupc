@@ -111,8 +111,8 @@ const TagsTable: React.FC<Props> = ({ onEdit, onCreate, refreshKey }) => {
           <thead className="bg-gray-50 text-xs uppercase text-gray-700">
             <tr className="border-b border-gray-200">
               <th className="px-2 py-2 text-xs text-left w-[30%]">Nome</th>
-              <th className="px-2 py-2 text-xs text-left w-[15%]">Categoria</th>
-              <th className="px-2 py-2 text-xs text-left w-[18%]">CPU</th>
+              <th className="px-2 py-2 text-xs text-left w-[12%]">Categoria</th>
+              <th className="px-2 py-2 text-xs text-left w-[21%]">CPU</th>
               <th className="px-2 py-2 text-xs text-left w-[18%]">RAM</th>
               <th className="px-2 py-2 text-xs text-left w-[19%]">GPU</th>
             </tr>
@@ -125,8 +125,12 @@ const TagsTable: React.FC<Props> = ({ onEdit, onCreate, refreshKey }) => {
                 onClick={() => onEdit(tag)}
               >
                 <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[200px]">{tag.name}</td>
-                <td className="px-2 py-2 text-xs truncate max-w-[100px]">{tag.category || '-'}</td>
-                <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.processor?.name || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[80px]">{tag.category || '-'}</td>
+                <td className="px-2 py-2 text-xs truncate max-w-[200px]">
+                  {tag.processor
+                    ? `${tag.processor.name}${tag.processor.point ? ` (${tag.processor.point})` : ''}`
+                    : '-'}
+                </td>
                 <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.ram_memory?.name || '-'}</td>
                 <td className="px-2 py-2 text-xs truncate max-w-[140px]">{tag.video_card?.name || '-'}</td>
               </tr>

@@ -13,7 +13,7 @@ export interface Tag {
   updated_at: string | Date;
   
   // Expanded relations
-  processor?: { name: string };
+  processor?: { name: string; point?: number };
   ram_memory?: { name: string };
   hd?: { name: string };
   ssd?: { name: string };

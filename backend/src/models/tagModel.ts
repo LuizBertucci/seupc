@@ -43,7 +43,7 @@ const TagModel = {
 
     const baseSelect = `
         *,
-        processor:parts!processor_id(name),
+        processor:parts!processor_id(name, point),
         ram_memory:parts!ram_memory_id(name),
         hd:parts!hd_id(name),
         ssd:parts!ssd_id(name),
@@ -90,7 +90,7 @@ const TagModel = {
       .from('tags')
       .select(`
         *,
-        processor:parts!processor_id(name),
+        processor:parts!processor_id(name, point),
         ram_memory:parts!ram_memory_id(name),
         hd:parts!hd_id(name),
         ssd:parts!ssd_id(name),
