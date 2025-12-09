@@ -3,9 +3,20 @@ import { tagService } from '../services/tagService';
 import { CreateTagSchema, UpdateTagSchema } from '../models/tagModel';
 import { z } from 'zod';
 
-const getAll = async (_req: Request, res: Response) => {
+const getAll = async (req: Request, res: Response) => {
   try {
-    const tags = await tagService.getAllTags();
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const pageSize = req.query.pageSize ? Number(req.query.pageSize) : 10;
+    const q = (req.query.q as string | undefined) || undefined;
+
+    if (Number.isNaN(page) || page < 1) {
+      return res.status(400).json({ success: false, message: 'Invalid page' });
+    }
+    if (Number.isNaN(pageSize) || pageSize < 1 || pageSize > 100) {
+      return res.status(400).json({ success: false, message: 'Invalid pageSize' });
+    }
+
+    const tags = await tagService.getPaginatedTags(page, pageSize, q);
     res.json({ success: true, data: tags });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });

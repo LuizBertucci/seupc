@@ -1,7 +1,7 @@
 import { TagModel, CreateTagDTO, UpdateTagDTO } from '../models/tagModel';
 
-const getAllTags = async () => {
-  return await TagModel.findAll();
+const getPaginatedTags = async (page?: number, pageSize?: number, query?: string) => {
+  return await TagModel.findPaginated({ page, pageSize, query });
 };
 
 const countTags = async (query: string | undefined) => {
@@ -51,7 +51,7 @@ const deleteTag = async (id: string) => {
 };
 
 export const tagService = {
-  getAllTags,
+  getPaginatedTags,
   countTags,
   searchTags,
   getTagById,

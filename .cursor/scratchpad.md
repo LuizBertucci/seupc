@@ -3,6 +3,7 @@
 ## Background and Motivation
 The user wants to "recreate" a Hardware Parts CRUD feature (originally Node/Knex/React) using the current project stack: Node/Express/Supabase (Backend) and Next.js/Tailwind/Radix (Frontend).
 New request: in `frontend/components/TagModal.tsx`, the processor field (currently a select) should become a searchable input because the number of options is now very large; need to investigate best approach.
+New request: pagination should cover all items (tags/parts) without fetching everything at once; implement backend pagination with total and frontend paginated fetch.
 
 ## Key Challenges and Analysis
 -   **Stack Translation**:
@@ -64,6 +65,8 @@ New request: in `frontend/components/TagModal.tsx`, the processor field (current
 -   [x] **Sidebar**: Install shadcn sidebar components.
 -   [x] **Sidebar**: Create `AppSidebar` with `/admin` link.
 -   [x] **Sidebar**: Update `app/layout.tsx` to include sidebar.
+-   [x] **Pagination**: Backend endpoints return paginated items + total for tags/parts.
+-   [x] **Pagination**: Frontend services and tables use backend pagination (no client-only paging).
 
 ## Executor's Feedback or Assistance Requests
 -   Need to confirm if the user wants to stick to the separate Backend API or move logic to Next.js Server Actions. (Assuming Backend API based on project structure).
@@ -73,6 +76,7 @@ New request: in `frontend/components/TagModal.tsx`, the processor field (current
 -   Sidebar components installed by user.
 -   Sidebar UI added (`components/ui/sidebar.tsx`, `components/app-sidebar.tsx`) and wired in `app/layout.tsx`.
 -   Executor: implemented backend `GET /parts/search` (type + q, limit) and TagModal processor combobox with async search/selection; QA/tests pending.
+-   Executor: implemented backend pagination for tags/parts with total count and updated frontend services + `TagsTable`/`PartsTable` to fetch paginated data; awaiting verification/tests.
 
 ## Lessons
 -   Missing `git-rebase-todo` prevents `git rebase --continue`; aborting can clear when working tree is clean.

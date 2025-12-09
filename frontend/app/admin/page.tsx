@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Part, CreatePartDTO, UpdatePartDTO } from '@/src/types/part';
 import { Tag, CreateTagDTO, UpdateTagDTO } from '@/src/types/tag';
 import { partService } from '@/src/services/partService';
@@ -12,48 +12,13 @@ import { TagForm } from '@/components/TagForm';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminPage() {
-  // Parts State
-  const [parts, setParts] = useState<Part[]>([]);
-  const [loadingParts, setLoadingParts] = useState(true);
+  const [refreshPartsKey, setRefreshPartsKey] = useState(0);
   const [editingPart, setEditingPart] = useState<Part | null>(null);
   const [isPartFormOpen, setIsPartFormOpen] = useState(false);
 
-  // Tags State
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [loadingTags, setLoadingTags] = useState(true);
+  const [refreshTagsKey, setRefreshTagsKey] = useState(0);
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
   const [isTagFormOpen, setIsTagFormOpen] = useState(false);
-
-  const fetchParts = async () => {
-    try {
-      setLoadingParts(true);
-      const data = await partService.getAll();
-      setParts(data);
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao carregar peças');
-    } finally {
-      setLoadingParts(false);
-    }
-  };
-
-  const fetchTags = async () => {
-    try {
-      setLoadingTags(true);
-      const data = await tagService.getAll();
-      setTags(data);
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao carregar tags');
-    } finally {
-      setLoadingTags(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchParts();
-    fetchTags();
-  }, []);
 
   // Parts Handlers
   const handleCreatePart = async (data: CreatePartDTO) => {
@@ -61,7 +26,7 @@ export default function AdminPage() {
       await partService.create(data);
       toast.success('Peça criada com sucesso!');
       setIsPartFormOpen(false);
-      fetchParts();
+      setRefreshPartsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao criar peça';
       toast.error(msg);
@@ -75,7 +40,7 @@ export default function AdminPage() {
       toast.success('Peça atualizada com sucesso!');
       setEditingPart(null);
       setIsPartFormOpen(false);
-      fetchParts();
+      setRefreshPartsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao atualizar peça';
       toast.error(msg);
@@ -89,7 +54,7 @@ export default function AdminPage() {
       toast.success('Peça excluída');
       setEditingPart(null);
       setIsPartFormOpen(false);
-      fetchParts();
+      setRefreshPartsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao excluir peça';
       toast.error(msg);
@@ -102,7 +67,7 @@ export default function AdminPage() {
       await tagService.create(data);
       toast.success('Tag criada com sucesso!');
       setIsTagFormOpen(false);
-      fetchTags();
+      setRefreshTagsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao criar tag';
       toast.error(msg);
@@ -116,7 +81,7 @@ export default function AdminPage() {
       toast.success('Tag atualizada com sucesso!');
       setEditingTag(null);
       setIsTagFormOpen(false);
-      fetchTags();
+      setRefreshTagsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao atualizar tag';
       toast.error(msg);
@@ -130,7 +95,7 @@ export default function AdminPage() {
       toast.success('Tag excluída');
       setEditingTag(null);
       setIsTagFormOpen(false);
-      fetchTags();
+      setRefreshTagsKey((value) => value + 1);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao excluir tag';
       toast.error(msg);
@@ -177,28 +142,20 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Parts Section */}
           <div className="space-y-6 lg:col-span-2">
-            {loadingParts ? (
-              <div className="text-center py-12 text-gray-500">Carregando peças...</div>
-            ) : (
-              <PartsTable
-                items={parts}
-                onEdit={openEditPart}
-                onCreate={openCreatePart}
-              />
-            )}
+            <PartsTable
+              onEdit={openEditPart}
+              onCreate={openCreatePart}
+              refreshKey={refreshPartsKey}
+            />
           </div>
 
           {/* Tags Section */}
           <div className="space-y-6 lg:col-span-3">
-            {loadingTags ? (
-              <div className="text-center py-12 text-gray-500">Carregando tags...</div>
-            ) : (
-              <TagsTable
-                items={tags}
-                onEdit={openEditTag}
-                onCreate={openCreateTag}
-              />
-            )}
+            <TagsTable
+              onEdit={openEditTag}
+              onCreate={openCreateTag}
+              refreshKey={refreshTagsKey}
+            />
           </div>
         </div>
 

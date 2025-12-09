@@ -37,15 +37,30 @@ type UpdatePartDTO = z.infer<typeof UpdatePartSchema>;
 
 // Active Record style Model
 const PartModel = {
-  findAll: async () => {
-    const { data, error } = await supabase
+  findPaginated: async (params?: { page?: number; pageSize?: number; type?: PartType; query?: string }) => {
+    const page = Math.max(1, params?.page ?? 1);
+    const pageSizeRaw = params?.pageSize ?? 10;
+    const pageSize = Math.min(Math.max(pageSizeRaw, 1), 100);
+    const offset = (page - 1) * pageSize;
+
+    let queryBuilder = supabase
       .from('parts')
-      .select('*')
+      .select('*', { count: 'exact' });
+
+    if (params?.type) {
+      queryBuilder = queryBuilder.eq('part_type', params.type);
+    }
+
+    if (params?.query && params.query.trim()) {
+      queryBuilder = queryBuilder.ilike('name', `%${params.query.trim()}%`);
+    }
+
+    const { data, error, count } = await queryBuilder
       .order('created_at', { ascending: false })
-      .limit(20);
-    
+      .range(offset, offset + pageSize - 1);
+
     if (error) throw new Error(error.message);
-    return data as Part[];
+    return { items: (data ?? []) as Part[], total: count ?? 0 };
   },
 
   findByType: async (type: PartType) => {

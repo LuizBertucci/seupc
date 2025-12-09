@@ -1,16 +1,31 @@
 import { Tag, CreateTagDTO, UpdateTagDTO } from '../types/tag';
 
+type PaginatedTags = { items: Tag[]; total: number };
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-const getAll = async (): Promise<Tag[]> => {
-  const res = await fetch(`${API_URL}/tags`);
+const list = async (params?: { page?: number; pageSize?: number; q?: string }): Promise<PaginatedTags> => {
+  const page = params?.page ?? 1;
+  const pageSize = params?.pageSize ?? 10;
+  const search = params?.q;
+
+  const queryParams = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+
+  if (search) {
+    queryParams.set('q', search);
+  }
+
+  const res = await fetch(`${API_URL}/tags?${queryParams.toString()}`);
   if (!res.ok) {
     const errorText = await res.text();
     throw new Error(`Failed to fetch tags: ${res.status} ${errorText}`);
   }
   const data = await res.json();
   if (!data.success) throw new Error(data.message);
-  return data.data;
+  return data.data as PaginatedTags;
 };
 
 const getById = async (id: string): Promise<Tag> => {
@@ -79,7 +94,7 @@ const remove = async (id: string): Promise<void> => {
 };
 
 export const tagService = {
-  getAll,
+  list,
   getById,
   count,
   search,

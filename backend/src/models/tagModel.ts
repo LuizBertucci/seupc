@@ -35,22 +35,35 @@ const UpdateTagSchema = CreateTagSchema.partial();
 type UpdateTagDTO = z.infer<typeof UpdateTagSchema>;
 
 const TagModel = {
-  findAll: async () => {
-    const { data, error } = await supabase
-      .from('tags')
-      .select(`
+  findPaginated: async (params?: { page?: number; pageSize?: number; query?: string }) => {
+    const page = Math.max(1, params?.page ?? 1);
+    const pageSizeRaw = params?.pageSize ?? 10;
+    const pageSize = Math.min(Math.max(pageSizeRaw, 1), 100);
+    const offset = (page - 1) * pageSize;
+
+    const baseSelect = `
         *,
         processor:parts!processor_id(name),
         ram_memory:parts!ram_memory_id(name),
         hd:parts!hd_id(name),
         ssd:parts!ssd_id(name),
         video_card:parts!video_card_id(name)
-      `)
+      `;
+
+    let queryBuilder = supabase
+      .from('tags')
+      .select(baseSelect, { count: 'exact' });
+
+    if (params?.query && params.query.trim()) {
+      queryBuilder = queryBuilder.ilike('name', `%${params.query.trim()}%`);
+    }
+
+    const { data, error, count } = await queryBuilder
       .order('created_at', { ascending: false })
-      .limit(20);
+      .range(offset, offset + pageSize - 1);
     
     if (error) throw new Error(error.message);
-    return data;
+    return { items: data ?? [], total: count ?? 0 };
   },
 
   countByQuery: async (query: string | undefined) => {

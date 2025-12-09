@@ -5,17 +5,25 @@ import { z } from 'zod';
 
 const getAll = async (req: Request, res: Response) => {
   try {
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const pageSize = req.query.pageSize ? Number(req.query.pageSize) : 10;
     const type = req.query.type as PartType | undefined;
+    const q = (req.query.q as string | undefined) || undefined;
+
+    if (Number.isNaN(page) || page < 1) {
+      return res.status(400).json({ success: false, message: 'Invalid page' });
+    }
+    if (Number.isNaN(pageSize) || pageSize < 1 || pageSize > 100) {
+      return res.status(400).json({ success: false, message: 'Invalid pageSize' });
+    }
 
     if (type) {
       if (!Object.values(PartType).includes(type)) {
         return res.status(400).json({ success: false, message: 'Invalid type' });
       }
-      const parts = await partService.getPartsByType(type);
-      return res.json({ success: true, data: parts });
     }
 
-    const parts = await partService.getAllParts();
+    const parts = await partService.getPaginatedParts(page, pageSize, type, q);
     res.json({ success: true, data: parts });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });

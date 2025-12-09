@@ -1,38 +1,37 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Part } from '@/src/types/part';
 import { partService } from '@/src/services/partService';
 import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
-  items: Part[];
   onEdit: (part: Part) => void;
   onCreate: () => void;
+  refreshKey?: number;
 };
 
-const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
+const PartsTable: React.FC<Props> = ({ onEdit, onCreate, refreshKey }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [results, setResults] = useState<Part[] | null>(null);
-  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [items, setItems] = useState<Part[]>([]);
+  const [loading, setLoading] = useState(false);
   const [errorSearch, setErrorSearch] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [totalCount, setTotalCount] = useState<number>(0);
   const itemsPerPage = 10;
 
-  const filteredItems = useMemo(() => {
-    const base = results ?? items;
-    const term = searchTerm.trim().toLowerCase();
-    if (!term || results) return base;
-    return base.filter((part) =>
-      part.name.toLowerCase().includes(term) ||
-      part.part_type.toLowerCase().includes(term)
-    );
-  }, [items, results, searchTerm]);
-
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  const hasItems = totalCount > 0;
+  const from = hasItems ? startIndex + 1 : 0;
+  const to = hasItems ? Math.min(startIndex + itemsPerPage, totalCount) : 0;
+  const emptyMessage = errorSearch
+    ? errorSearch
+    : loading
+      ? 'Buscando...'
+      : searchTerm
+        ? 'Nenhuma peça encontrada para a busca.'
+        : 'Nenhuma peça cadastrada.';
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -40,41 +39,8 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
   };
 
   useEffect(() => {
-    const term = searchTerm.trim();
-    let cancelled = false;
-
-    if (!term) {
-      setResults(null);
-      setErrorSearch(null);
-      setLoadingSearch(false);
-      return;
-    }
-
-    const timeoutId = setTimeout(async () => {
-      try {
-        setLoadingSearch(true);
-        setErrorSearch(null);
-        const data = await partService.search(undefined, term, 50);
-        if (!cancelled) {
-          setResults(data);
-        }
-      } catch {
-        if (!cancelled) {
-          setErrorSearch('Erro ao buscar peças.');
-          setResults([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoadingSearch(false);
-        }
-      }
-    }, 300);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
-  }, [searchTerm]);
+    setCurrentPage(1);
+  }, [refreshKey]);
 
   useEffect(() => {
     const term = searchTerm.trim();
@@ -82,10 +48,27 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
 
     const timeoutId = setTimeout(async () => {
       try {
-        const total = await partService.count(term || undefined, undefined);
-        if (!cancelled) setTotalCount(total);
+        setLoading(true);
+        setErrorSearch(null);
+        const { items: data, total } = await partService.list({
+          page: currentPage,
+          pageSize: itemsPerPage,
+          q: term || undefined,
+        });
+        if (!cancelled) {
+          setItems(data);
+          setTotalCount(total ?? data.length);
+        }
       } catch {
-        if (!cancelled) setTotalCount(null);
+        if (!cancelled) {
+          setErrorSearch('Erro ao buscar peças.');
+          setItems([]);
+          setTotalCount(0);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }, 300);
 
@@ -93,7 +76,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [searchTerm]);
+  }, [currentPage, searchTerm, itemsPerPage, refreshKey]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm w-full max-w-xl mx-auto">
@@ -132,7 +115,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {currentItems.map((p) => (
+          {items.map((p) => (
             <tr 
               key={p.id} 
               className="hover:bg-gray-50 cursor-pointer"
@@ -143,14 +126,10 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
               <td className="px-2 py-2 text-xs text-center">{p.point}</td>
             </tr>
           ))}
-          {filteredItems.length === 0 && (
+          {items.length === 0 && (
             <tr>
               <td colSpan={3} className="px-6 py-8 text-center text-gray-500">
-                {errorSearch
-                  ? errorSearch
-                  : searchTerm
-                    ? (loadingSearch ? 'Buscando...' : 'Nenhuma peça encontrada para a busca.')
-                    : 'Nenhuma peça cadastrada.'}
+                {emptyMessage}
               </td>
             </tr>
           )}
@@ -160,7 +139,7 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
       {totalPages > 1 && (
         <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
           <div className="text-sm text-gray-500">
-            Mostrando {startIndex + 1} a {Math.min(startIndex + itemsPerPage, filteredItems.length)} de {totalCount ?? filteredItems.length} peças
+            Mostrando {from} a {to} de {totalCount} peças
           </div>
           <div className="flex gap-2">
             <button

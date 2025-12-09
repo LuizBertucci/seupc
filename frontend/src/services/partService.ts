@@ -1,28 +1,33 @@
 import { Part, CreatePartDTO, UpdatePartDTO, PartType } from '../types/part';
 
+type PaginatedParts = { items: Part[]; total: number };
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-const getAll = async (): Promise<Part[]> => {
-  const res = await fetch(`${API_URL}/parts`);
+const list = async (params?: { page?: number; pageSize?: number; q?: string; type?: PartType }): Promise<PaginatedParts> => {
+  const page = params?.page ?? 1;
+  const pageSize = params?.pageSize ?? 10;
+  const queryParams = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+
+  if (params?.q) queryParams.set('q', params.q);
+  if (params?.type) queryParams.set('type', params.type);
+
+  const res = await fetch(`${API_URL}/parts?${queryParams.toString()}`);
   if (!res.ok) {
     const errorText = await res.text();
     throw new Error(`Failed to fetch parts: ${res.status} ${errorText}`);
   }
   const data = await res.json();
   if (!data.success) throw new Error(data.message);
-  return data.data;
+  return data.data as PaginatedParts;
 };
 
-const getByType = async (type: PartType): Promise<Part[]> => {
-  const params = new URLSearchParams({ type });
-  const res = await fetch(`${API_URL}/parts?${params.toString()}`);
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Failed to fetch parts by type: ${res.status} ${errorText}`);
-  }
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message);
-  return data.data;
+const getByType = async (type: PartType, pageSize = 100): Promise<Part[]> => {
+  const { items } = await list({ type, page: 1, pageSize });
+  return items;
 };
 
 const getById = async (id: string): Promise<Part> => {
@@ -92,7 +97,7 @@ const remove = async (id: string): Promise<void> => {
 };
 
 export const partService = {
-  getAll,
+  list,
   getByType,
   count,
   search,

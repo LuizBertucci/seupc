@@ -1,7 +1,7 @@
 import { PartModel, CreatePartDTO, UpdatePartDTO, PartType } from '../models/partModel';
 
-const getAllParts = async () => {
-  return await PartModel.findAll();
+const getPaginatedParts = async (page?: number, pageSize?: number, type?: PartType, query?: string) => {
+  return await PartModel.findPaginated({ page, pageSize, type, query });
 };
 
 const getPartsByType = async (type: PartType) => {
@@ -55,7 +55,7 @@ const deletePart = async (id: string) => {
 };
 
 export const partService = {
-  getAllParts,
+  getPaginatedParts,
   getPartsByType,
   countParts,
   searchParts,
