@@ -3,16 +3,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Part } from '@/src/types/part';
 import { partService } from '@/src/services/partService';
-import { Trash2, Edit, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
   items: Part[];
   onEdit: (part: Part) => void;
-  onDelete: (id: string) => void;
   onCreate: () => void;
 };
 
-const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
+const PartsTable: React.FC<Props> = ({ items, onEdit, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [results, setResults] = useState<Part[] | null>(null);
@@ -130,40 +129,23 @@ const PartsTable: React.FC<Props> = ({ items, onEdit, onDelete, onCreate }) => {
             <th className="px-2 py-2 text-xs w-[40%]">Nome</th>
             <th className="px-2 py-2 text-xs w-[30%]">Tipo</th>
             <th className="px-2 py-2 text-xs w-[15%] text-center">Pontos</th>
-            <th className="px-2 py-2 text-xs w-[15%] text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {currentItems.map((p) => (
-            <tr key={p.id} className="hover:bg-gray-50">
+            <tr 
+              key={p.id} 
+              className="hover:bg-gray-50 cursor-pointer"
+              onClick={() => onEdit(p)}
+            >
               <td className="px-2 py-2 text-xs font-medium text-gray-900 truncate max-w-[120px]">{p.name}</td>
               <td className="px-2 py-2 text-xs truncate max-w-[80px]">{p.part_type}</td>
               <td className="px-2 py-2 text-xs text-center">{p.point}</td>
-              <td className="px-2 py-2 text-xs text-right">
-                <div className="flex justify-end gap-2">
-                  <button
-                    onClick={() => onEdit(p)}
-                    className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                    title="Editar"
-                    aria-label="Editar"
-                  >
-                    <Edit size={18} />
-                  </button>
-                  <button
-                    onClick={() => onDelete(p.id)}
-                    className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                    title="Excluir"
-                    aria-label="Excluir"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </td>
             </tr>
           ))}
           {filteredItems.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+              <td colSpan={3} className="px-6 py-8 text-center text-gray-500">
                 {errorSearch
                   ? errorSearch
                   : searchTerm

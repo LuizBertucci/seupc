@@ -87,6 +87,8 @@ export default function AdminPage() {
     try {
       await partService.delete(id);
       toast.success('Peça excluída');
+      setEditingPart(null);
+      setIsPartFormOpen(false);
       fetchParts();
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Erro ao excluir peça';
@@ -179,7 +181,6 @@ export default function AdminPage() {
               <PartsTable
                 items={parts}
                 onEdit={openEditPart}
-                onDelete={handleDeletePart}
                 onCreate={openCreatePart}
               />
             )}
@@ -206,6 +207,7 @@ export default function AdminPage() {
           onClose={closePartForm}
           editingPart={editingPart}
           onSubmit={editingPart ? handleUpdatePart : handleCreatePart}
+          onDelete={handleDeletePart}
         />
 
         <TagForm

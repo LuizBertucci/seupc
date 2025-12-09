@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { Part, PartType } from '@/src/types/part';
 
 const schema = z.object({
@@ -20,9 +20,10 @@ type Props = {
   onClose: () => void;
   editingPart: Part | null;
   onSubmit: (data: FormData) => Promise<void>;
+  onDelete: (id: string) => void;
 };
 
-export const PartForm: React.FC<Props> = ({ isOpen, onClose, editingPart, onSubmit }) => {
+export const PartForm: React.FC<Props> = ({ isOpen, onClose, editingPart, onSubmit, onDelete }) => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema) as unknown as Resolver<FormData>,
     defaultValues: {
@@ -105,21 +106,35 @@ export const PartForm: React.FC<Props> = ({ isOpen, onClose, editingPart, onSubm
               {errors.point && <p className="mt-1 text-xs text-red-500">{errors.point.message}</p>}
             </div>
 
-            <div className="flex justify-end gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
-              </button>
+            <div className="flex justify-between items-center pt-4">
+              {editingPart ? (
+                <button
+                  type="button"
+                  onClick={() => onDelete(editingPart.id)}
+                  className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 flex items-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  Excluir
+                </button>
+              ) : (
+                <div></div> // Spacer to keep justify-between working if needed, or just let it flex
+              )}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
             </div>
           </form>
         </div>
